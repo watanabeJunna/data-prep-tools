@@ -9,10 +9,10 @@ export interface DialogInterface {
     // Visible state setter of dialog
     setVisible: (visiable: boolean) => void
 
-    // Pos
+    // Dialog location information
     pos: { x: number, y: number } | null
 
-    // Visible state setter of dialog
+    // Setter for dialog location information
     setPos: (pos: Pos) => void
 
     // Input field array
