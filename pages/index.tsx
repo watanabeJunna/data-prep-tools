@@ -100,19 +100,26 @@ const LoadDataComponent = () => {
             return
         }
 
-        const clientPosition: ClientRect | DOMRect = ref.current.getBoundingClientRect()
+        if (visible) {
+            setPosition({
+                x: 0,
+                y: 0
+            })
+        } else {
+            const clientPosition: ClientRect | DOMRect = ref.current.getBoundingClientRect()
 
-        const right = clientPosition.right
-        const width = clientPosition.width
-        const scrollLeft = document.body.scrollLeft
-        const clientLeft = document.documentElement.clientLeft
+            const right = clientPosition.right
+            const width = clientPosition.width
+            const scrollLeft = document.body.scrollLeft
+            const clientLeft = document.documentElement.clientLeft
 
-        const position_: Position = {
-            x: right + scrollLeft - clientLeft - width,
-            y: clientPosition.top
+            const position_: Position = {
+                x: right + scrollLeft - clientLeft - width,
+                y: clientPosition.top
+            }
+            setPosition(position_)
         }
-
-        setPosition(position_)
+        
         setVisible(!visible)
     }
 
