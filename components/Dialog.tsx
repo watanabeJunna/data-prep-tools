@@ -87,7 +87,8 @@ export const Dialog: FC<DialogInterface> = ({
             </CloseButton>
             <SubmitButton
                 onClick={() => onClick()}
-                color='#666666' >
+                color='#666666'
+            >
                 Submit
             </SubmitButton>
         </Wrapper>

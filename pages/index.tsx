@@ -48,17 +48,32 @@ const DataPrepContainer: FC = () => {
 
     const Header = styled.div`
         display: flex;
-        justify-content: flex-end;
+        justify-content: space-between;
         position: relative;
         padding: 24px 48px;
         border-bottom: 1px solid rgba(176, 176, 176, 0.5);
     `
 
+    const HeaderTitle = styled.div`
+        font-size: 1.5em;
+        color: #5f6f81;
+        margin: auto 0;
+    `
+
+    const ComponentTable = styled.div`
+        display: flex;
+    `
+
     return (
         <Wrapper>
             <Header>
-                <LoadDataComponent />
-                <ExportDataComponent />
+                <HeaderTitle>
+                    Add features
+                </HeaderTitle>
+                <ComponentTable>
+                    <LoadDataComponent />
+                    <ExportDataComponent />
+                </ComponentTable>
             </Header>
         </Wrapper>
     )
@@ -104,6 +119,8 @@ const LoadDataComponent = () => {
     `
     const Inputs: StyledComponent<'input', any, any, never>[] = [FileNameInput]
 
+    const blue = '#00aeea'
+
     return (
         <>
             <Dialog
@@ -116,7 +133,7 @@ const LoadDataComponent = () => {
             />
             <Button
                 ref={ref}
-                color='#00aeea'
+                color={blue}
                 onClick={onClick}
             >
                 <p>Load</p>
@@ -166,6 +183,8 @@ const ExportDataComponent = () => {
 
     const Inputs: StyledComponent<'input', any, any, never>[] = [ExportFileNameInput]
 
+    const green = '#00abaa'
+
     return (
         <>
             <Dialog
@@ -178,7 +197,7 @@ const ExportDataComponent = () => {
             />
             <Button
                 ref={ref}
-                color='#00abaa'
+                color={green}
                 onClick={onClick}
             >
                 <p>Export</p>
