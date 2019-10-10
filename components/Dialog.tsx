@@ -68,6 +68,8 @@ export const Dialog: FC<DialogInterface> = ({
         margin: 0 auto;
     `
 
+    const gray = '#666666'
+
     return (
         <Wrapper visible={visible} position={position}>
             {
@@ -87,7 +89,7 @@ export const Dialog: FC<DialogInterface> = ({
             }} />
             <SubmitButton
                 onClick={() => onClick()}
-                color='#666666'
+                color={gray}
             >
                 Submit
             </SubmitButton>
