@@ -174,14 +174,14 @@ const ExportDataComponent = () => {
         setVisible(!visible)
     }
 
-    const ExportFileNameInput = styled.input.attrs({
+    const FileNameInput = styled.input.attrs({
         'placeholder': 'ファイル名',
     })`
         ${InputStyle}
         width: 320px;
     `
 
-    const Inputs: StyledComponent<'input', any, any, never>[] = [ExportFileNameInput]
+    const Inputs: StyledComponent<'input', any, any, never>[] = [FileNameInput]
 
     const green = '#00abaa'
 
