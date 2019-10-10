@@ -14,16 +14,22 @@ const Default = css`
     background: none;
 `
 
+const HighConcentration = 'ee'
+
+const MediumConcentration = 'aa'
+
+const LowConcentration = '56'
+
 export const Button = styled.button<ButtonColor>`
     ${Default}    
-    color: ${({ color }) => color}ee;
+    color: ${({ color }) => color + HighConcentration};
     padding: 12px 24px;
     margin: 0 12px;
     border-radius: 5px;
-    border: 2px solid ${({ color }) => color}59;
+    border: 2px solid ${({ color }) => color + LowConcentration};
     transition: .3s;
     &:hover {
-        border: 2px solid ${({ color }) => color}aa;
+        border: 2px solid ${({ color }) => color + MediumConcentration};
     }
 `
 
