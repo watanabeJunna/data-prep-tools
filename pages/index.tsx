@@ -31,7 +31,6 @@ export default () => {
 }
 
 const AnnotationContainer: FC = () => {
-
     const Wrapper = styled.div`
         font-family: ${props => props.theme.fontFamily};
         font-weight: 400;
