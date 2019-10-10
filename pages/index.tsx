@@ -1,16 +1,18 @@
-import { useRef, useState, FC, MutableRefObject, MouseEvent } from 'react'
-import styled, { css } from 'styled-components'
+import { useState, useRef, FC, MouseEvent } from 'react'
+import styled, { StyledComponent } from 'styled-components'
 import { createGlobalStyle } from 'styled-components'
 import reset from 'styled-reset'
-import { Header as CommonHeader } from '../components/Header'
-import { Container as CommonContainer } from '../components/Container'
+import { Header } from '../components/Header'
+import { Container } from '../components/Container'
+import { Dialog } from '../components/Dialog'
+import { Button } from '../components/Button'
+import { InputStyle } from '../components/Input'
 
 export default () => {
     const GlobalStyle = createGlobalStyle`
         ${reset}
-
         body, html {
-            font-size: 1.2em;
+            font-size: 1.1em;
             margin: 30px 0;
         }
     `
@@ -18,117 +20,142 @@ export default () => {
     return (
         <>
             <GlobalStyle />
-            <CommonContainer>
-                <CommonHeader />
-            </CommonContainer>
-            <CommonContainer>
-                <Container />
-            </CommonContainer>
+            <Container>
+                <Header />
+            </Container>
+            <Container>
+                <AnnotationContainer />
+            </Container>
         </>
     )
 }
 
-const Container: FC = () => {
-    const [visible, setVisible] = useState(false)
-    const fileNameInputRef = useRef<HTMLInputElement | null>(null)
+const AnnotationContainer: FC = () => {
 
-    const submit = async () => {
-        if (!fileNameInputRef.current) {
-            console.log('!fileNameInputRef.current')
-            return
-        }
+    const Wrapper = styled.div`
+        font-family: ${props => props.theme.fontFamily};
+        font-weight: 400;
+        box-shadow: 0px 1px 4px rgb(176, 176, 176);
+        padding: 25px 0;
+    `
 
-        fileNameInputRef.current.focus()
-
-        console.log(fileNameInputRef.current.value)
-    }
+    const Header = styled.div`
+        display: flex;
+        justify-content: flex-end;
+        position: relative;
+        padding: 24px 48px;
+        border-bottom: 1px solid rgba(176, 176, 176, 0.5);
+    `
 
     return (
         <Wrapper>
             <Header>
-                <LoadDataDialog
-                    visible={visible}
-                    ref={fileNameInputRef}
-                />
-                <button onClick={(_: MouseEvent<HTMLButtonElement>) => setVisible(!visible)}>show</button>
-                <button onClick={(_: MouseEvent<HTMLButtonElement>) => submit()}>a</button>
+                <LoadDataFunctionWrapper />
+                <ExportFunctionWrapper />
             </Header>
         </Wrapper>
     )
 }
 
+const LoadDataFunctionWrapper = () => {
+    const [visible, setVisible] = useState()
+    const [pos, setPos] = useState()
 
-const LoadDataDialog = (props: {
-    visible: boolean
-    ref: MutableRefObject<HTMLInputElement | null>
-}) => {
+    let ref = useRef<HTMLButtonElement | null>(null)
+
+    const onClick = (_: MouseEvent<HTMLButtonElement>) => {
+        if (!ref.current) {
+            return
+        }
+
+        const clientPos: ClientRect | DOMRect = ref.current.getBoundingClientRect()
+
+        let pos = {
+            x: clientPos.top,
+            y: clientPos.left
+        }
+
+        setPos(pos)
+        setVisible(!visible)
+    }
+
+    const FileNameInput = styled.input.attrs({
+        'placeholder': 'ファイル名',
+    })`
+        ${InputStyle}
+        width: 320px;
+    `
+    const Inputs: StyledComponent<'input', any, any, never>[] = [FileNameInput]
 
     return (
-        <LoadDataDialogWrapper
-            visible={props.visible}>
-            <FileNameInput ref={props.ref} />
-        </LoadDataDialogWrapper>
+        <>
+            <Dialog
+                visible={visible}
+                setVisible={setVisible}
+                pos={pos}
+                setPos={setPos}
+                inputs={Inputs}
+                onClick={() => { }}
+            />
+            <Button
+                ref={ref}
+                color='#00aeea'
+                onClick={onClick}
+            >
+                <p>Load</p>
+            </Button>
+        </>
     )
 }
 
-const Wrapper = styled.div`
-    font-family: ${props => props.theme.fontFamily};
-    font-weight: 400;
-    box-shadow: 0px 1px 4px rgb(176, 176, 176);
-    padding: 25px 0;
-`
+const ExportFunctionWrapper = () => {
+    const [visible, setVisible] = useState()
+    const [pos, setPos] = useState()
 
-const Header = styled.div`
-    display: flex;
-    position: relative; 
-    justify-content:space-between;
-    border-bottom: 1px solid rgba(176, 176, 176, 0.5);
-`
+    let ref = useRef<HTMLButtonElement | null>(null)
 
-type Props = {
-    visible?: boolean
-}
+    const onClick = (_: MouseEvent<HTMLButtonElement>) => {
+        if (!ref.current) {
+            return
+        }
 
-const LoadDataDialogWrapper = styled.div<Props>`
-    position: absolute;
-    right: 70px;
-    top: -50px;
-    padding: 24px 12px;
-    transition: .3s;
-    opacity: ${props => props.visible && '1' || '0'};
-    z-index: 1;
-    font-weight: 400;
-    box-shadow: 0px 2px 10px rgb(176, 176, 176);
-    background-color: white;
-    border-radius: 5px;
-    color: #555555bb;
-`
+        const clientPos: ClientRect | DOMRect = ref.current.getBoundingClientRect()
 
-// const DialogHeader = styled.div`
-//     color: #5f6f81;
-//     font-size: 1.3em;
-//     margin: 0 12px 25px 12px;
-// `
+        let pos = {
+            x: clientPos.top,
+            y: clientPos.left
+        }
 
-const CommonInput = css`
-    display: block;
-    padding: 0;
-    border: none;
-    border-radius: 0;
-    outline: none;
-    background: none;
-    margin: 25px 12px;
-    border-bottom: 1px solid #dee7ec;
-    transition: .5s;
-    width: 200px;
-    padding: 7px 0;
-    &:focus {
-        border-bottom: 1px solid #228aff;
+        setPos(pos)
+        setVisible(!visible)
     }
-`
 
-const FileNameInput = styled.input.attrs({
-    'placeholder': 'ファイル名',
-})`
-    ${CommonInput}
-`
+    const ExportFileNameInput = styled.input.attrs({
+        'placeholder': 'ファイル名',
+    })`
+        ${InputStyle}
+        width: 320px;
+    `
+
+    const Inputs: StyledComponent<'input', any, any, never>[] = [ExportFileNameInput]
+
+    return (
+        <>
+            <Dialog
+                visible={visible}
+                setVisible={setVisible}
+                pos={pos}
+                setPos={setPos}
+                inputs={Inputs}
+                onClick={() => { }}
+            />
+            <Button
+                ref={ref}
+                color='#00abaa'
+                onClick={onClick}
+            >
+                <p>Export</p>
+            </Button>
+        </>
+    )
+}
