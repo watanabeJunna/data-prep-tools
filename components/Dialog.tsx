@@ -2,6 +2,9 @@ import { FC } from 'react'
 import styled, { StyledComponent } from 'styled-components'
 import { Button, CloseButton } from './Button'
 
+export type Position = null | { x: number, y: number }
+export type Visible = boolean
+
 export interface DialogInterface {
     // Visible state of dialog
     visible: boolean
@@ -10,10 +13,10 @@ export interface DialogInterface {
     setVisible: (visiable: boolean) => void
 
     // Dialog location information
-    pos: { x: number, y: number } | null
+    position: { x: number, y: number } | null
 
     // Setter for dialog location information
-    setPos: (pos: Pos) => void
+    setPosition: (position: Position) => void
 
     // Input field array
     inputs: StyledComponent<'input', any, any, never>[]
@@ -22,16 +25,20 @@ export interface DialogInterface {
     onClick: (...args: any[]) => void
 }
 
-type Pos = null | { x: number, y: number }
-type Visible = boolean
-
 export type DialogState = {
-    pos: Pos
+    position: Position
     visible: Visible
 }
 
-export const Dialog: FC<DialogInterface> = ({ visible, setVisible, pos, setPos, inputs, onClick }) => {
-    const posFilter = (pos: Pos | null, axis: 'x' | 'y') => {
+export const Dialog: FC<DialogInterface> = ({ 
+    visible, 
+    setVisible, 
+    position,
+    setPosition, 
+    inputs, 
+    onClick,
+}) => {
+    const posFilter = (pos: Position | null, axis: 'x' | 'y') => {
         if (pos == null) {
             return 0
         }
@@ -41,8 +48,8 @@ export const Dialog: FC<DialogInterface> = ({ visible, setVisible, pos, setPos, 
 
     const Wrapper = styled.div<DialogState>`
         position: fixed;
-        top: ${({ pos }) => posFilter(pos, 'y')};
-        left: ${({ pos }) => posFilter(pos, 'x')};
+        top: ${({ position }) => posFilter(position, 'y')};
+        left: ${({ position }) => posFilter(position, 'x')};
         padding: 24px 32px;
         opacity: ${({ visible }) => visible && '1' || '0'};
         transition: .3s;
@@ -60,7 +67,7 @@ export const Dialog: FC<DialogInterface> = ({ visible, setVisible, pos, setPos, 
     `
 
     return (
-        <Wrapper visible={visible} pos={pos}>
+        <Wrapper visible={visible} position={position}>
             {
                 inputs.map((Input, c) => {
                     return (
@@ -69,7 +76,7 @@ export const Dialog: FC<DialogInterface> = ({ visible, setVisible, pos, setPos, 
                 })
             }
             <CloseButton onClick={() => {
-                setPos({
+                setPosition({
                     x: 0,
                     y: 0
                 })

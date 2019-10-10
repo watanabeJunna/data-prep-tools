@@ -1,10 +1,18 @@
-import { useState, useRef, FC, MouseEvent } from 'react'
+import { 
+    useState,
+    useRef,
+    FC,
+    MouseEvent,
+    Dispatch,
+    SetStateAction,
+    MutableRefObject 
+} from 'react'
 import styled, { StyledComponent } from 'styled-components'
 import { createGlobalStyle } from 'styled-components'
 import reset from 'styled-reset'
 import { Header } from '../components/Header'
 import { Container } from '../components/Container'
-import { Dialog } from '../components/Dialog'
+import { Dialog, Position } from '../components/Dialog'
 import { Button } from '../components/Button'
 import { InputStyle } from '../components/Input'
 
@@ -24,13 +32,13 @@ export default () => {
                 <Header />
             </Container>
             <Container>
-                <AnnotationContainer />
+                <DataPrepContainer />
             </Container>
         </>
     )
 }
 
-const AnnotationContainer: FC = () => {
+const DataPrepContainer: FC = () => {
     const Wrapper = styled.div`
         font-family: ${props => props.theme.fontFamily};
         font-weight: 400;
@@ -49,32 +57,42 @@ const AnnotationContainer: FC = () => {
     return (
         <Wrapper>
             <Header>
-                <LoadDataFunctionWrapper />
-                <ExportFunctionWrapper />
+                <LoadDataComponent />
+                <ExportDataComponent />
             </Header>
         </Wrapper>
     )
 }
 
-const LoadDataFunctionWrapper = () => {
-    const [visible, setVisible] = useState()
-    const [pos, setPos] = useState()
+const LoadDataComponent = () => {
+    const [visible, setVisible]: [
+        boolean,
+        Dispatch<SetStateAction<boolean>>
+    ] = useState<boolean>(false)
 
-    const ref = useRef<HTMLButtonElement | null>(null)
+    const [position, setPosition]: [
+        Position, 
+        Dispatch<SetStateAction<Position>>
+    ] = useState<Position>({
+        x: 0,
+        y: 0
+    })
+
+    const ref: MutableRefObject<HTMLButtonElement | null> = useRef(null)
 
     const onClick = (_: MouseEvent<HTMLButtonElement>) => {
         if (!ref.current) {
             return
         }
 
-        const clientPos: ClientRect | DOMRect = ref.current.getBoundingClientRect()
+        const clientPosition: ClientRect | DOMRect = ref.current.getBoundingClientRect()
 
-        let pos = {
-            x: clientPos.top,
-            y: clientPos.left
+        const position_ = {
+            x: clientPosition.top,
+            y: clientPosition.left
         }
 
-        setPos(pos)
+        setPosition(position_)
         setVisible(!visible)
     }
 
@@ -91,8 +109,8 @@ const LoadDataFunctionWrapper = () => {
             <Dialog
                 visible={visible}
                 setVisible={setVisible}
-                pos={pos}
-                setPos={setPos}
+                position={position}
+                setPosition={setPosition}
                 inputs={Inputs}
                 onClick={() => { }}
             />
@@ -107,25 +125,35 @@ const LoadDataFunctionWrapper = () => {
     )
 }
 
-const ExportFunctionWrapper = () => {
-    const [visible, setVisible] = useState()
-    const [pos, setPos] = useState()
+const ExportDataComponent = () => {
+    const [visible, setVisible]: [
+        boolean,
+        Dispatch<SetStateAction<boolean>>
+    ] = useState<boolean>(false)
 
-    let ref = useRef<HTMLButtonElement | null>(null)
+    const [position, setPosition]: [
+        Position, 
+        Dispatch<SetStateAction<Position>>
+    ] = useState<Position>({
+        x: 0,
+        y: 0
+    })
+
+    const ref: MutableRefObject<HTMLButtonElement | null> = useRef(null)
 
     const onClick = (_: MouseEvent<HTMLButtonElement>) => {
         if (!ref.current) {
             return
         }
 
-        const clientPos: ClientRect | DOMRect = ref.current.getBoundingClientRect()
+        const clientPosition: ClientRect | DOMRect = ref.current.getBoundingClientRect()
 
-        let pos = {
-            x: clientPos.top,
-            y: clientPos.left
+        const position_: Position = {
+            x: clientPosition.top,
+            y: clientPosition.left
         }
 
-        setPos(pos)
+        setPosition(position_)
         setVisible(!visible)
     }
 
@@ -143,8 +171,8 @@ const ExportFunctionWrapper = () => {
             <Dialog
                 visible={visible}
                 setVisible={setVisible}
-                pos={pos}
-                setPos={setPos}
+                position={position}
+                setPosition={setPosition}
                 inputs={Inputs}
                 onClick={() => { }}
             />
