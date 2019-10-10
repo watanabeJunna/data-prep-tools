@@ -68,17 +68,17 @@ export const Dialog: FC<DialogInterface> = ({
         margin: 0 auto;
     `
 
+    const Inputs = inputs.map((Input, c) => {
+        return (
+            <Input key={c} />
+        )
+    })
+
     const gray = '#666666'
 
     return (
         <Wrapper visible={visible} position={position}>
-            {
-                inputs.map((Input, c) => {
-                    return (
-                        <Input key={c} />
-                    )
-                })
-            }
+            {Inputs}
             <CloseButton onClick={() => {
                 setPosition({
                     x: 0,
