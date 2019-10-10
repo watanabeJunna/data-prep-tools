@@ -3,7 +3,7 @@ import styled, { StyledComponentBase } from 'styled-components'
 export const Header = () => {
     return (
         <HeaderWrapper>
-            Features Annotation
+            Data prep tools
         </HeaderWrapper>
     )
 }
