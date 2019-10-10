@@ -7,8 +7,6 @@ export type Position = null | {
     y: number
 }
 
-export type Visible = boolean
-
 export interface DialogInterface {
     // Visible state of dialog
     visible: boolean
@@ -29,9 +27,9 @@ export interface DialogInterface {
     onClick: (...args: any[]) => void
 }
 
-export type DialogState = {
+export type DialogWrapperProps = {
     position: Position
-    visible: Visible
+    visible: boolean
 }
 
 export const Dialog: FC<DialogInterface> = ({ 
@@ -50,7 +48,7 @@ export const Dialog: FC<DialogInterface> = ({
         return pos[axis]
     }
 
-    const Wrapper = styled.div<DialogState>`
+    const Wrapper = styled.div<DialogWrapperProps>`
         position: fixed;
         top: ${({ position }) => posFilter(position, 'y')};
         left: ${({ position }) => posFilter(position, 'x')};
