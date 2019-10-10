@@ -73,18 +73,18 @@ export const Dialog: FC<DialogInterface> = ({
     }
 
     const Wrapper = styled.div<DialogWrapperProps>`
+        display: block;
         position: fixed;
         top: ${({ position }) => coordinateMachining(position, 'y', ref)}px;
         left: ${({ position }) => coordinateMachining(position, 'x', ref)}px;
         padding: 24px 32px;
         opacity: ${({ visible }) => visible && '1' || '0'};
-        transition: .3s;
+        transition: .12s;
         z-index: 0;
         font-weight: 400;
         box-shadow: 0px 2px 10px rgb(176, 176, 176);
         background-color: white;
         border-radius: 5px;
-        color: #555555bb;
     `
 
     const SubmitButton = styled(Button)`
