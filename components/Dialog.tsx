@@ -2,7 +2,11 @@ import { FC } from 'react'
 import styled, { StyledComponent } from 'styled-components'
 import { Button, CloseButton } from './Button'
 
-export type Position = null | { x: number, y: number }
+export type Position = null | { 
+    x: number,
+    y: number
+}
+
 export type Visible = boolean
 
 export interface DialogInterface {
@@ -13,7 +17,7 @@ export interface DialogInterface {
     setVisible: (visiable: boolean) => void
 
     // Dialog location information
-    position: { x: number, y: number } | null
+    position: Position
 
     // Setter for dialog location information
     setPosition: (position: Position) => void
