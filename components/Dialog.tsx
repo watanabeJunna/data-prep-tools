@@ -86,9 +86,7 @@ export const Dialog: FC<DialogInterface> = ({
                 })
 
                 setVisible(false)
-            }}>
-                ×
-            </CloseButton>
+            }} />
             <SubmitButton
                 onClick={() => onClick()}
                 color='#666666'

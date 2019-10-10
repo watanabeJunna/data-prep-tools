@@ -41,4 +41,7 @@ export const CloseButton = styled.button`
     color: #5f6f81;
     margin 12px 12px 0 0;
     font-size: 1.9em;
+    &:after {
+        content: '×'
+    }
 `
