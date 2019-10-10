@@ -60,7 +60,7 @@ const LoadDataFunctionWrapper = () => {
     const [visible, setVisible] = useState()
     const [pos, setPos] = useState()
 
-    let ref = useRef<HTMLButtonElement | null>(null)
+    const ref = useRef<HTMLButtonElement | null>(null)
 
     const onClick = (_: MouseEvent<HTMLButtonElement>) => {
         if (!ref.current) {
