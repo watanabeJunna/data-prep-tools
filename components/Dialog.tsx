@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { useRef, FC, MutableRefObject } from 'react'
 import styled, { StyledComponent } from 'styled-components'
 import { Button, CloseButton } from './Button'
 
@@ -43,20 +43,43 @@ export const Dialog: FC<DialogInterface> = ({
     inputs, 
     onClick,
 }) => {
-    const coordinateMachining = (position: Position, axis: 'x' | 'y'): string => {
+    const ref: MutableRefObject<HTMLDivElement | null> = useRef(null)
+
+    const coordinateMachining = (
+        position: Position, 
+        axis: 'x' | 'y', 
+        ref: MutableRefObject<HTMLDivElement | null>
+    ): string => {
+        if (!ref.current) {
+            return '0'
+        }
+
         let newPosition: number = position[axis]
+
+        const [xMergin, yMargin] = [30, 70]
+
+        switch (axis) {
+            case 'x':
+                newPosition = newPosition - ref.current.clientWidth - xMergin
+                break
+            case 'y':
+                newPosition = newPosition - yMargin
+                break
+            default:
+                throw new Error('Axis is not appropriate')
+        }
 
         return newPosition.toString()
     }
 
     const Wrapper = styled.div<DialogWrapperProps>`
         position: fixed;
-        top: ${({ position }) => coordinateMachining(position, 'y')};
-        left: ${({ position }) => coordinateMachining(position, 'x')};
+        top: ${({ position }) => coordinateMachining(position, 'y', ref)}px;
+        left: ${({ position }) => coordinateMachining(position, 'x', ref)}px;
         padding: 24px 32px;
         opacity: ${({ visible }) => visible && '1' || '0'};
         transition: .3s;
-        z-index: 1;
+        z-index: 0;
         font-weight: 400;
         box-shadow: 0px 2px 10px rgb(176, 176, 176);
         background-color: white;
@@ -78,7 +101,11 @@ export const Dialog: FC<DialogInterface> = ({
     const gray = '#666666'
 
     return (
-        <Wrapper visible={visible} position={position}>
+        <Wrapper
+            ref={ref}
+            visible={visible}
+            position={position}
+        >
             {Inputs}
             <CloseButton onClick={() => {
                 setPosition({

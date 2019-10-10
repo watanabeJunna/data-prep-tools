@@ -102,9 +102,14 @@ const LoadDataComponent = () => {
 
         const clientPosition: ClientRect | DOMRect = ref.current.getBoundingClientRect()
 
-        const position_ = {
-            x: clientPosition.top,
-            y: clientPosition.left
+        const right = clientPosition.right
+        const width = clientPosition.width
+        const scrollLeft = document.body.scrollLeft
+        const clientLeft = document.documentElement.clientLeft
+
+        const position_: Position = {
+            x: right + scrollLeft - clientLeft - width,
+            y: clientPosition.top
         }
 
         setPosition(position_)
@@ -165,9 +170,14 @@ const ExportDataComponent = () => {
 
         const clientPosition: ClientRect | DOMRect = ref.current.getBoundingClientRect()
 
+        const right = clientPosition.right
+        const width = clientPosition.width
+        const scrollLeft = document.body.scrollLeft
+        const clientLeft = document.documentElement.clientLeft
+
         const position_: Position = {
-            x: clientPosition.top,
-            y: clientPosition.left
+            x: right + scrollLeft - clientLeft - width,
+            y: clientPosition.top
         }
 
         setPosition(position_)
