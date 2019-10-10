@@ -2,8 +2,11 @@ import { FC } from 'react'
 import styled, { StyledComponent } from 'styled-components'
 import { Button, CloseButton } from './Button'
 
-export type Position = null | { 
+export interface Position { 
+    // X coordinate of the dialog
     x: number,
+
+    // Y coordinate of the dialog
     y: number
 }
 
@@ -40,18 +43,16 @@ export const Dialog: FC<DialogInterface> = ({
     inputs, 
     onClick,
 }) => {
-    const posFilter = (pos: Position | null, axis: 'x' | 'y') => {
-        if (pos == null) {
-            return 0
-        }
+    const coordinateMachining = (position: Position, axis: 'x' | 'y'): string => {
+        let newPosition: number = position[axis]
 
-        return pos[axis]
+        return newPosition.toString()
     }
 
     const Wrapper = styled.div<DialogWrapperProps>`
         position: fixed;
-        top: ${({ position }) => posFilter(position, 'y')};
-        left: ${({ position }) => posFilter(position, 'x')};
+        top: ${({ position }) => coordinateMachining(position, 'y')};
+        left: ${({ position }) => coordinateMachining(position, 'x')};
         padding: 24px 32px;
         opacity: ${({ visible }) => visible && '1' || '0'};
         transition: .3s;
