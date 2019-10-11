@@ -105,7 +105,6 @@ export const Dialog: FC<DialogInterface> = ({
             visible={visible}
             position={position}
         >
-            {Inputs}
             <CloseButton onClick={() => {
                 setPosition({
                     x: 0,
@@ -114,6 +113,7 @@ export const Dialog: FC<DialogInterface> = ({
 
                 setVisible(false)
             }} />
+            {Inputs}
             <SubmitButton
                 onClick={() => onClick()}
                 color={gray}
