@@ -1,6 +1,14 @@
-import { useRef, FC, MutableRefObject } from 'react'
+import { 
+    useState,
+    useRef,
+    FC,
+    Dispatch,
+    SetStateAction,
+    MutableRefObject 
+} from 'react'
 import styled, { StyledComponent } from 'styled-components'
 import { Button, CloseButton } from './Button'
+import { InputStyle } from '../components/Input'
 
 export interface Position { 
     // X coordinate of the dialog
@@ -10,7 +18,96 @@ export interface Position {
     y: number
 }
 
-export interface DialogInterface {
+export interface IDialogUtilComponent {
+    inputAttributes: object[]
+    toggleButtonColor: string
+    toggleButtonText: string
+    buttonName: string
+    callback: (...args: any) => void
+}
+
+export const DialogUtilComponent: FC<IDialogUtilComponent> = ({
+    inputAttributes,
+    toggleButtonColor,
+    toggleButtonText,
+    callback,
+    buttonName
+}) => {
+    const [visible, setVisible]: [
+        boolean,
+        Dispatch<SetStateAction<boolean>>
+    ] = useState<boolean>(false)
+
+    const [position, setPosition]: [
+        Position, 
+        Dispatch<SetStateAction<Position>>
+    ] = useState<Position>({
+        x: 0,
+        y: 0
+    })
+
+    const ref: MutableRefObject<HTMLButtonElement | null> = useRef(null)
+
+    const onClick = () => {
+        if (!ref.current) {
+            return
+        }
+
+        if (visible) {
+            setPosition({
+                x: 0,
+                y: 0
+            })
+        } else {
+            const clientPosition: ClientRect | DOMRect = ref.current.getBoundingClientRect()
+
+            const right = clientPosition.right
+            const width = clientPosition.width
+            const scrollLeft = document.body.scrollLeft
+            const clientLeft = document.documentElement.clientLeft
+
+            const position_: Position = {
+                x: right + scrollLeft - clientLeft - width,
+                y: clientPosition.top
+            }
+            setPosition(position_)
+        }
+        
+        setVisible(!visible)
+    }
+
+    const Inputs: StyledComponent<'input', any, any, never>[] = inputAttributes.map((inputAttribute) => {
+        return (
+            styled.input.attrs(inputAttribute)`
+                ${InputStyle}
+                width: 320px;
+            `
+        )
+    })
+
+    return (
+        <>
+        <Dialog
+            visible={visible}
+            setVisible={setVisible}
+            position={position}
+            setPosition={setPosition}
+            inputs={Inputs}
+            buttonName={buttonName}
+            callback={callback}
+        />
+            <Button
+                ref={ref}
+                color={toggleButtonColor}
+                onClick={onClick}
+            >
+                <p>{toggleButtonText}</p>
+            </Button>
+        </>
+    )
+}
+
+export interface IDialog {
     // Visible state of dialog
     visible: boolean
 
@@ -26,22 +123,21 @@ export interface DialogInterface {
     // Input field array
     inputs: StyledComponent<'input', any, any, never>[]
 
+    // Button display name
+    buttonName: string
+
     // Callback function registered to the button
-    onClick: (...args: any[]) => void
+    callback: (...args: any[]) => void
 }
 
-export type DialogWrapperProps = {
-    position: Position
-    visible: boolean
-}
-
-export const Dialog: FC<DialogInterface> = ({ 
+export const Dialog: FC<IDialog> = ({ 
     visible, 
     setVisible, 
     position,
     setPosition, 
     inputs, 
-    onClick,
+    callback,
+    buttonName,
 }) => {
     const ref: MutableRefObject<HTMLDivElement | null> = useRef(null)
 
@@ -72,7 +168,12 @@ export const Dialog: FC<DialogInterface> = ({
         return newPosition.toString()
     }
 
-    const Wrapper = styled.div<DialogWrapperProps>`
+    type WrapperProps = {
+        position: Position
+        visible: boolean
+    }
+
+    const Wrapper = styled.div<WrapperProps>`
         position: fixed;
         top: ${({ position }) => coordinateMachining(position, 'y', ref)}px;
         left: ${({ position }) => coordinateMachining(position, 'x', ref)}px;
@@ -115,10 +216,10 @@ export const Dialog: FC<DialogInterface> = ({
             }} />
             {Inputs}
             <SubmitButton
-                onClick={() => onClick()}
+                onClick={() => callback()}
                 color={gray}
             >
-                <p>Submit</p>
+                <p>{buttonName}</p>
             </SubmitButton>
         </Wrapper>
     )
