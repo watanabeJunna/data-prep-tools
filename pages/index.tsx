@@ -1,21 +1,14 @@
-import { 
-    useState,
+import {
     useRef,
     FC,
-    MouseEvent,
-    Dispatch,
-    SetStateAction,
-    MutableRefObject 
+    MutableRefObject
 } from 'react'
 import styled, { StyledComponent } from 'styled-components'
 import { createGlobalStyle } from 'styled-components'
 import reset from 'styled-reset'
-import { File } from '../libs/File'
 import { Header } from '../components/Header'
 import { Container } from '../components/Container'
-import { Position, Dialog, DialogUtilComponent, DialogInput } from '../components/Dialog'
-import { Button } from '../components/Button'
-import { InputStyle } from '../components/Input'
+import { DialogUtilComponent, DialogSubmitButton, createDialogInput } from '../components/Dialog'
 
 export default () => {
     const GlobalStyle = createGlobalStyle`
@@ -61,7 +54,7 @@ const DataPrepContainer: FC = () => {
         margin: auto 0;
     `
 
-    const ComponentTable = styled.div`
+    const ButtonTable = styled.div`
         display: flex;
     `
 
@@ -71,188 +64,48 @@ const DataPrepContainer: FC = () => {
                 <HeaderTitle>
                     Add features
                 </HeaderTitle>
-                <ComponentTable>
-                    <LoadDataComponent_ />
-                    <LoadDataComponent />
-                    <ExportDataComponent />
-                </ComponentTable>
+                <ButtonTable>
+                    <ExportComponent />
+                </ButtonTable>
             </Header>
         </Wrapper>
     )
 }
 
-const LoadDataComponent_ = () => {
+const ExportComponent = () => {
+    const fileNameInputRef: MutableRefObject<HTMLInputElement | null> = useRef(null)
 
-    const ref: MutableRefObject<HTMLDivElement | null> = useRef(null)
-
-    const callback = () => {
-        const file = new File()
-    }
-
-    const blue = '#00aeea'
-
-    return (
-        <DialogUtilComponent 
-            inputAttributes={
-                [{'placeholder': 'ファイル名'}]
-            }
-            toggleButtonColor={blue}
-            toggleButtonText='LoadData'
-            buttonName='Load'
-            callback={callback}
-        />
-    )
-}
-
-const LoadDataComponent = () => {
-    const [visible, setVisible]: [
-        boolean,
-        Dispatch<SetStateAction<boolean>>
-    ] = useState<boolean>(false)
-
-    const [position, setPosition]: [
-        Position, 
-        Dispatch<SetStateAction<Position>>
-    ] = useState<Position>({
-        x: 0,
-        y: 0
+    const FileNameInput: StyledComponent<'input', any, any> = createDialogInput({
+        placeholder: 'ファイル名'
     })
 
-    const ref: MutableRefObject<HTMLButtonElement | null> = useRef(null)
+    const onSubmit = (): void => {
+        if (!fileNameInputRef.current) {
+            throw new Error('No reference to file name input')
+        }
 
-    const onClick = (_: MouseEvent<HTMLButtonElement>) => {
-        if (!ref.current) {
+        if (!fileNameInputRef.current.value) {
             return
         }
 
-        if (visible) {
-            setPosition({
-                x: 0,
-                y: 0
-            })
-        } else {
-            const clientPosition: ClientRect | DOMRect = ref.current.getBoundingClientRect()
+        const fileName = fileNameInputRef.current.value;
 
-            const right = clientPosition.right
-            const width = clientPosition.width
-            const scrollLeft = document.body.scrollLeft
-            const clientLeft = document.documentElement.clientLeft
-
-            const position_: Position = {
-                x: right + scrollLeft - clientLeft - width,
-                y: clientPosition.top
-            }
-            setPosition(position_)
-        }
-        
-        setVisible(!visible)
+        console.log(fileName)
     }
 
-    const FileNameInput = styled.input.attrs({
-        'placeholder': 'ファイル名',
-    })`
-        ${InputStyle}
-        width: 320px;
-    `
-    const Inputs: StyledComponent<'input', any, any, never>[] = [FileNameInput]
-
-    const blue = '#00aeea'
-
     return (
-        <>
-            <Dialog
-                visible={visible}
-                setVisible={setVisible}
-                position={position}
-                setPosition={setPosition}
-                inputs={Inputs}
-                buttonName='submit'
-                callback={() => { }}
+        <DialogUtilComponent
+            showButtonColor='#00aeea'
+            showButtonText='Load'
+        >
+            <FileNameInput
+                ref={fileNameInputRef}
             />
-            <Button
-                ref={ref}
-                color={blue}
-                onClick={onClick}
+            <DialogSubmitButton
+                onClick={onSubmit}
             >
-                <p>Load</p>
-            </Button>
-        </>
-    )
-}
-
-const ExportDataComponent = () => {
-    const [visible, setVisible]: [
-        boolean,
-        Dispatch<SetStateAction<boolean>>
-    ] = useState<boolean>(false)
-
-    const [position, setPosition]: [
-        Position, 
-        Dispatch<SetStateAction<Position>>
-    ] = useState<Position>({
-        x: 0,
-        y: 0
-    })
-
-    const ref: MutableRefObject<HTMLButtonElement | null> = useRef(null)
-
-    const onClick = (_: MouseEvent<HTMLButtonElement>) => {
-        if (!ref.current) {
-            return
-        }
-
-        if (visible) {
-            setPosition({
-                x: 0,
-                y: 0
-            })
-        } else {
-            const clientPosition: ClientRect | DOMRect = ref.current.getBoundingClientRect()
-
-            const right = clientPosition.right
-            const width = clientPosition.width
-            const scrollLeft = document.body.scrollLeft
-            const clientLeft = document.documentElement.clientLeft
-
-            const position_: Position = {
-                x: right + scrollLeft - clientLeft - width,
-                y: clientPosition.top
-            }
-            setPosition(position_)
-        }
-        
-        setVisible(!visible)
-    }
-
-    const FileNameInput = styled.input.attrs({
-        'placeholder': 'ファイル名',
-    })`
-        ${InputStyle}
-        width: 320px;
-    `
-
-    const Inputs: StyledComponent<'input', any, any, never>[] = [FileNameInput]
-
-    const green = '#00abaa'
-
-    return (
-        <>
-            <Dialog
-                visible={visible}
-                setVisible={setVisible}
-                position={position}
-                setPosition={setPosition}
-                inputs={Inputs}
-                buttonName='submit'
-                callback={() => { }}
-            />
-            <Button
-                ref={ref}
-                color={green}
-                onClick={onClick}
-            >
-                <p>Export</p>
-            </Button>
-        </>
+                <p>Submit</p>
+            </DialogSubmitButton>
+        </DialogUtilComponent>
     )
 }
