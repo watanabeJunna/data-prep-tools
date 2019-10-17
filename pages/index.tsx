@@ -10,9 +10,10 @@ import {
 import styled, { StyledComponent } from 'styled-components'
 import { createGlobalStyle } from 'styled-components'
 import reset from 'styled-reset'
+import { File } from '../libs/File'
 import { Header } from '../components/Header'
 import { Container } from '../components/Container'
-import { Dialog, Position } from '../components/Dialog'
+import { Position, Dialog, DialogUtilComponent, DialogInput } from '../components/Dialog'
 import { Button } from '../components/Button'
 import { InputStyle } from '../components/Input'
 
@@ -71,11 +72,35 @@ const DataPrepContainer: FC = () => {
                     Add features
                 </HeaderTitle>
                 <ComponentTable>
+                    <LoadDataComponent_ />
                     <LoadDataComponent />
                     <ExportDataComponent />
                 </ComponentTable>
             </Header>
         </Wrapper>
+    )
+}
+
+const LoadDataComponent_ = () => {
+
+    const ref: MutableRefObject<HTMLDivElement | null> = useRef(null)
+
+    const callback = () => {
+        const file = new File()
+    }
+
+    const blue = '#00aeea'
+
+    return (
+        <DialogUtilComponent 
+            inputAttributes={
+                [{'placeholder': 'ファイル名'}]
+            }
+            toggleButtonColor={blue}
+            toggleButtonText='LoadData'
+            buttonName='Load'
+            callback={callback}
+        />
     )
 }
 
@@ -141,7 +166,8 @@ const LoadDataComponent = () => {
                 position={position}
                 setPosition={setPosition}
                 inputs={Inputs}
-                onClick={() => { }}
+                buttonName='submit'
+                callback={() => { }}
             />
             <Button
                 ref={ref}
@@ -217,7 +243,8 @@ const ExportDataComponent = () => {
                 position={position}
                 setPosition={setPosition}
                 inputs={Inputs}
-                onClick={() => { }}
+                buttonName='submit'
+                callback={() => { }}
             />
             <Button
                 ref={ref}

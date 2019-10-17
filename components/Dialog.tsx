@@ -6,7 +6,7 @@ import {
     SetStateAction,
     MutableRefObject 
 } from 'react'
-import styled, { StyledComponent } from 'styled-components'
+import styled from 'styled-components'
 import { Button, CloseButton } from './Button'
 import { InputStyle } from '../components/Input'
 
@@ -18,21 +18,34 @@ export interface Position {
     y: number
 }
 
+export interface IDialogInput {
+    ref: MutableRefObject<HTMLInputElement | null>
+    attributes: object
+}
+
+export const DialogInput: FC<IDialogInput> = ({
+    ref, 
+    attributes
+}): JSX.Element => {
+    const Input = styled.input.attrs(attributes)`
+        ${InputStyle}
+        width: 320px;
+    `
+    
+    return (
+        <Input ref={ref} />       
+    )
+}
+
 export interface IDialogUtilComponent {
-    inputAttributes: object[]
     toggleButtonColor: string
     toggleButtonText: string
     buttonName: string
     callback: (...args: any) => void
+    inputs: IDialogInput[]
 }
 
-export const DialogUtilComponent: FC<IDialogUtilComponent> = ({
-    inputAttributes,
-    toggleButtonColor,
-    toggleButtonText,
-    callback,
-    buttonName
-}) => {
+export const DialogUtilComponent: FC = () => {
     const [visible, setVisible]: [
         boolean,
         Dispatch<SetStateAction<boolean>>
@@ -76,15 +89,6 @@ export const DialogUtilComponent: FC<IDialogUtilComponent> = ({
         setVisible(!visible)
     }
 
-    const Inputs: StyledComponent<'input', any, any, never>[] = inputAttributes.map((inputAttribute) => {
-        return (
-            styled.input.attrs(inputAttribute)`
-                ${InputStyle}
-                width: 320px;
-            `
-        )
-    })
-
     return (
         <>
         <Dialog
@@ -92,7 +96,7 @@ export const DialogUtilComponent: FC<IDialogUtilComponent> = ({
             setVisible={setVisible}
             position={position}
             setPosition={setPosition}
-            inputs={Inputs}
+            inputs={inputs}
             buttonName={buttonName}
             callback={callback}
         />
@@ -121,7 +125,7 @@ export interface IDialog {
     setPosition: (position: Position) => void
 
     // Input field array
-    inputs: StyledComponent<'input', any, any, never>[]
+    inputs: JSX.Element[]
 
     // Button display name
     buttonName: string
@@ -192,12 +196,6 @@ export const Dialog: FC<IDialog> = ({
         margin: 0 auto;
     `
 
-    const Inputs = inputs.map((Input, c) => {
-        return (
-            <Input key={c} />
-        )
-    })
-
     const gray = '#666666'
 
     return (
@@ -214,7 +212,7 @@ export const Dialog: FC<IDialog> = ({
 
                 setVisible(false)
             }} />
-            {Inputs}
+            {inputs}
             <SubmitButton
                 onClick={() => callback()}
                 color={gray}
