@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components'
 
-type ButtonColor = {
-    color: string
+interface ButtonColor {
+    color?: string
 }
 
 const Default = css`
@@ -20,16 +20,18 @@ const MediumConcentration = 'aa'
 
 const LowConcentration = '56'
 
+const defaultColor = '#666666'
+
 export const Button = styled.button<ButtonColor>`
     ${Default}    
-    color: ${({ color }) => color + HighConcentration};
+    color: ${({ color = defaultColor }) => color + HighConcentration};
     padding: 12px 24px;
     margin: 0 12px;
     border-radius: 5px;
-    border: 2px solid ${({ color }) => color + LowConcentration};
+    border: 2px solid ${({ color = defaultColor }) => color + LowConcentration};
     transition: .3s;
     &:hover {
-        border: 2px solid ${({ color }) => color + MediumConcentration};
+        border: 2px solid ${({ color = defaultColor }) => color + MediumConcentration};
     }
 `
 
