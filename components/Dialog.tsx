@@ -1,4 +1,5 @@
 import React, {
+    useEffect,
     useState,
     useRef,
     FC,
@@ -18,6 +19,9 @@ export interface IDialogUtilComponent {
     // 
     showButtonColor?: string
 
+    //
+    close?: boolean
+
     children?: ReactNode
 }
 
@@ -25,6 +29,7 @@ export const DialogUtilComponent: FC<IDialogUtilComponent> = ({
     showButtonColor,
     showButtonText,
     children,
+    close,
 }) => {
     const showButtonRef: MutableRefObject<HTMLButtonElement | null> = useRef(null)
 
@@ -39,6 +44,12 @@ export const DialogUtilComponent: FC<IDialogUtilComponent> = ({
     ] = useState<Position>({
         x: 0,
         y: 0
+    })
+
+    useEffect(() => {
+        if (visible && close) {
+            setVisible(!visible)
+        }
     })
 
     const showDialog = (): void => {
