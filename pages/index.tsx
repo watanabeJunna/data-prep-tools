@@ -62,8 +62,8 @@ const DataPrepContainer: FC = () => {
             }
         }
 
-        let columnElement: JSX.Element[] | null = null
-        let rowElement: JSX.Element[] | null = null
+        let columnElement: JSX.Element[]
+        let rowElement: JSX.Element[]
 
         columnElement = columns.map((column: string, c: number) => {
             return (
