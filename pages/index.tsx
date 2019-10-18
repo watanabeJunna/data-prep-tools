@@ -44,7 +44,7 @@ const DataPrepContainer: FC = () => {
         Dispatch<SetStateAction<Vector>>
     ] = useState<Vector>(null)
 
-    const vectorMachining = (vector: string[][] | null) => {
+    const convertVectorIntoComponent = (vector: string[][] | null) => {
         if (!vector) {
             return
         }
@@ -164,7 +164,7 @@ const DataPrepContainer: FC = () => {
                 </ButtonTable>
             </Header>
             <DataContent>
-                {vectorMachining(vector)}
+                {convertVectorIntoComponent(vector)}
             </DataContent>
         </Wrapper>
     )
