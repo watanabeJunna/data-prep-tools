@@ -65,7 +65,7 @@ const DataPrepContainer: FC = () => {
         let columnElement: JSX.Element[] | null = null
         let rowElement: JSX.Element[] | null = null
 
-        columnElement = columns.map((column, c) => {
+        columnElement = columns.map((column: string, c: number) => {
             return (
                 <ColumnCell key={c}>
                     {column}
@@ -73,11 +73,11 @@ const DataPrepContainer: FC = () => {
             )
         })
 
-        rowElement = rows.map((row, c) => {
+        rowElement = rows.map((row: string[], c: number) => {
             return (
                 <Row key={c}>
                     {
-                        row.map((feature, c) => {
+                        row.map((feature: string, c: number) => {
                             return (
                                 <ColumnCell key={c}>
                                     {feature}
