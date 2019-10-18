@@ -67,9 +67,9 @@ const DataPrepContainer: FC = () => {
 
         columnElement = columns.map((column: string, c: number) => {
             return (
-                <ColumnCell key={c}>
+                <Cell key={c}>
                     {column}
-                </ColumnCell>
+                </Cell>
             )
         })
 
@@ -79,9 +79,9 @@ const DataPrepContainer: FC = () => {
                     {
                         row.map((feature: string, c: number) => {
                             return (
-                                <ColumnCell key={c}>
+                                <Cell key={c}>
                                     {feature}
-                                </ColumnCell>
+                                </Cell>
                             )
                         })
                     }
@@ -141,7 +141,7 @@ const DataPrepContainer: FC = () => {
         border-bottom: 1px solid rgba(176, 176, 176, 0.5);
     `
 
-    const ColumnCell = styled.div`
+    const Cell = styled.div`
         width: 22%;
         padding: 22px;
         margin: auto 0;
