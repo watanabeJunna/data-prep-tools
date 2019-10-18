@@ -1,6 +1,8 @@
 import {
     useRef,
     useState,
+    useEffect,
+    useCallback,
     Dispatch,
     SetStateAction,
     FC,
@@ -67,9 +69,10 @@ const DataPrepContainer: FC = () => {
 
         columnElement = columns.map((column: string, c: number) => {
             return (
-                <Cell key={c}>
-                    {column}
-                </Cell>
+                <Cell
+                    key={c}
+                    text={column}
+                />
             )
         })
 
@@ -79,9 +82,10 @@ const DataPrepContainer: FC = () => {
                     {
                         row.map((feature: string, c: number) => {
                             return (
-                                <Cell key={c}>
-                                    {feature}
-                                </Cell>
+                                <Cell
+                                    key={c}
+                                    text={feature}
+                                />
                             )
                         })
                     }
@@ -141,11 +145,66 @@ const DataPrepContainer: FC = () => {
         border-bottom: 1px solid rgba(176, 176, 176, 0.5);
     `
 
-    const Cell = styled.div`
+    const CellStyle = styled.div`
         width: 22%;
         padding: 22px;
         margin: auto 0;
     `
+
+    const Cell: FC<{
+        key?: number
+        text: string
+    }> = ({ key = 0, text }) => {
+        type Selected = boolean | null
+
+        const [selected, setSelected]: [
+            Selected,
+            Dispatch<SetStateAction<Selected>>
+        ] = useState<Selected>(null)
+
+        type ElementType = JSX.Element | null
+
+        const [element, setElement]: [
+            ElementType,
+            Dispatch<SetStateAction<ElementType>>
+        ] = useState<ElementType>(null)
+
+        const contentRef: MutableRefObject<HTMLDivElement | null> = useRef(null)
+
+        const attach = useCallback(() => {
+            if (selected) {
+                setElement(
+                    <CellStyle
+                        key={key}
+                        onDoubleClick={onDoubleClick}
+                    >
+                        Hello
+                    </CellStyle>
+                )
+            } else {
+                setElement(
+                    <CellStyle
+                        ref={contentRef}
+                        key={key}
+                        onDoubleClick={onDoubleClick}
+                    >
+                        {text}
+                    </CellStyle>
+                )
+            }
+        }, [element])
+
+        useEffect(() => {
+            attach()
+        }, [attach])
+
+        const onDoubleClick = () => {
+            console.log('start')
+            setSelected(!selected)
+        }
+
+        return element
+    }
 
     return (
         <Wrapper>
