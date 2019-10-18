@@ -191,7 +191,7 @@ const LoadDataComponent: FC<IDataOperationComponent> = ({
     const checkVector = (vectors: string[][]): boolean => {
         let isValid: boolean = true
 
-        const dim = vectors[0].length
+        const dim: number = vectors[0].length
 
         vectors.forEach(vector => {
             if (vector.length !== dim) {
