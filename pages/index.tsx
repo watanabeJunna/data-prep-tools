@@ -1,5 +1,8 @@
 import {
     useRef,
+    useState,
+    Dispatch,
+    SetStateAction,
     FC,
     MutableRefObject
 } from 'react'
@@ -9,6 +12,7 @@ import reset from 'styled-reset'
 import { Header } from '../components/Header'
 import { Container } from '../components/Container'
 import { DialogUtilComponent, DialogSubmitButton, createDialogInput } from '../components/Dialog'
+import fetch from 'isomorphic-fetch'
 
 export default () => {
     const GlobalStyle = createGlobalStyle`
@@ -33,6 +37,68 @@ export default () => {
 }
 
 const DataPrepContainer: FC = () => {
+    type Vector = string[][] | null
+
+    const [vector, setVector]: [
+        Vector,
+        Dispatch<SetStateAction<Vector>>
+    ] = useState<Vector>(null)
+
+    const vectorMachining = (vector: string[][] | null) => {
+        if (!vector) {
+            return
+        }
+
+        const copyVector: string[][] = [...vector]
+
+        const columns: string[] = copyVector.shift() as string[]
+        const rows: string[][] = copyVector
+
+        if (columns[0] !== 'ID') {
+            columns.unshift('ID')
+
+            for (let i = 0; i < rows.length; i++) {
+                rows[i].unshift((i + 1).toString())
+            }
+        }
+
+        let columnElement: JSX.Element[] | null = null
+        let rowElement: JSX.Element[] | null = null
+
+        columnElement = columns.map((column, c) => {
+            return (
+                <ColumnCell key={c}>
+                    {column}
+                </ColumnCell>
+            )
+        })
+
+        rowElement = rows.map((row, c) => {
+            return (
+                <Row key={c}>
+                    {
+                        row.map((feature, c) => {
+                            return (
+                                <ColumnCell key={c}>
+                                    {feature}
+                                </ColumnCell>
+                            )
+                        })
+                    }
+                </Row>
+            )
+        })
+
+        return (
+            <>
+                <Column>
+                    {columnElement}
+                </Column>
+                {rowElement}
+            </>
+        )
+    }
+
     const Wrapper = styled.div`
         font-family: ${props => props.theme.fontFamily};
         font-weight: 400;
@@ -58,6 +124,29 @@ const DataPrepContainer: FC = () => {
         display: flex;
     `
 
+    const DataContent = styled.div`
+        color: #777777;
+    `
+
+    const Column = styled.div`
+        display: flex;
+        font-weight: 900;
+        padding: 12px 24px;
+        border-bottom: 1px solid rgba(176, 176, 176, 0.5);
+    `
+
+    const Row = styled.div`
+        display: flex;
+        padding: 0 24px;
+        border-bottom: 1px solid rgba(176, 176, 176, 0.5);
+    `
+
+    const ColumnCell = styled.div`
+        width: 22%;
+        padding: 22px;
+        margin: auto 0;
+    `
+
     return (
         <Wrapper>
             <Header>
@@ -65,21 +154,61 @@ const DataPrepContainer: FC = () => {
                     Add features
                 </HeaderTitle>
                 <ButtonTable>
-                    <ExportComponent />
+                    <LoadDataComponent
+                        setVector={setVector}
+                    />
+                    <AddDimComponent
+                        vector={vector}
+                        setVector={setVector}
+                    />
                 </ButtonTable>
             </Header>
+            <DataContent>
+                {vectorMachining(vector)}
+            </DataContent>
         </Wrapper>
     )
 }
 
-const ExportComponent = () => {
+interface IDataOperationComponent {
+    setVector: (item: string[][]) => void
+}
+
+const LoadDataComponent: FC<IDataOperationComponent> = ({
+    setVector
+}) => {
+    const [close, setClose]: [
+        boolean,
+        Dispatch<SetStateAction<boolean>>
+    ] = useState<boolean>(false)
+
     const fileNameInputRef: MutableRefObject<HTMLInputElement | null> = useRef(null)
 
     const FileNameInput: StyledComponent<'input', any, any> = createDialogInput({
-        placeholder: 'ファイル名'
+        placeholder: 'File name'
     })
 
-    const onSubmit = (): void => {
+    const checkVector = (vectors: string[][]): boolean => {
+        let isValid: boolean = true
+
+        const dim = vectors[0].length
+
+        vectors.forEach(vector => {
+            if (vector.length !== dim) {
+                isValid = false
+            }
+
+            vector.forEach(feature => {
+                if (!feature) {
+                    isValid = false
+                }
+            })
+        })
+
+        return isValid
+    }
+
+    const onSubmit = async (): Promise<void> => {
         if (!fileNameInputRef.current) {
             throw new Error('No reference to file name input')
         }
@@ -88,18 +217,110 @@ const ExportComponent = () => {
             return
         }
 
-        const fileName = fileNameInputRef.current.value;
+        const fileName: string = fileNameInputRef.current.value;
 
-        console.log(fileName)
+        const res: Response = await fetch('/api/v1/vector', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ fileName: fileName })
+        })
+
+        if (res.status !== 200) {
+            return
+        }
+
+        const datas: string[] = await res.json()
+
+        const vector: string[][] = datas.map(data => data.split(','))
+
+        setClose(false)
+
+        if (!checkVector(vector)) {
+            throw new Error('Invalid data')
+        }
+
+        setVector(vector)
     }
 
     return (
         <DialogUtilComponent
             showButtonColor='#00aeea'
-            showButtonText='Load'
+            showButtonText='Load features'
+            close={close}
         >
             <FileNameInput
                 ref={fileNameInputRef}
+            />
+            <DialogSubmitButton
+                onClick={onSubmit}
+            >
+                <p>Submit</p>
+            </DialogSubmitButton>
+        </DialogUtilComponent>
+    )
+}
+
+interface IAddDimComponent {
+    vector: string[][] | null
+    setVector: (item: string[][]) => void
+}
+
+const AddDimComponent: FC<IAddDimComponent> = ({
+    vector,
+    setVector
+}) => {
+    const [close, setClose]: [
+        boolean,
+        Dispatch<SetStateAction<boolean>>
+    ] = useState<boolean>(false)
+
+    const dimInputRef: MutableRefObject<HTMLInputElement | null> = useRef(null)
+
+    const DimInput: StyledComponent<'input', any, any> = createDialogInput({
+        placeholder: 'dimension name'
+    })
+
+    const onSubmit = async (): Promise<void> => {
+        if (!dimInputRef.current) {
+            throw new Error('No reference to file name input')
+        }
+
+        if (!dimInputRef.current.value) {
+            return
+        }
+
+        const dim: string = dimInputRef.current.value
+
+        if (!vector) {
+            return
+        }
+
+        if (!dim) {
+            return
+        }
+
+        const vectorCopy = [...vector]
+        const newVector: string[][] = []
+
+        newVector.push([...vectorCopy.shift() as string[], dim])
+
+        vectorCopy.map(v => newVector.push([...v, ""]))
+
+        setClose(false)
+        setVector(newVector)
+    }
+
+    return (
+        <DialogUtilComponent
+            showButtonColor='#00abaa'
+            showButtonText='Add dimension'
+            close={close}
+        >
+            <DimInput
+                ref={dimInputRef}
             />
             <DialogSubmitButton
                 onClick={onSubmit}
