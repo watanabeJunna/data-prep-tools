@@ -147,11 +147,10 @@ export const DataPrepContainer: FC = () => {
     `
 
     interface ICell {
-        key?: number
         text: string
     }
 
-    const Cell: FC<ICell> = ({ key = 0, text }) => {
+    const Cell: FC<ICell> = ({ text }) => {
         const [selected, setSelected]: [
             boolean,
             Dispatch<SetStateAction<boolean>>
@@ -186,7 +185,6 @@ export const DataPrepContainer: FC = () => {
             <InputCell>
                 <DataInput
                     ref={ref}
-                    key={key}
                     autoFocus={true}
                     onKeyPress={(e: KeyboardEvent<HTMLInputElement>) => handleInputKeyPress(e)}
                     onDoubleClick={handleDoubleClick}
@@ -195,7 +193,6 @@ export const DataPrepContainer: FC = () => {
                 />
             </InputCell> :
             <CellStyle
-                key={key}
                 onDoubleClick={handleDoubleClick}
             >
                 {value ? value : text}
