@@ -1,6 +1,6 @@
-import { css } from 'styled-components'
+import { css, FlattenSimpleInterpolation } from 'styled-components'
 
-export const InputStyle = css`
+export const InputStyle: FlattenSimpleInterpolation = css`
     display: block;
     font-size: 1.2em;
     border: none;

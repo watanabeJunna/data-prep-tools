@@ -146,10 +146,12 @@ export const DataPrepContainer: FC = () => {
         }
     `
 
-    const Cell: FC<{
+    interface ICell {
         key?: number
         text: string
-    }> = ({ key = 0, text }) => {
+    }
+
+    const Cell: FC<ICell> = ({ key = 0, text }) => {
         const [selected, setSelected]: [
             boolean,
             Dispatch<SetStateAction<boolean>>

@@ -1,10 +1,10 @@
-import styled, { css, StyledComponent } from 'styled-components'
+import styled, { css, StyledComponent, FlattenSimpleInterpolation } from 'styled-components'
 
 interface ButtonColor {
     color?: string
 }
 
-const Default = css`
+const Default: FlattenSimpleInterpolation = css`
     display: block;
     font-size: 1.1em;
     padding: 0;

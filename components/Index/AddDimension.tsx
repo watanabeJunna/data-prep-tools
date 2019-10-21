@@ -43,7 +43,7 @@ export const AddDimensionComponent: FC<IAddDimensionComponent> = ({
             return
         }
 
-        const vectorCopy = [...vector]
+        const vectorCopy: string[][] = [...vector]
         const newVector: string[][] = []
 
         newVector.push([...vectorCopy.shift() as string[], dim])
