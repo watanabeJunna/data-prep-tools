@@ -13,15 +13,15 @@ import { LoadDataComponent, AddDimensionComponent } from './index'
 import { InputStyle } from '../Input'
 
 export const DataPrepContainer: FC = () => {
-    type Vector = string[][] | null
+    type Vector = string[][]
 
     const [vector, setVector]: [
         Vector,
         Dispatch<SetStateAction<Vector>>
-    ] = useState<Vector>(null)
+    ] = useState<Vector>([])
 
-    const convertVectorIntoComponent = (vector: string[][] | null) => {
-        if (!vector) {
+    const convertVectorIntoComponent = (vector: Vector) => {
+        if (vector.length === 0) {
             return
         }
 
@@ -43,22 +43,23 @@ export const DataPrepContainer: FC = () => {
 
         columnElement = columns.map((column: string, c: number) => {
             return (
-                <Cell
-                    key={c}
-                    text={column}
-                />
+                <ColumnCell key={c}>
+                    {column}
+                </ColumnCell>
             )
         })
 
-        rowElement = rows.map((row: string[], c: number) => {
+        rowElement = rows.map((row: string[], rowNum: number) => {
             return (
-                <Row key={c}>
+                <Row key={rowNum}>
                     {
-                        row.map((feature: string, c: number) => {
+                        row.map((feature: string, columnNum: number) => {
                             return (
-                                <Cell
-                                    key={c}
+                                <RowCell
+                                    key={columnNum}
                                     text={feature}
+                                    column={columnNum}
+                                    row={rowNum + 1}
                                 />
                             )
                         })
@@ -116,41 +117,25 @@ export const DataPrepContainer: FC = () => {
         border-bottom: 1px solid rgba(176, 176, 176, 0.5);
     `
 
+    const ColumnCell: StyledComponent<'div', {}> = styled.div`
+        width: 22%;
+        padding: 22px;
+        margin: auto 0;
+    `
+
     const Row: StyledComponent<'div', {}> = styled.div`
         display: flex;
         padding: 0 24px;
         border-bottom: 1px solid rgba(176, 176, 176, 0.5);
     `
 
-    const CellStyle: StyledComponent<'div', {}> = styled.div`
-        width: 22%;
-        padding: 22px;
-        margin: auto 0;
-    `
-
-    const InputCell: StyledComponent<'div', {}> = styled.div`
-        margin: auto 22px;
-        width: 22%;
-    `
-
-    const DataInput: StyledComponent<'input', {}> = styled.input`
-        ${InputStyle}
-        color: #777777;
-        font-size: 1.1em;
-        font-weight: 400;
-        padding: 0px;
-        margin: 0px;
-        border-bottom: 2px solid #dee7ec;
-        &:focus {
-            border-bottom: 2px solid #228aff;
-        }
-    `
-
     interface ICell {
         text: string
+        column: number
+        row: number
     }
 
-    const Cell: FC<ICell> = ({ text }) => {
+    const RowCell: FC<ICell> = ({ column, row, text }) => {
         const [selected, setSelected]: [
             boolean,
             Dispatch<SetStateAction<boolean>>
@@ -167,6 +152,16 @@ export const DataPrepContainer: FC = () => {
             setSelected(!selected)
         }
 
+        const handleInputBlur = () => {
+            setVector((vector: Vector) => {
+                let newVector: Vector = [...vector]
+
+                newVector[row][column] = value
+
+                return newVector
+            })
+        }
+
         const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
             setValue(e.target.value)
         }
@@ -181,14 +176,39 @@ export const DataPrepContainer: FC = () => {
             }
         }
 
+        const CellStyle: StyledComponent<'div', {}> = styled.div`
+            width: 22%;
+            padding: 22px;
+            margin: auto 0;
+        `
+
+        const InputCell: StyledComponent<'div', {}> = styled.div`
+            margin: auto 22px;
+            width: 22%;
+        `
+
+        const DataInput: StyledComponent<'input', {}> = styled.input`
+            ${InputStyle}
+            color: #777777;
+            font-size: 1.1em;
+            font-weight: 400;
+            padding: 0px;
+            margin: 0px;
+            border-bottom: 2px solid #dee7ec;
+            &:focus {
+                border-bottom: 2px solid #228aff;
+            }
+        `
+
         const element = selected ?
             <InputCell>
                 <DataInput
                     ref={ref}
                     autoFocus={true}
+                    defaultValue={value ? value : text}
                     onKeyPress={(e: KeyboardEvent<HTMLInputElement>) => handleInputKeyPress(e)}
                     onDoubleClick={handleDoubleClick}
-                    defaultValue={value ? value : text}
+                    onBlur={handleInputBlur}
                     onChange={(e: ChangeEvent<HTMLInputElement>) => handleInputChange(e)}
                 />
             </InputCell> :
