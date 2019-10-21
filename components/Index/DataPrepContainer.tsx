@@ -241,12 +241,12 @@ export const DataPrepContainer: FC = () => {
                     <LoadDataComponent
                         setVector={setVector}
                     />
-                    <ExportDataComponent
-                        vector={vector}
-                    />
                     <AddDimensionComponent
                         vector={vector}
                         setVector={setVector}
+                    />
+                    <ExportDataComponent
+                        vector={vector}
                     />
                 </OperationTable>
             </Header>
