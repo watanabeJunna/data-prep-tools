@@ -9,7 +9,7 @@ import {
     KeyboardEvent
 } from 'react'
 import styled, { StyledComponent } from 'styled-components'
-import { LoadDataComponent, AddDimensionComponent } from './index'
+import { ExportDataComponent, LoadDataComponent, AddDimensionComponent } from './index'
 import { InputStyle } from '../Input'
 
 export const DataPrepContainer: FC = () => {
@@ -150,6 +150,16 @@ export const DataPrepContainer: FC = () => {
 
         const handleDoubleClick = () => {
             setSelected(!selected)
+
+            if (value !== vector[row][column]) {
+                setVector((vector: Vector) => {
+                    let newVector: Vector = [...vector]
+
+                    newVector[row][column] = value
+
+                    return newVector
+                })
+            }
         }
 
         const handleInputBlur = () => {
@@ -230,6 +240,9 @@ export const DataPrepContainer: FC = () => {
                 <OperationTable>
                     <LoadDataComponent
                         setVector={setVector}
+                    />
+                    <ExportDataComponent
+                        vector={vector}
                     />
                     <AddDimensionComponent
                         vector={vector}

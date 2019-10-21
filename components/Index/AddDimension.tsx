@@ -9,7 +9,7 @@ import {
 import { DialogUtilComponent, DialogSubmitButton, DialogInput } from '../Dialog'
 
 export interface IAddDimensionComponent {
-    vector: string[][] | null
+    vector: string[][]
     setVector: (item: string[][]) => void
 }
 
@@ -24,7 +24,7 @@ export const AddDimensionComponent: FC<IAddDimensionComponent> = ({
 
     const dimInputRef: MutableRefObject<HTMLInputElement | null> = useRef(null)
 
-    const onSubmit = async (): Promise<void> => {
+    const onSubmit = (): void => {
         if (!dimInputRef.current) {
             throw new Error('No reference to file name input')
         }
