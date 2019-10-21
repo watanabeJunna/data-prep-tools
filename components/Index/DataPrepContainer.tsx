@@ -77,14 +77,14 @@ export const DataPrepContainer: FC = () => {
         )
     }
 
-    const Wrapper = styled.div`
-        font-family: ${props => props.theme.fontFamily};
+    const Wrapper: StyledComponent<'div', {}> = styled.div`
+        font-family: 'Raleway', sans-serif;
         font-weight: 400;
         box-shadow: 0px 1px 4px rgb(176, 176, 176);
         padding: 25px 0;
     `
 
-    const Header = styled.div`
+    const Header: StyledComponent<'div', {}> = styled.div`
         display: flex;
         justify-content: space-between;
         position: relative;
@@ -92,48 +92,48 @@ export const DataPrepContainer: FC = () => {
         border-bottom: 1px solid rgba(176, 176, 176, 0.5);
     `
 
-    const HeaderTitle = styled.div`
+    const HeaderTitle: StyledComponent<'div', {}> = styled.div`
         font-size: 1.5em;
         color: #5f6f81;
         margin: auto 0;
     `
 
-    const ButtonTable = styled.div`
+    const OperationTable: StyledComponent<'div', {}> = styled.div`
         display: flex;
     `
 
-    const DataContent = styled.div`
+    const DataContent: StyledComponent<'div', {}> = styled.div`
         color: #777777;
         font-family: 'Raleway', sans-serif;
         max-height: 620px;
         overflow: auto;
     `
 
-    const Column = styled.div`
+    const Column: StyledComponent<'div', {}> = styled.div`
         display: flex;
         font-weight: 900;
         padding: 12px 24px;
         border-bottom: 1px solid rgba(176, 176, 176, 0.5);
     `
 
-    const Row = styled.div`
+    const Row: StyledComponent<'div', {}> = styled.div`
         display: flex;
         padding: 0 24px;
         border-bottom: 1px solid rgba(176, 176, 176, 0.5);
     `
 
-    const CellStyle = styled.div`
+    const CellStyle: StyledComponent<'div', {}> = styled.div`
         width: 22%;
         padding: 22px;
         margin: auto 0;
     `
 
-    const InputCell = styled.div`
+    const InputCell: StyledComponent<'div', {}> = styled.div`
         margin: auto 22px;
         width: 22%;
     `
 
-    const DataInput = styled.input`
+    const DataInput: StyledComponent<'input', {}> = styled.input`
         ${InputStyle}
         color: #777777;
         font-size: 1.1em;
@@ -208,7 +208,7 @@ export const DataPrepContainer: FC = () => {
                 <HeaderTitle>
                     Add features
                 </HeaderTitle>
-                <ButtonTable>
+                <OperationTable>
                     <LoadDataComponent
                         setVector={setVector}
                     />
@@ -216,7 +216,7 @@ export const DataPrepContainer: FC = () => {
                         vector={vector}
                         setVector={setVector}
                     />
-                </ButtonTable>
+                </OperationTable>
             </Header>
             <DataContent>
                 {convertVectorIntoComponent(vector)}

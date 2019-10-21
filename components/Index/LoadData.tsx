@@ -6,8 +6,7 @@ import {
     SetStateAction,
     MutableRefObject
 } from 'react'
-import { StyledComponent } from 'styled-components'
-import { DialogUtilComponent, DialogSubmitButton, createDialogInput } from '../Dialog'
+import { DialogUtilComponent, DialogSubmitButton, DialogInput } from '../Dialog'
 import fetch from 'isomorphic-fetch'
 
 export interface ILoadDataComponent {
@@ -23,11 +22,6 @@ export const LoadDataComponent: FC<ILoadDataComponent> = ({
     ] = useState<boolean>(false)
 
     const fileNameInputRef: MutableRefObject<HTMLInputElement | null> = useRef(null)
-
-    const FileNameInput: StyledComponent<'input', any, any> = createDialogInput({
-        placeholder: 'File name',
-        defaultValue: 'data/prod.csv'
-    })
 
     const checkVector = (vectors: string[][]): boolean => {
         let isValid: boolean = true
@@ -92,8 +86,10 @@ export const LoadDataComponent: FC<ILoadDataComponent> = ({
             showButtonText='Load features'
             close={close}
         >
-            <FileNameInput
+            <DialogInput
                 ref={fileNameInputRef}
+                placeholder='File name'
+                defaultValue='data/prod.csv'
             />
             <DialogSubmitButton
                 onClick={onSubmit}

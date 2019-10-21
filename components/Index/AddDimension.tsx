@@ -6,8 +6,7 @@ import {
     SetStateAction,
     MutableRefObject
 } from 'react'
-import { StyledComponent } from 'styled-components'
-import { DialogUtilComponent, DialogSubmitButton, createDialogInput } from '../Dialog'
+import { DialogUtilComponent, DialogSubmitButton, DialogInput } from '../Dialog'
 
 export interface IAddDimensionComponent {
     vector: string[][] | null
@@ -24,10 +23,6 @@ export const AddDimensionComponent: FC<IAddDimensionComponent> = ({
     ] = useState<boolean>(false)
 
     const dimInputRef: MutableRefObject<HTMLInputElement | null> = useRef(null)
-
-    const DimInput: StyledComponent<'input', any, any> = createDialogInput({
-        placeholder: 'dimension name'
-    })
 
     const onSubmit = async (): Promise<void> => {
         if (!dimInputRef.current) {
@@ -65,7 +60,8 @@ export const AddDimensionComponent: FC<IAddDimensionComponent> = ({
             showButtonText='Add dimension'
             close={close}
         >
-            <DimInput
+            <DialogInput
+                placeholder='dimension name'
                 ref={dimInputRef}
             />
             <DialogSubmitButton

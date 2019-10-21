@@ -211,6 +211,12 @@ export const createDialogInput = (
     `
 }
 
+export const DialogInput: StyledComponent<'input', {}> = styled.input`
+    ${InputStyle}
+    width: 320px;
+    margin: 42px 0;
+`
+
 export const DialogSubmitButton: StyledComponent<'button', any, any> = styled(Button)`
     padding: 7px 26px;
     margin: 0 auto;
