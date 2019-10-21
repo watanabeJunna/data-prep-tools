@@ -10,11 +10,11 @@ import { StyledComponent } from 'styled-components'
 import { DialogUtilComponent, DialogSubmitButton, createDialogInput } from '../Dialog'
 import fetch from 'isomorphic-fetch'
 
-export interface IDataOperationComponent {
+export interface ILoadDataComponent {
     setVector: (item: string[][]) => void
 }
 
-export const LoadDataComponent: FC<IDataOperationComponent> = ({
+export const LoadDataComponent: FC<ILoadDataComponent> = ({
     setVector
 }) => {
     const [close, setClose]: [
