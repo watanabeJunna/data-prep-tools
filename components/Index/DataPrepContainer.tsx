@@ -9,7 +9,7 @@ import {
     KeyboardEvent
 } from 'react'
 import styled, { StyledComponent } from 'styled-components'
-import { LoadDataComponent, AddDimComponent } from './index'
+import { LoadDataComponent, AddDimensionComponent } from './index'
 import { InputStyle } from '../Input'
 
 export const DataPrepContainer: FC = () => {
@@ -212,7 +212,7 @@ export const DataPrepContainer: FC = () => {
                     <LoadDataComponent
                         setVector={setVector}
                     />
-                    <AddDimComponent
+                    <AddDimensionComponent
                         vector={vector}
                         setVector={setVector}
                     />

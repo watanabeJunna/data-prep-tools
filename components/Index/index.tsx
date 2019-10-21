@@ -1,3 +1,3 @@
 export * from './LoadData'
-export * from './AddDim'
+export * from './AddDimension'
 export * from './DataPrepContainer'
