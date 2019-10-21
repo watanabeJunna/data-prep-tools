@@ -6,7 +6,9 @@ import {
     Dispatch,
     SetStateAction,
     FC,
-    MutableRefObject
+    MutableRefObject,
+    ChangeEvent,
+    KeyboardEvent
 } from 'react'
 import styled, { StyledComponent } from 'styled-components'
 import { createGlobalStyle } from 'styled-components'
@@ -14,6 +16,7 @@ import reset from 'styled-reset'
 import { Header } from '../components/Header'
 import { Container } from '../components/Container'
 import { DialogUtilComponent, DialogSubmitButton, createDialogInput } from '../components/Dialog'
+import { InputStyle } from '../components/Input'
 import fetch from 'isomorphic-fetch'
 
 export default () => {
@@ -130,6 +133,9 @@ const DataPrepContainer: FC = () => {
 
     const DataContent = styled.div`
         color: #777777;
+        font-family: 'Raleway', sans-serif;
+        max-height: 620px;
+        overflow: auto;
     `
 
     const Column = styled.div`
@@ -151,57 +157,76 @@ const DataPrepContainer: FC = () => {
         margin: auto 0;
     `
 
+    const InputCell = styled.div`
+        margin: auto 22px;
+        width: 22%;
+    `
+
+    const DataInput = styled.input`
+        ${InputStyle}
+        color: #777777;
+        font-size: 1.1em;
+        font-weight: 400;
+        padding: 0px;
+        margin: 0px;
+        border-bottom: 2px solid #dee7ec;
+        &:focus {
+            border-bottom: 2px solid #228aff;
+        }
+    `
+
     const Cell: FC<{
         key?: number
         text: string
     }> = ({ key = 0, text }) => {
-        type Selected = boolean | null
-
         const [selected, setSelected]: [
-            Selected,
-            Dispatch<SetStateAction<Selected>>
-        ] = useState<Selected>(null)
+            boolean,
+            Dispatch<SetStateAction<boolean>>
+        ] = useState<boolean>(false)
 
-        type ElementType = JSX.Element | null
+        const [value, setValue]: [
+            string,
+            Dispatch<SetStateAction<string>>
+        ] = useState<string>('')
 
-        const [element, setElement]: [
-            ElementType,
-            Dispatch<SetStateAction<ElementType>>
-        ] = useState<ElementType>(null)
+        const ref: MutableRefObject<HTMLInputElement | null> = useRef(null)
 
-        const contentRef: MutableRefObject<HTMLDivElement | null> = useRef(null)
-
-        const attach = useCallback(() => {
-            if (selected) {
-                setElement(
-                    <CellStyle
-                        key={key}
-                        onDoubleClick={onDoubleClick}
-                    >
-                        Hello
-                    </CellStyle>
-                )
-            } else {
-                setElement(
-                    <CellStyle
-                        ref={contentRef}
-                        key={key}
-                        onDoubleClick={onDoubleClick}
-                    >
-                        {text}
-                    </CellStyle>
-                )
-            }
-        }, [element])
-
-        useEffect(() => {
-            attach()
-        }, [attach])
-
-        const onDoubleClick = () => {
-            console.log('start')
+        const handleDoubleClick = () => {
             setSelected(!selected)
         }
+
+        const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
+            setValue(e.target.value)
+        }
+
+        const handleInputKeyPress = (e: KeyboardEvent<HTMLInputElement>): void => {
+            if (!ref.current) {
+                throw new Error('No reference to data input')
+            }
+
+            if (e.key === 'Enter') {
+                handleDoubleClick()
+            }
+        }
+
+        const element = selected ?
+            <InputCell>
+                <DataInput
+                    ref={ref}
+                    key={key}
+                    autoFocus={true}
+                    onKeyPress={(e: KeyboardEvent<HTMLInputElement>) => handleInputKeyPress(e)}
+                    onDoubleClick={handleDoubleClick}
+                    defaultValue={value ? value : text}
+                    onChange={(e: ChangeEvent<HTMLInputElement>) => handleInputChange(e)}
+                />
+            </InputCell> :
+            <CellStyle
+                key={key}
+                onDoubleClick={handleDoubleClick}
+            >
+                {value ? value : text}
+            </CellStyle>
 
         return element
     }
@@ -244,7 +269,8 @@ const LoadDataComponent: FC<IDataOperationComponent> = ({
     const fileNameInputRef: MutableRefObject<HTMLInputElement | null> = useRef(null)
 
     const FileNameInput: StyledComponent<'input', any, any> = createDialogInput({
-        placeholder: 'File name'
+        placeholder: 'File name',
+        defaultValue: 'data/prod.csv'
     })
 
     const checkVector = (vectors: string[][]): boolean => {
