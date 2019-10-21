@@ -203,6 +203,7 @@ export const Dialog: FC<IDialog> = ({
 
 export const DialogInput: StyledComponent<'input', {}> = styled.input`
     ${InputStyle}
+    color: #666666;
     width: 320px;
     margin: 42px 0;
 `
