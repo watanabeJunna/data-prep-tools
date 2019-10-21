@@ -1,6 +1,6 @@
-import styled from 'styled-components'
+import styled, { StyledComponent } from 'styled-components'
 
-export const Container = styled.div`
+export const Container: StyledComponent<'div', {}> = styled.div`
     width: 80%;
     margin: 0 auto;
     padding: 0;
