@@ -9,12 +9,12 @@ import {
 import { StyledComponent } from 'styled-components'
 import { DialogUtilComponent, DialogSubmitButton, createDialogInput } from '../Dialog'
 
-export interface IAddDimComponent {
+export interface IAddDimensionComponent {
     vector: string[][] | null
     setVector: (item: string[][]) => void
 }
 
-export const AddDimComponent: FC<IAddDimComponent> = ({
+export const AddDimensionComponent: FC<IAddDimensionComponent> = ({
     vector,
     setVector
 }) => {
