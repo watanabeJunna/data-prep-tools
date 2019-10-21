@@ -1,8 +1,6 @@
 import {
     useRef,
     useState,
-    useEffect,
-    useCallback,
     Dispatch,
     SetStateAction,
     FC,
@@ -155,55 +153,56 @@ const DataPrepContainer: FC = () => {
         key?: number
         text: string
     }> = ({ key = 0, text }) => {
-        type Selected = boolean | null
+        const onDoubleClick = () => {
+            console.log(elementState.selected)
 
-        const [selected, setSelected]: [
-            Selected,
-            Dispatch<SetStateAction<Selected>>
-        ] = useState<Selected>(null)
+            if (elementState.selected) {
+                console.log('true')
+                setElementState({
+                    selected: false,
+                    element: <CellStyle
+                                key={key}
+                                onDoubleClick={onDoubleClick}
+                            >
+                                {text}
+                            </CellStyle>
+                })
 
-        type ElementType = JSX.Element | null
-
-        const [element, setElement]: [
-            ElementType,
-            Dispatch<SetStateAction<ElementType>>
-        ] = useState<ElementType>(null)
-
-        const contentRef: MutableRefObject<HTMLDivElement | null> = useRef(null)
-
-        const attach = useCallback(() => {
-            if (selected) {
-                setElement(
-                    <CellStyle
-                        key={key}
-                        onDoubleClick={onDoubleClick}
-                    >
-                        Hello
-                    </CellStyle>
-                )
+                elementState.selected = false
             } else {
-                setElement(
-                    <CellStyle
-                        ref={contentRef}
+                console.log('false')
+                setElementState({
+                    selected: true,
+                    element: <CellStyle
+                                key={key}
+                                onDoubleClick={onDoubleClick}>
+                                Hello
+                             </CellStyle>
+                })
+
+                elementState.selected = true
+            }
+        }
+
+        type ElementState = {
+            selected: boolean
+            element: JSX.Element
+        }
+
+        const [elementState, setElementState] : [
+            ElementState,
+            Dispatch<SetStateAction<ElementState>>
+        ] = useState<ElementState>({
+            selected: false,
+            element: <CellStyle
                         key={key}
                         onDoubleClick={onDoubleClick}
                     >
                         {text}
                     </CellStyle>
-                )
-            }
-        }, [element])
+        })
 
-        useEffect(() => {
-            attach()
-        }, [attach])
-
-        const onDoubleClick = () => {
-            console.log('start')
-            setSelected(!selected)
-        }
-
-        return element
+        return elementState.element
     }
 
     return (
