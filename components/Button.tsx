@@ -1,10 +1,10 @@
-import styled, { css } from 'styled-components'
+import styled, { css, StyledComponent, FlattenSimpleInterpolation } from 'styled-components'
 
 interface ButtonColor {
     color?: string
 }
 
-const Default = css`
+const Default: FlattenSimpleInterpolation = css`
     display: block;
     font-size: 1.1em;
     padding: 0;
@@ -22,7 +22,7 @@ const LowConcentration = '56'
 
 const defaultColor = '#666666'
 
-export const Button = styled.button<ButtonColor>`
+export const Button: StyledComponent<'button', {}> = styled.button<ButtonColor>`
     ${Default}    
     color: ${({ color = defaultColor }) => color + HighConcentration};
     padding: 12px 24px;
@@ -35,7 +35,7 @@ export const Button = styled.button<ButtonColor>`
     }
 `
 
-export const CloseButton = styled.button`
+export const CloseButton: StyledComponent<'button', {}> = styled.button`
     ${Default}
     position: absolute;
     top: 0;

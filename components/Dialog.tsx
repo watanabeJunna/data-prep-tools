@@ -13,13 +13,13 @@ import { Button, CloseButton } from './Button'
 import { InputStyle } from './Input'
 
 export interface IDialogUtilComponent {
-    // 
+    // Show button display string
     showButtonText: string
 
-    // 
+    // Show button display color
     showButtonColor?: string
 
-    //
+    // Indicates whether to close the dialog
     close?: boolean
 
     children?: ReactNode
@@ -58,6 +58,7 @@ export const DialogUtilComponent: FC<IDialogUtilComponent> = ({
         }
 
         if (visible) {
+            setVisible(!visible)
             setPosition({
                 x: 0,
                 y: 0
@@ -65,20 +66,19 @@ export const DialogUtilComponent: FC<IDialogUtilComponent> = ({
         } else {
             const clientPosition: ClientRect | DOMRect = showButtonRef.current.getBoundingClientRect()
 
-            const right = clientPosition.right
-            const width = clientPosition.width
-            const scrollLeft = document.body.scrollLeft
-            const clientLeft = document.documentElement.clientLeft
+            const right: number = clientPosition.right
+            const width: number = clientPosition.width
+            const scrollLeft: number = document.body.scrollLeft
+            const clientLeft: number = document.documentElement.clientLeft
 
-            const position_: Position = {
+            const newPosition: Position = {
                 x: right + scrollLeft - clientLeft - width,
                 y: clientPosition.top
             }
 
-            setPosition(position_)
+            setPosition(newPosition)
+            setVisible(!visible)
         }
-
-        setVisible(!visible)
     }
 
     return (
@@ -168,7 +168,7 @@ export const Dialog: FC<IDialog> = ({
         visible: boolean
     }
 
-    const Wrapper = styled.div<WrapperProps>`
+    const Wrapper: StyledComponent<'div', {}, WrapperProps> = styled.div<WrapperProps>`
         position: fixed;
         top: ${({ position }) => coordinateMachining(position, 'y', ref)}px;
         left: ${({ position }) => coordinateMachining(position, 'x', ref)}px;
@@ -179,7 +179,7 @@ export const Dialog: FC<IDialog> = ({
         box-shadow: 0px 2px 10px rgb(176, 176, 176);
         background-color: white;
         border-radius: 5px;
-        transition: all .7s ease-out;
+        transition: .7s;
     `
 
     return (
@@ -201,17 +201,13 @@ export const Dialog: FC<IDialog> = ({
     )
 }
 
-export const createDialogInput = (
-    attributes: object
-): StyledComponent<'input', any, any> => {
-    return styled.input.attrs(attributes)`
-        ${InputStyle}
-        width: 320px;
-        margin: 42px 0;
-    `
-}
+export const DialogInput: StyledComponent<'input', {}> = styled.input`
+    ${InputStyle}
+    width: 320px;
+    margin: 42px 0;
+`
 
-export const DialogSubmitButton: StyledComponent<'button', any, any> = styled(Button)`
+export const DialogSubmitButton: StyledComponent<'button', {}> = styled(Button)`
     padding: 7px 26px;
     margin: 0 auto;
 `
