@@ -27,17 +27,15 @@ export const DataPrepContainer: FC = () => {
 
         const copyVector: string[][] = [...vector]
 
-        const columns: string[] = copyVector.shift() as string[]
-        const rows: string[][] = copyVector
+        const columns: string[] = [...copyVector.shift() as string[]]
+        const rows: string[][] = [...copyVector]
 
-        if (columns[0] !== 'ID') {
-            columns.unshift('ID')
-
-            for (let i = 0; i < rows.length; i++) {
-                rows[i].unshift((i + 1).toString())
-            }
+        columns.unshift('ID')
+            
+        for (let i = 0; i < rows.length; i++) {
+            rows[i].unshift((i + 1).toString())
         }
-
+        
         let columnElement: JSX.Element[]
         let rowElement: JSX.Element[]
 
@@ -215,7 +213,7 @@ export const DataPrepContainer: FC = () => {
                 <DataInput
                     ref={ref}
                     autoFocus={true}
-                    defaultValue={value ? value : text}
+                    defaultValue={text}
                     onKeyPress={(e: KeyboardEvent<HTMLInputElement>) => handleInputKeyPress(e)}
                     onDoubleClick={handleDoubleClick}
                     onBlur={handleInputBlur}
