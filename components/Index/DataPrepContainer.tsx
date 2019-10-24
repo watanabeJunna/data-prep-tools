@@ -25,21 +25,18 @@ export const DataPrepContainer: FC = () => {
             return
         }
 
-        const copyVector: string[][] = [...vector]
+        const copyVector: Vector = [...vector]
 
         const columns: string[] = [...copyVector.shift() as string[]]
-        const rows: string[][] = [...copyVector]
+        const rows: Vector = copyVector.map((v: string[]) => [...v])
 
         columns.unshift('ID')
             
-        for (let i = 0; i < rows.length; i++) {
-            rows[i].unshift((i + 1).toString())
-        }
+        rows.forEach((row: string[], c :number): void => {
+            row.unshift((c + 1).toString())
+        })
         
-        let columnElement: JSX.Element[]
-        let rowElement: JSX.Element[]
-
-        columnElement = columns.map((column: string, c: number) => {
+        const columnElement = columns.map((column: string, c: number): JSX.Element => {
             return (
                 <ColumnCell key={c}>
                     {column}
@@ -47,16 +44,16 @@ export const DataPrepContainer: FC = () => {
             )
         })
 
-        rowElement = rows.map((row: string[], rowNum: number) => {
+        const rowElement = rows.map((row: string[], rowNum: number): JSX.Element => {
             return (
                 <Row key={rowNum}>
                     {
-                        row.map((feature: string, columnNum: number) => {
+                        row.map((feature: string, columnNum: number): JSX.Element => {
                             return (
                                 <RowCell
                                     key={columnNum}
                                     text={feature}
-                                    column={columnNum}
+                                    column={columnNum - 1}
                                     row={rowNum + 1}
                                 />
                             )
@@ -146,21 +143,21 @@ export const DataPrepContainer: FC = () => {
 
         const ref: MutableRefObject<HTMLInputElement | null> = useRef(null)
 
-        const handleDoubleClick = () => {
+        const handleDoubleClick = (): void => {
             setSelected(!selected)
 
-            if (value !== vector[row][column]) {
-                setVector((vector: Vector) => {
-                    let newVector: Vector = [...vector]
+            // if (value !== vector[row][column]) {
+            //     setVector((vector: Vector) => {
+            //         let newVector: Vector = [...vector]
 
-                    newVector[row][column] = value
+            //         newVector[row][column] = value
 
-                    return newVector
-                })
-            }
+            //         return newVector
+            //     })
+            // }
         }
 
-        const handleInputBlur = () => {
+        const handleInputBlur = (): void => {
             setVector((vector: Vector) => {
                 let newVector: Vector = [...vector]
 
@@ -179,9 +176,10 @@ export const DataPrepContainer: FC = () => {
                 throw new Error('No reference to data input')
             }
 
-            if (e.key === 'Enter') {
-                handleDoubleClick()
-            }
+            // if (e.key === 'Enter') {
+            //     console.log('start')
+            //     handleDoubleClick()
+            // }
         }
 
         const CellStyle: StyledComponent<'div', {}> = styled.div`
@@ -213,15 +211,15 @@ export const DataPrepContainer: FC = () => {
                 <DataInput
                     ref={ref}
                     autoFocus={true}
-                    defaultValue={text}
-                    onKeyPress={(e: KeyboardEvent<HTMLInputElement>) => handleInputKeyPress(e)}
-                    onDoubleClick={handleDoubleClick}
-                    onBlur={handleInputBlur}
+                    defaultValue={value ? value : text}
+                    // onKeyPress={(e: KeyboardEvent<HTMLInputElement>) => handleInputKeyPress(e)}
+                    onDoubleClick={() => handleDoubleClick()}
+                    onBlur={() => handleInputBlur()}
                     onChange={(e: ChangeEvent<HTMLInputElement>) => handleInputChange(e)}
                 />
             </InputCell> :
             <CellStyle
-                onDoubleClick={handleDoubleClick}
+                onDoubleClick={() => handleDoubleClick()}
             >
                 {value ? value : text}
             </CellStyle>
