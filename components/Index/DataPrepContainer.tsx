@@ -31,11 +31,11 @@ export const DataPrepContainer: FC = () => {
         const rows: Vector = copyVector.map((v: string[]) => [...v])
 
         columns.unshift('ID')
-            
-        rows.forEach((row: string[], c :number): void => {
+
+        rows.forEach((row: string[], c: number): void => {
             row.unshift((c + 1).toString())
         })
-        
+
         const columnElement = columns.map((column: string, c: number): JSX.Element => {
             return (
                 <ColumnCell key={c}>
@@ -176,10 +176,9 @@ export const DataPrepContainer: FC = () => {
                 throw new Error('No reference to data input')
             }
 
-            // if (e.key === 'Enter') {
-            //     console.log('start')
-            //     handleDoubleClick()
-            // }
+            if (e.key === 'Enter') {
+                handleDoubleClick()
+            }
         }
 
         const CellStyle: StyledComponent<'div', {}> = styled.div`
@@ -212,7 +211,7 @@ export const DataPrepContainer: FC = () => {
                     ref={ref}
                     autoFocus={true}
                     defaultValue={value ? value : text}
-                    // onKeyPress={(e: KeyboardEvent<HTMLInputElement>) => handleInputKeyPress(e)}
+                    onKeyPress={(e: KeyboardEvent<HTMLInputElement>) => handleInputKeyPress(e)}
                     onDoubleClick={() => handleDoubleClick()}
                     onBlur={() => handleInputBlur()}
                     onChange={(e: ChangeEvent<HTMLInputElement>) => handleInputChange(e)}

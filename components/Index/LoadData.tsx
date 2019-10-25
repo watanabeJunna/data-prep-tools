@@ -71,7 +71,7 @@ export const LoadDataComponent: FC<ILoadDataComponent> = ({
 
         const vector: string[][] = datas.map(data => data.split(','))
 
-        setClose(false)
+        setClose(true)
 
         if (!checkVector(vector)) {
             throw new Error('Invalid data')
@@ -85,6 +85,7 @@ export const LoadDataComponent: FC<ILoadDataComponent> = ({
             showButtonColor='#00aeea'
             showButtonText='Load features'
             close={close}
+            setClose={setClose}
         >
             <DialogInput
                 ref={fileNameInputRef}

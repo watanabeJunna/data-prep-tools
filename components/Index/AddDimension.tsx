@@ -50,7 +50,7 @@ export const AddDimensionComponent: FC<IAddDimensionComponent> = ({
 
         vectorCopy.map(v => newVector.push([...v, ""]))
 
-        setClose(false)
+        setClose(true)
         setVector(newVector)
     }
 
@@ -59,6 +59,7 @@ export const AddDimensionComponent: FC<IAddDimensionComponent> = ({
             showButtonColor='#00abaa'
             showButtonText='Add dimension'
             close={close}
+            setClose={setClose}
         >
             <DialogInput
                 placeholder='dimension name'

@@ -50,7 +50,7 @@ export const ExportDataComponent: FC<IExportDataComponent> = ({
             return
         }
 
-        setClose(false)
+        setClose(true)
     }
 
     return (
@@ -58,6 +58,7 @@ export const ExportDataComponent: FC<IExportDataComponent> = ({
             showButtonColor='#ab55aa'
             showButtonText='Export data'
             close={close}
+            setClose={setClose}
         >
             <DialogInput
                 placeholder='File name'
@@ -68,6 +69,6 @@ export const ExportDataComponent: FC<IExportDataComponent> = ({
             >
                 <p>Export</p>
             </DialogSubmitButton>
-        </DialogUtilComponent >
+        </DialogUtilComponent>
     )
 }

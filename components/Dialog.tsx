@@ -22,6 +22,9 @@ export interface IDialogUtilComponent {
     // Indicates whether to close the dialog
     close?: boolean
 
+    //
+    setClose?: (close: boolean) => void
+
     children?: ReactNode
 }
 
@@ -30,6 +33,7 @@ export const DialogUtilComponent: FC<IDialogUtilComponent> = ({
     showButtonText,
     children,
     close,
+    setClose,
 }) => {
     const showButtonRef: MutableRefObject<HTMLButtonElement | null> = useRef(null)
 
@@ -57,8 +61,12 @@ export const DialogUtilComponent: FC<IDialogUtilComponent> = ({
             throw new Error('No reference to show button')
         }
 
+        if (setClose) {
+            setClose(false)
+        }
+
         if (visible) {
-            setVisible(!visible)
+            setVisible(true)
             setPosition({
                 x: 0,
                 y: 0
@@ -77,7 +85,7 @@ export const DialogUtilComponent: FC<IDialogUtilComponent> = ({
             }
 
             setPosition(newPosition)
-            setVisible(!visible)
+            setVisible(false)
         }
     }
 
