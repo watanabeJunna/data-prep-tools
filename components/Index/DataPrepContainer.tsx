@@ -1,8 +1,10 @@
 import {
+    useEffect,
     useRef,
     useState,
     Dispatch,
     SetStateAction,
+    UIEvent,
     FC,
     MutableRefObject,
     ChangeEvent,
@@ -11,6 +13,9 @@ import {
 import styled, { StyledComponent } from 'styled-components'
 import { ExportDataComponent, LoadDataComponent, AddDimensionComponent } from './index'
 import { InputStyle } from '../Input'
+import { ViewState } from './classes'
+
+const viewState = new ViewState()
 
 export const DataPrepContainer: FC = () => {
     type Vector = string[][]
@@ -19,6 +24,16 @@ export const DataPrepContainer: FC = () => {
         Vector,
         Dispatch<SetStateAction<Vector>>
     ] = useState<Vector>([])
+
+    const dataContentRef: MutableRefObject<HTMLDivElement | null> = useRef(null)
+
+    useEffect(() => {
+        if (!dataContentRef.current) {
+            throw new Error('No reference to Data content')
+        }
+
+        dataContentRef.current.scrollTo(0, viewState.getScrollTop())
+    })
 
     const convertVectorIntoComponent = (vector: Vector) => {
         if (vector.length === 0) {
@@ -158,24 +173,10 @@ export const DataPrepContainer: FC = () => {
 
         const ref: MutableRefObject<HTMLInputElement | null> = useRef(null)
 
-        const handleDoubleClick = (): void => {
+        const toggleElement = (): void => {
             setSelected(!selected)
 
             if (value !== "" && value !== vector[row][column]) {
-                setVector((vector: Vector) => {
-                    let newVector: Vector = [...vector]
-
-                    newVector[row][column] = value
-
-                    return newVector
-                })
-            }
-        }
-
-        const handleInputBlur = (): void => {
-            setSelected(!selected)
-
-            if (value !== "") {
                 setVector((vector: Vector) => {
                     let newVector: Vector = [...vector]
 
@@ -196,7 +197,7 @@ export const DataPrepContainer: FC = () => {
             }
 
             if (e.key === 'Enter') {
-                handleDoubleClick()
+                toggleElement()
             }
         }
 
@@ -213,12 +214,6 @@ export const DataPrepContainer: FC = () => {
                 color: #03b1b6fa;
                 background-color: #03b1b611;
             }
-        `
-
-        const Text: StyledComponent<'div', {}> = styled.div`
-            display: inline-block;
-            padding-bottom: 4px;
-            min-width: 28px;
         `
 
         const InputCell: StyledComponent<'div', {}> = styled.div`
@@ -248,13 +243,13 @@ export const DataPrepContainer: FC = () => {
                     autoFocus={true}
                     defaultValue={value ? value : text}
                     onKeyPress={(e: KeyboardEvent<HTMLInputElement>) => handleInputKeyPress(e)}
-                    onDoubleClick={() => handleDoubleClick()}
-                    onBlur={() => handleInputBlur()}
+                    onDoubleClick={() => toggleElement()}
+                    onBlur={() => toggleElement()}
                     onChange={(e: ChangeEvent<HTMLInputElement>) => handleInputChange(e)}
                 />
             </InputCell> :
             <CellStyle
-                onDoubleClick={() => handleDoubleClick()}
+                onDoubleClick={() => toggleElement()}
             >
                 {value ? value : text}
             </CellStyle>
@@ -281,7 +276,16 @@ export const DataPrepContainer: FC = () => {
                     />
                 </OperationTable>
             </Header>
-            <DataContent>
+            <DataContent
+                ref={dataContentRef}
+                onScroll={() => {
+                    if (!dataContentRef.current) {
+                        throw new Error('No reference to Data content')
+                    }
+
+                    viewState.setScrollTop(dataContentRef.current.scrollTop)
+                }}
+            >
                 {convertVectorIntoComponent(vector)}
             </DataContent>
         </Wrapper>
