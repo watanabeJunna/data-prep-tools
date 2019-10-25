@@ -32,12 +32,6 @@ export const LoadDataComponent: FC<ILoadDataComponent> = ({
             if (vector.length !== dim) {
                 isValid = false
             }
-
-            vector.forEach(feature => {
-                if (!feature) {
-                    isValid = false
-                }
-            })
         })
 
         return isValid
