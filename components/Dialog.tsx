@@ -22,7 +22,7 @@ export interface IDialogUtilComponent {
     // Indicates whether to close the dialog
     close?: boolean
 
-    //
+    // Indicates state setter of dialog
     setClose?: (close: boolean) => void
 
     children?: ReactNode
@@ -66,7 +66,7 @@ export const DialogUtilComponent: FC<IDialogUtilComponent> = ({
         }
 
         if (visible) {
-            setVisible(true)
+            setVisible(!visible)
             setPosition({
                 x: 0,
                 y: 0
@@ -85,7 +85,7 @@ export const DialogUtilComponent: FC<IDialogUtilComponent> = ({
             }
 
             setPosition(newPosition)
-            setVisible(false)
+            setVisible(!visible)
         }
     }
 
