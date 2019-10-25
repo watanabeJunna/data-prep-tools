@@ -30,31 +30,36 @@ export const DataPrepContainer: FC = () => {
         const columns: string[] = [...copyVector.shift() as string[]]
         const rows: Vector = copyVector.map((v: string[]) => [...v])
 
-        columns.unshift('ID')
+        const columnElement: JSX.Element[] = [
+            <IDCell>
+                ID
+            </IDCell>
+        ]
 
-        rows.forEach((row: string[], c: number): void => {
-            row.unshift((c + 1).toString())
-        })
-
-        const columnElement = columns.map((column: string, c: number): JSX.Element => {
-            return (
+        columns.forEach((column: string, c: number): void => {
+            columnElement.push(
                 <ColumnCell key={c}>
                     {column}
                 </ColumnCell>
             )
         })
 
-        const rowElement = rows.map((row: string[], rowNum: number): JSX.Element => {
+        const rowElement: JSX.Element[] = rows.map((row: string[], rowNum: number): JSX.Element => {
             return (
                 <Row key={rowNum}>
+                    {
+                        <IDCell key={rowNum}>
+                            {rowNum + 1}
+                        </IDCell>
+                    }
                     {
                         row.map((feature: string, columnNum: number): JSX.Element => {
                             return (
                                 <RowCell
                                     key={columnNum}
                                     text={feature}
-                                    column={columnNum - 1}
-                                    row={rowNum + 1}
+                                    column={columnNum}
+                                    row={rowNum + 1} // Consider header
                                 />
                             )
                         })
@@ -99,9 +104,9 @@ export const DataPrepContainer: FC = () => {
     `
 
     const DataContent: StyledComponent<'div', {}> = styled.div`
-        color: #777777;
-        font-family: 'Raleway', sans-serif;
         max-height: 620px;
+        color: #777777;
+        font-family: "Yu Gothic";
         overflow: auto;
     `
 
@@ -114,6 +119,7 @@ export const DataPrepContainer: FC = () => {
 
     const ColumnCell: StyledComponent<'div', {}> = styled.div`
         width: 22%;
+        overflow: hidden;
         padding: 22px;
         margin: auto 0;
     `
@@ -122,15 +128,24 @@ export const DataPrepContainer: FC = () => {
         display: flex;
         padding: 0 24px;
         border-bottom: 1px solid rgba(176, 176, 176, 0.5);
+        &:hover {
+            background-color: rgb(244, 246, 249);
+        }
     `
 
-    interface ICell {
+    const IDCell: StyledComponent<'div', {}> = styled.div`
+        width: 10%;
+        padding: 22px;
+        margin: auto 0;
+    `
+
+    interface IRowCell {
         text: string
         column: number
         row: number
     }
 
-    const RowCell: FC<ICell> = ({ column, row, text }) => {
+    const RowCell: FC<IRowCell> = ({ column, row, text }) => {
         const [selected, setSelected]: [
             boolean,
             Dispatch<SetStateAction<boolean>>
@@ -187,19 +202,36 @@ export const DataPrepContainer: FC = () => {
 
         const CellStyle: StyledComponent<'div', {}> = styled.div`
             width: 22%;
+            height: 20px;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
             padding: 22px;
             margin: auto 0;
+            transition: .3s;
+            &:hover {
+                color: #03b1b6fa;
+                background-color: #03b1b611;
+            }
+        `
+
+        const Text: StyledComponent<'div', {}> = styled.div`
+            display: inline-block;
+            padding-bottom: 4px;
+            min-width: 28px;
         `
 
         const InputCell: StyledComponent<'div', {}> = styled.div`
-            margin: auto 22px;
             width: 22%;
+            padding: 22px;
         `
 
         const DataInput: StyledComponent<'input', {}> = styled.input`
             ${InputStyle}
+            width: 100%;
             color: #777777;
-            font-size: 1.1em;
+            font-size: 1.0em;
+            font-family: "Yu Gothic";
             font-weight: 400;
             padding: 0px;
             margin: 0px;
@@ -214,7 +246,7 @@ export const DataPrepContainer: FC = () => {
                 <DataInput
                     ref={ref}
                     autoFocus={true}
-                    defaultValue={value !== "" ? value : text}
+                    defaultValue={value ? value : text}
                     onKeyPress={(e: KeyboardEvent<HTMLInputElement>) => handleInputKeyPress(e)}
                     onDoubleClick={() => handleDoubleClick()}
                     onBlur={() => handleInputBlur()}
@@ -224,7 +256,7 @@ export const DataPrepContainer: FC = () => {
             <CellStyle
                 onDoubleClick={() => handleDoubleClick()}
             >
-                {value !== "" ? value : text}
+                {value ? value : text}
             </CellStyle>
 
         return element
