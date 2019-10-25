@@ -146,25 +146,29 @@ export const DataPrepContainer: FC = () => {
         const handleDoubleClick = (): void => {
             setSelected(!selected)
 
-            // if (value !== vector[row][column]) {
-            //     setVector((vector: Vector) => {
-            //         let newVector: Vector = [...vector]
+            if (value !== "" && value !== vector[row][column]) {
+                setVector((vector: Vector) => {
+                    let newVector: Vector = [...vector]
 
-            //         newVector[row][column] = value
+                    newVector[row][column] = value
 
-            //         return newVector
-            //     })
-            // }
+                    return newVector
+                })
+            }
         }
 
         const handleInputBlur = (): void => {
-            setVector((vector: Vector) => {
-                let newVector: Vector = [...vector]
+            setSelected(!selected)
 
-                newVector[row][column] = value
+            if (value !== "") {
+                setVector((vector: Vector) => {
+                    let newVector: Vector = [...vector]
 
-                return newVector
-            })
+                    newVector[row][column] = value
+
+                    return newVector
+                })
+            }
         }
 
         const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
@@ -210,7 +214,7 @@ export const DataPrepContainer: FC = () => {
                 <DataInput
                     ref={ref}
                     autoFocus={true}
-                    defaultValue={value ? value : text}
+                    defaultValue={value !== "" ? value : text}
                     onKeyPress={(e: KeyboardEvent<HTMLInputElement>) => handleInputKeyPress(e)}
                     onDoubleClick={() => handleDoubleClick()}
                     onBlur={() => handleInputBlur()}
@@ -220,7 +224,7 @@ export const DataPrepContainer: FC = () => {
             <CellStyle
                 onDoubleClick={() => handleDoubleClick()}
             >
-                {value ? value : text}
+                {value !== "" ? value : text}
             </CellStyle>
 
         return element
