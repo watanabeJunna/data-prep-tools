@@ -204,6 +204,7 @@ export const DataPrepContainer: FC = () => {
         const CellStyle: StyledComponent<'div', {}> = styled.div`
             width: 22%;
             height: 20px;
+            vertical-align: middle;
             white-space: nowrap;
             text-overflow: ellipsis;
             overflow: hidden;
@@ -218,7 +219,8 @@ export const DataPrepContainer: FC = () => {
 
         const InputCell: StyledComponent<'div', {}> = styled.div`
             width: 22%;
-            padding: 22px;
+            padding: 11px 22px;
+            margin: auto 0;
         `
 
         const DataInput: StyledComponent<'input', {}> = styled.input`
@@ -243,13 +245,13 @@ export const DataPrepContainer: FC = () => {
                     autoFocus={true}
                     defaultValue={value ? value : text}
                     onKeyPress={(e: KeyboardEvent<HTMLInputElement>) => handleInputKeyPress(e)}
-                    onDoubleClick={() => toggleElement()}
+                    onClick={() => toggleElement()}
                     onBlur={() => toggleElement()}
                     onChange={(e: ChangeEvent<HTMLInputElement>) => handleInputChange(e)}
                 />
             </InputCell> :
             <CellStyle
-                onDoubleClick={() => toggleElement()}
+                onClick={() => toggleElement()}
             >
                 {value ? value : text}
             </CellStyle>
