@@ -204,7 +204,6 @@ export const DataPrepContainer: FC = () => {
         const CellStyle: StyledComponent<'div', {}> = styled.div`
             width: 22%;
             height: 20px;
-            vertical-align: middle;
             white-space: nowrap;
             text-overflow: ellipsis;
             overflow: hidden;
