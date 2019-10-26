@@ -52,7 +52,14 @@ export const DialogUtilComponent: FC<IDialogUtilComponent> = ({
 
     useEffect(() => {
         if (visible && close) {
+            if (setClose) {
+                setClose(false)
+            }
             setVisible(!visible)
+            setPosition({
+                x: 0,
+                y: 0
+            })
         }
     })
 
