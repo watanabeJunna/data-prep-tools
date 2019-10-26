@@ -62,8 +62,7 @@ export const LoadDataComponent: FC<ILoadDataComponent> = ({
         }
 
         const datas: string[] = await res.json()
-
-        const vector: string[][] = datas.map(data => data.split(','))
+        const vector: string[][] = datas.map(data => data.replace(/[\r\n]/g, '').split(','))
 
         setClose(true)
 
