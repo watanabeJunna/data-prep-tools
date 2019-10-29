@@ -14,12 +14,14 @@ export interface ILoadDataComponent {
     setVector: (item: Vector) => void
     setLoadFileName: (fileName: string) => void
     setCurrentDataNumber: (currentDataNumber: number) => void
+    setItemLength: (currentDataNumber: number) => void
 }
 
 export const LoadDataComponent: FC<ILoadDataComponent> = ({
     setVector,
     setLoadFileName,
-    setCurrentDataNumber
+    setCurrentDataNumber,
+    setItemLength,
 }) => {
     const [close, setClose]: [
         boolean,
@@ -63,6 +65,8 @@ export const LoadDataComponent: FC<ILoadDataComponent> = ({
         }
 
         window.localStorage.setItem('item_length', itemLength.toString())
+
+        setItemLength(itemLength)
 
         return vector.slice(0, threshold)
     }

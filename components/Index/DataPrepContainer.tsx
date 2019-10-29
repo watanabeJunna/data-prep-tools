@@ -34,6 +34,11 @@ export const DataPrepContainer: FC = () => {
         Dispatch<SetStateAction<number>>
     ] = useState<number>(0)
 
+    const [itemLength, setItemLength]: [
+        number,
+        Dispatch<SetStateAction<number>>
+    ] = useState<number>(0)
+
     const dataContentRef: MutableRefObject<HTMLDivElement | null> = useRef(null)
 
     useEffect(() => {
@@ -44,7 +49,7 @@ export const DataPrepContainer: FC = () => {
         dataContentRef.current.scrollTo(0, viewState.getScrollTop())
     })
 
-    const convertVectorIntoComponent = (vector: Vector) => {
+    const convertVectorIntoComponent = (vector: Vector): JSX.Element | undefined => {
         if (vector.length === 0) {
             return
         }
@@ -113,6 +118,32 @@ export const DataPrepContainer: FC = () => {
         )
     }
 
+    const convertDataNumberToComponent = (itemLength: number): JSX.Element | undefined => {
+        if (!itemLength) {
+            return
+        }
+
+        const items = [...Array(itemLength)].map((_: any, c: number): JSX.Element => {
+            return (
+                <DataIndexButton>
+                    <p>{c}</p>
+                </DataIndexButton>
+            )
+        })
+
+        return (
+            <ItemSelector>
+                <AdjacentControllButton>
+                    <p>{'prev'}</p>
+                </AdjacentControllButton>
+                {items}
+                <AdjacentControllButton>
+                    <p>{'next'}</p>
+                </AdjacentControllButton>
+            </ItemSelector>
+        )
+    }
+
     const Wrapper: StyledComponent<'div', {}> = styled.div`
         font-family: 'Raleway', sans-serif;
         font-weight: 400;
@@ -146,9 +177,27 @@ export const DataPrepContainer: FC = () => {
         font-size: 1.3em;
         color: #5f6f81;
         margin: auto 7px;
+        margin-right: 0px;
         margin-bottom: 2.5px;
         :before {
             content: '>';
+            font-weight: 100;
+            font-size: 1.3em;
+            margin: 0 12px;
+        }
+    `
+
+    const CurrentDataNumber: StyledComponent<'div', {}> = styled.div`
+        display: inline;
+        vertical-align: sub;
+        font-size: 1.3em;
+        color: #5f6f81;
+        margin: auto 7px;
+        margin-left: 0;
+        margin-bottom: 2.5px;
+        :before {
+            content: '>';
+            font-weight: 100;
             font-size: 1.3em;
             margin: 0 12px;
         }
@@ -344,12 +393,20 @@ export const DataPrepContainer: FC = () => {
                             {loadFileName}
                         </LoadFileName>
                     )}
+                    {
+                        (itemLength !== 0) && (
+                            <CurrentDataNumber>
+                                {currentDataNumber}
+                            </CurrentDataNumber>
+                        )
+                    }
                 </HeaderTextContent>
                 <OperationTable>
                     <LoadDataComponent
                         setVector={setVector}
                         setLoadFileName={setLoadFileName}
                         setCurrentDataNumber={setCurrentDataNumber}
+                        setItemLength={setItemLength}
                     />
                     <AddDimensionComponent
                         vector={vector}
@@ -361,27 +418,7 @@ export const DataPrepContainer: FC = () => {
                 </OperationTable>
             </Header>
             {convertVectorIntoComponent(vector)}
-            {
-                (currentDataNumber !== 0) && (
-                    <ItemSelector>
-                        <AdjacentControllButton>
-                            <p>{'prev'}</p>
-                        </AdjacentControllButton>
-                        <DataIndexButton>
-                            <p>1</p>
-                        </DataIndexButton>
-                        <DataIndexButton>
-                            <p>2</p>
-                        </DataIndexButton>
-                        <DataIndexButton>
-                            <p>3</p>
-                        </DataIndexButton>
-                        <AdjacentControllButton>
-                            <p>{'next'}</p>
-                        </AdjacentControllButton>
-                    </ItemSelector>
-                )
-            }
+            {convertDataNumberToComponent(itemLength)}
         </Wrapper>
     )
 }
