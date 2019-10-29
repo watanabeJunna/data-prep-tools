@@ -12,11 +12,12 @@ import {
 import styled, { css, StyledComponent, FlattenSimpleInterpolation } from 'styled-components'
 import { ExportDataComponent, LoadDataComponent, AddDimensionComponent } from './index'
 import { InputStyle } from '../Input'
-import { ViewState } from './classes'
+import { ViewState, VectorItemState } from './classes'
 
 export type Vector = string[][]
 
 const viewState = new ViewState()
+const vectorItemState = new VectorItemState()
 
 export const DataPrepContainer: FC = () => {
     const [vector, setVector]: [
@@ -28,16 +29,6 @@ export const DataPrepContainer: FC = () => {
         string,
         Dispatch<SetStateAction<string>>
     ] = useState<string>('')
-
-    const [currentDataNumber, setCurrentDataNumber]: [
-        number,
-        Dispatch<SetStateAction<number>>
-    ] = useState<number>(0)
-
-    const [itemLength, setItemLength]: [
-        number,
-        Dispatch<SetStateAction<number>>
-    ] = useState<number>(0)
 
     const dataContentRef: MutableRefObject<HTMLDivElement | null> = useRef(null)
 
@@ -123,9 +114,16 @@ export const DataPrepContainer: FC = () => {
             return
         }
 
+        const handleItemClick = (dataNumber: number): void => {
+
+
+        }
+
         const items = [...Array(itemLength)].map((_: any, c: number): JSX.Element => {
             return (
-                <DataIndexButton>
+                <DataIndexButton
+                    onClick={() => handleItemClick(c)}
+                >
                     <p>{c}</p>
                 </DataIndexButton>
             )
@@ -390,9 +388,9 @@ export const DataPrepContainer: FC = () => {
                         </LoadFileName>
                     )}
                     {
-                        (itemLength !== 0) && (
+                        (vectorItemState.getItemLength() !== 0) && (
                             <CurrentDataNumber>
-                                {currentDataNumber}
+                                {vectorItemState.getCurrentDataNumber()}
                             </CurrentDataNumber>
                         )
                     }
@@ -401,8 +399,8 @@ export const DataPrepContainer: FC = () => {
                     <LoadDataComponent
                         setVector={setVector}
                         setLoadFileName={setLoadFileName}
-                        setCurrentDataNumber={setCurrentDataNumber}
-                        setItemLength={setItemLength}
+                        setCurrentDataNumber={(dataNumber: number) => vectorItemState.setCurrentDataNumber(dataNumber)}
+                        setItemLength={(itemLength: number) => vectorItemState.setItemLength(itemLength)}
                     />
                     <AddDimensionComponent
                         vector={vector}
@@ -414,7 +412,7 @@ export const DataPrepContainer: FC = () => {
                 </OperationTable>
             </Header>
             {convertVectorIntoComponent(vector)}
-            {convertDataNumberToComponent(itemLength)}
+            {convertDataNumberToComponent(vectorItemState.getItemLength())}
         </Wrapper>
     )
 }
