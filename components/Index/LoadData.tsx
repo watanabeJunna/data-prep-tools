@@ -9,6 +9,7 @@ import {
 import { DialogUtilComponent, DialogSubmitButton, DialogInput } from '../Dialog'
 import fetch from 'isomorphic-fetch'
 import { Vector } from './DataPrepContainer'
+import { VectorItemStorage } from './classes'
 
 export interface ILoadDataComponent {
     setVector: (item: Vector) => void
@@ -23,6 +24,8 @@ export const LoadDataComponent: FC<ILoadDataComponent> = ({
     setCurrentDataNumber,
     setItemLength,
 }) => {
+    const vectorItemStorage = new VectorItemStorage()
+
     const [close, setClose]: [
         boolean,
         Dispatch<SetStateAction<boolean>>
@@ -61,10 +64,10 @@ export const LoadDataComponent: FC<ILoadDataComponent> = ({
         for (let i = 0; i < vector.length; i += threshold, itemLength++) {
             const vectorJsonStr: string = JSON.stringify(vector.slice(i, i + threshold))
 
-            window.localStorage.setItem(('vector.' + itemLength), vectorJsonStr)
+            vectorItemStorage.setItem(itemLength, vectorJsonStr)
         }
 
-        window.localStorage.setItem('item_length', itemLength.toString())
+        vectorItemStorage.setItemLength(itemLength)
 
         setItemLength(itemLength)
 

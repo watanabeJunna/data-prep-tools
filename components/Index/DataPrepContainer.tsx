@@ -12,12 +12,13 @@ import {
 import styled, { css, StyledComponent, FlattenSimpleInterpolation } from 'styled-components'
 import { ExportDataComponent, LoadDataComponent, AddDimensionComponent } from './index'
 import { InputStyle } from '../Input'
-import { ViewState, VectorItemState } from './classes'
+import { ViewState, VectorItemState, VectorItemStorage } from './classes'
 
 export type Vector = string[][]
 
 const viewState = new ViewState()
 const vectorItemState = new VectorItemState()
+const vectorItemStorage = new VectorItemStorage()
 
 export const DataPrepContainer: FC = () => {
     const [vector, setVector]: [
@@ -40,6 +41,12 @@ export const DataPrepContainer: FC = () => {
         dataContentRef.current.scrollTo(0, viewState.getScrollTop())
     })
 
+    /**
+     * The vector to be rendered must consist of header row + body row.
+     * 
+     * @param vector 
+     * @returns
+     */
     const convertVectorIntoComponent = (vector: Vector): JSX.Element | undefined => {
         if (vector.length === 0) {
             return
@@ -115,8 +122,10 @@ export const DataPrepContainer: FC = () => {
         }
 
         const handleItemClick = (dataNumber: number): void => {
+            const item: Vector = vectorItemStorage.getItem(dataNumber)
 
-
+            vectorItemState.setCurrentDataNumber(dataNumber)
+            setVector(item)
         }
 
         const items = [...Array(itemLength)].map((_: any, c: number): JSX.Element => {
