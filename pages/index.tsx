@@ -12,14 +12,14 @@ export default () => {
             margin: 30px 0;
         }
 
-        ::-webkit-scrollbar{
+        ::-webkit-scrollbar {
         　　width: 10px;
         }
-        ::-webkit-scrollbar-track{
+        ::-webkit-scrollbar-track {
         　　background: #fff;
         　　border-left: solid 1px #ececec;
         }
-        ::-webkit-scrollbar-thumb{
+        ::-webkit-scrollbar-thumb {
         　　background: #ccc;
         　　border-radius: 10px;
         　　box-shadow: inset 0 0 0 2px #fff;
