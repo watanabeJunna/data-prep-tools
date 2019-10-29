@@ -21,6 +21,13 @@ export class ViewState {
     }
 }
 
+// Can be used universally as a structure separated into columns and body parts
+export class VectorStrcutre {
+    constructor(vector: Vector) {
+        
+    }
+}
+
 export class VectorItemState {
     // 
     private currentDataNumber: number = 0
