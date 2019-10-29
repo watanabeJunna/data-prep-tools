@@ -189,7 +189,7 @@ export const Dialog: FC<IDialog> = ({
         left: ${({ position }) => coordinateMachining(position, 'x', ref)}px;
         padding: 24px 32px;
         opacity: ${({ visible }) => visible && '1' || '0'};
-        z-index: 0;
+        z-index: 1;
         font-weight: 400;
         box-shadow: 0px 2px 10px rgb(176, 176, 176);
         background-color: white;

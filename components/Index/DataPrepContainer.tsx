@@ -9,26 +9,36 @@ import {
     ChangeEvent,
     KeyboardEvent
 } from 'react'
-import styled, { StyledComponent } from 'styled-components'
+import styled, { css, StyledComponent, FlattenSimpleInterpolation } from 'styled-components'
 import { ExportDataComponent, LoadDataComponent, AddDimensionComponent } from './index'
 import { InputStyle } from '../Input'
 import { ViewState } from './classes'
 
+export type Vector = string[][]
+
 const viewState = new ViewState()
 
 export const DataPrepContainer: FC = () => {
-    type Vector = string[][]
-
     const [vector, setVector]: [
         Vector,
         Dispatch<SetStateAction<Vector>>
     ] = useState<Vector>([])
 
+    const [loadFileName, setLoadFileName]: [
+        string,
+        Dispatch<SetStateAction<string>>
+    ] = useState<string>('')
+
+    const [currentDataNumber, setCurrentDataNumber]: [
+        number,
+        Dispatch<SetStateAction<number>>
+    ] = useState<number>(0)
+
     const dataContentRef: MutableRefObject<HTMLDivElement | null> = useRef(null)
 
     useEffect(() => {
         if (!dataContentRef.current) {
-            throw new Error('No reference to Data content')
+            return
         }
 
         dataContentRef.current.scrollTo(0, viewState.getScrollTop())
@@ -87,7 +97,18 @@ export const DataPrepContainer: FC = () => {
                 <Column>
                     {columnElement}
                 </Column>
-                {rowElement}
+                <DataContent
+                    ref={dataContentRef}
+                    onScroll={() => {
+                        if (!dataContentRef.current) {
+                            throw new Error('No reference to Data content')
+                        }
+
+                        viewState.setScrollTop(dataContentRef.current.scrollTop)
+                    }}
+                >
+                    {rowElement}
+                </DataContent>
             </>
         )
     }
@@ -107,10 +128,30 @@ export const DataPrepContainer: FC = () => {
         border-bottom: 1px solid rgba(176, 176, 176, 0.5);
     `
 
+    const HeaderTextContent: StyledComponent<'div', {}> = styled.div`
+        display: flex;
+        justify-content: flex-start;
+        margin: auto 0;
+    `
+
     const HeaderTitle: StyledComponent<'div', {}> = styled.div`
         font-size: 1.5em;
         color: #5f6f81;
         margin: auto 0;
+    `
+
+    const LoadFileName: StyledComponent<'div', {}> = styled.div`
+        display: inline;
+        vertical-align: sub;
+        font-size: 1.3em;
+        color: #5f6f81;
+        margin: auto 7px;
+        margin-bottom: 2.5px;
+        :before {
+            content: '>';
+            font-size: 1.3em;
+            margin: 0 12px;
+        }
     `
 
     const OperationTable: StyledComponent<'div', {}> = styled.div`
@@ -122,11 +163,14 @@ export const DataPrepContainer: FC = () => {
         color: #777777;
         font-family: "Yu Gothic";
         overflow: auto;
+        border-bottom: 1px solid rgba(176, 176, 176, 0.5);
     `
 
     const Column: StyledComponent<'div', {}> = styled.div`
         display: flex;
         font-weight: 900;
+        color: #777777;
+        font-family: "Yu Gothic";
         padding: 12px 24px;
         border-bottom: 1px solid rgba(176, 176, 176, 0.5);
     `
@@ -257,15 +301,55 @@ export const DataPrepContainer: FC = () => {
         return element
     }
 
+    const ItemSelector: StyledComponent<'div', {}> = styled.div`
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px 48px;
+        text-align: center;
+        margin: 0 auto;
+        border-bottom: 1px solid rgba(176, 176, 176, 0.5);
+    `
+
+    const ItemBase: FlattenSimpleInterpolation = css`
+        color: #00aafc;
+        padding: 0px 12px;
+        font-size: 1.4em;
+        font-family: "Yu Gothic";
+        font-weight: 400;
+        opacity: 0.7;
+        trasition: .3s;
+        &:hover {
+            opacity: 1;
+        }
+    `
+
+    const DataIndexButton: StyledComponent<'div', {}> = styled.div`
+        ${ItemBase}
+    `
+
+    const AdjacentControllButton: StyledComponent<'div', {}> = styled.div`
+        ${ItemBase}
+    `
+
     return (
         <Wrapper>
             <Header>
-                <HeaderTitle>
-                    Add features
+                <HeaderTextContent>
+                    <HeaderTitle>
+                        Add features
                 </HeaderTitle>
+                    {loadFileName && (
+                        <LoadFileName>
+                            {loadFileName}
+                        </LoadFileName>
+                    )}
+                </HeaderTextContent>
                 <OperationTable>
                     <LoadDataComponent
                         setVector={setVector}
+                        setLoadFileName={setLoadFileName}
+                        setCurrentDataNumber={setCurrentDataNumber}
                     />
                     <AddDimensionComponent
                         vector={vector}
@@ -276,18 +360,28 @@ export const DataPrepContainer: FC = () => {
                     />
                 </OperationTable>
             </Header>
-            <DataContent
-                ref={dataContentRef}
-                onScroll={() => {
-                    if (!dataContentRef.current) {
-                        throw new Error('No reference to Data content')
-                    }
-
-                    viewState.setScrollTop(dataContentRef.current.scrollTop)
-                }}
-            >
-                {convertVectorIntoComponent(vector)}
-            </DataContent>
+            {convertVectorIntoComponent(vector)}
+            {
+                (currentDataNumber !== 0) && (
+                    <ItemSelector>
+                        <AdjacentControllButton>
+                            <p>{'prev'}</p>
+                        </AdjacentControllButton>
+                        <DataIndexButton>
+                            <p>1</p>
+                        </DataIndexButton>
+                        <DataIndexButton>
+                            <p>2</p>
+                        </DataIndexButton>
+                        <DataIndexButton>
+                            <p>3</p>
+                        </DataIndexButton>
+                        <AdjacentControllButton>
+                            <p>{'next'}</p>
+                        </AdjacentControllButton>
+                    </ItemSelector>
+                )
+            }
         </Wrapper>
     )
 }
