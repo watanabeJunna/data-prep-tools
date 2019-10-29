@@ -172,8 +172,6 @@ export const DataPrepContainer: FC = () => {
     `
 
     const LoadFileName: StyledComponent<'div', {}> = styled.div`
-        display: inline;
-        vertical-align: sub;
         font-size: 1.3em;
         color: #5f6f81;
         margin: auto 7px;
@@ -188,8 +186,6 @@ export const DataPrepContainer: FC = () => {
     `
 
     const CurrentDataNumber: StyledComponent<'div', {}> = styled.div`
-        display: inline;
-        vertical-align: sub;
         font-size: 1.3em;
         color: #5f6f81;
         margin: auto 7px;
