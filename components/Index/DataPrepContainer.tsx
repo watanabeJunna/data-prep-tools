@@ -35,14 +35,6 @@ export const DataPrepContainer: FC = () => {
 
     const dataContentRef: MutableRefObject<HTMLDivElement | null> = useRef(null)
 
-    useEffect(() => {
-        if (!dataContentRef.current) {
-            return
-        }
-
-        dataContentRef.current.scrollTo(0, viewState.getScrollTop())
-    })
-
     /**
      * The vector to be rendered must consist of header row + body row.
      * 
@@ -102,16 +94,7 @@ export const DataPrepContainer: FC = () => {
                 <Column>
                     {columnElement}
                 </Column>
-                <DataContent
-                    ref={dataContentRef}
-                    onScroll={() => {
-                        if (!dataContentRef.current) {
-                            throw new Error('No reference to Data content')
-                        }
-
-                        viewState.setScrollTop(dataContentRef.current.scrollTop)
-                    }}
-                >
+                <DataContent>
                     {rowElement}
                 </DataContent>
             </>
@@ -214,13 +197,40 @@ export const DataPrepContainer: FC = () => {
         display: flex;
     `
 
-    const DataContent: StyledComponent<'div', {}> = styled.div`
-        max-height: 620px;
-        color: #777777;
-        font-family: "Yu Gothic";
-        overflow: auto;
-        border-bottom: 1px solid rgba(176, 176, 176, 0.5);
-    `
+    const DataContent: FC = ({ children }) => {
+        const Style: StyledComponent<'div', {}> = styled.div`
+            max-height: 620px;
+            color: #777777;
+            font-family: "Yu Gothic";
+            overflow: auto;
+            border-bottom: 1px solid rgba(176, 176, 176, 0.5);
+        `
+
+        useEffect(() => {
+            if (!dataContentRef.current) {
+                return
+            }
+
+            const scrollTop: number = viewState.getScrollTop()
+            dataContentRef.current.scrollTop = scrollTop
+        }, [dataContentRef])
+
+
+        return (
+            <Style
+                ref={dataContentRef}
+                onScroll={() => {
+                    if (!dataContentRef.current) {
+                        throw new Error('No reference to Data content')
+                    }
+
+                    viewState.setScrollTop(dataContentRef.current.scrollTop)
+                }}
+            >
+                {children}
+            </Style>
+        )
+    }
 
     const Column: StyledComponent<'div', {}> = styled.div`
         display: flex;
