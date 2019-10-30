@@ -12,7 +12,9 @@ import {
 import styled, { css, StyledComponent, FlattenSimpleInterpolation } from 'styled-components'
 import { ExportDataComponent, LoadDataComponent, AddDimensionComponent } from './index'
 import { InputStyle } from '../Input'
-import { ViewState, VectorItemState, VectorItemStorage } from './classes'
+import { ViewState } from './ViewState'
+import { VectorItemState } from './VectorItemState'
+import { VectorItemStorage } from './VectorItemStorage'
 
 export type Vector = string[][]
 

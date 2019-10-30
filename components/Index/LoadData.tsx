@@ -9,7 +9,7 @@ import {
 import { DialogUtilComponent, DialogSubmitButton, DialogInput } from '../Dialog'
 import fetch from 'isomorphic-fetch'
 import { Vector } from './DataPrepContainer'
-import { VectorItemStorage } from './classes'
+import { VectorItemStorage } from './VectorItemStorage'
 
 export interface ILoadDataComponent {
     setVector: (item: Vector) => void
