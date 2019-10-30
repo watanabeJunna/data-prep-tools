@@ -7,11 +7,14 @@ import {
     MutableRefObject
 } from 'react'
 import { DialogUtilComponent, DialogSubmitButton, DialogInput } from '../Dialog'
+import { VectorItemStorage } from "./VectorItemStorage";
 
 export interface IAddDimensionComponent {
     vector: string[][]
     setVector: (item: string[][]) => void
 }
+
+const vectorItemStorage = new VectorItemStorage()
 
 export const AddDimensionComponent: FC<IAddDimensionComponent> = ({
     vector,
@@ -42,6 +45,14 @@ export const AddDimensionComponent: FC<IAddDimensionComponent> = ({
         if (!dim) {
             return
         }
+
+        const flatten = (xs: any) => xs.reduce(
+            (acc: any, e: any) => Array.isArray(e) ? acc.concat(flatten(e))
+                : acc.concat(e)
+            , []
+        )
+
+        const item = vectorItemStorage.getItem(1)
 
         const vectorCopy: string[][] = [...vector]
         const newVector: string[][] = []
