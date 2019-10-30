@@ -66,8 +66,8 @@ export class FeaturesOperator {
      * 
      * @param args 
      */
-    public zip(args: any[][]): any[][] {
-        let ret: any[][] = [...Array(args[0].length)].map(() => [])
+    public zip(args: string[][]): string[][] {
+        let ret: string[][] = [...Array(args[0].length)].map(() => [])
 
         for (let l = 0; l < args[0].length; l++) {
             for (let i = 0; i < args.length; i++) {
@@ -115,7 +115,7 @@ export class FeaturesOperator {
      * 
      * @param columnName 
      */
-    public getFeatures(): any[][] {
+    public getFeatures(): string[][] {
         const values = Object.values(this.featureTable)
 
         return values
@@ -133,13 +133,15 @@ export class FeaturesOperator {
     /**
      * @returns
      */
-    public toArray(): any[][] {
+    public toArray(): string[][] {
         const ret = []
-        ret.push(this.getColumns())
 
-        for (const i of this.zip(this.getFeatures())) {
-            ret.push(i)
-        }
+        const columns = this.getColumns()
+        const features = this.getFeatures()
+        const processed_features = this.zip(features)
+        
+        ret.push(columns)
+        ret.push(...processed_features)
 
         return ret
     }

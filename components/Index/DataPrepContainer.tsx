@@ -21,6 +21,7 @@ const viewState = new ViewState()
 const vectorItemState = new VectorItemState()
 const vectorItemStorage = new VectorItemStorage()
 
+// 
 export const DataPrepContainer: FC = () => {
     const [vector, setVector]: [
         Vector,
@@ -67,8 +68,6 @@ export const DataPrepContainer: FC = () => {
             return ret
         }
 
-        console.log(featureOperator.toArray())
-
         const columnElement: JSX.Element[] = [
             <IDCell>
                 ID
@@ -88,7 +87,7 @@ export const DataPrepContainer: FC = () => {
                 <Row key={rowNum}>
                     {
                         <IDCell key={rowNum}>
-                            {rowNum + 1}
+                            {rowNum}
                         </IDCell>
                     }
                     {
@@ -137,6 +136,18 @@ export const DataPrepContainer: FC = () => {
             const item: Vector = vectorItemStorage.getItem(dataNumber)
 
             vectorItemState.setCurrentDataNumber(dataNumber)
+
+            const operator = new FeaturesOperator(vector)
+
+            // item[0].length
+            const loadDataOperator = new FeaturesOperator(item)
+
+            const currentColumns = operator.getColumns()
+            const loadColumns = loadDataOperator.getColumns()
+
+            console.log(currentColumns, loadColumns)
+            // operator.setFeature((item.shift() as string[]), item)
+
             setVector(item)
         }
 

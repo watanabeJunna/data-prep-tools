@@ -60,9 +60,13 @@ export const LoadDataComponent: FC<ILoadDataComponent> = ({
         }
 
         let itemLength = 0
+        const columns = vector[0]
 
         for (let i = 0; i < vector.length; i += threshold, itemLength++) {
-            const vectorJsonStr: string = JSON.stringify(vector.slice(i, i + threshold))
+            const processedVector = vector.slice(i, i + threshold)
+            processedVector.unshift(columns)
+
+            const vectorJsonStr: string = JSON.stringify(processedVector)
 
             vectorItemStorage.setItem(itemLength, vectorJsonStr)
         }
