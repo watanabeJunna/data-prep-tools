@@ -1,5 +1,5 @@
 {
-  "name": "tmp",
+  "name": "data-prep-tools",
   "version": "1.0.0",
   "description": "",
   "scripts": {
@@ -10,24 +10,28 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^1.2.19",
-    "@fortawesome/free-solid-svg-icons": "^5.9.0",
-    "@fortawesome/react-fontawesome": "^0.1.4",
-    "isomorphic-fetch": "^2.2.1",
     "next": "^9.0.4",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "react-redux": "^7.1.1",
+    "redux": "^4.0.4",
     "styled-components": "^4.3.2",
     "styled-reset": "^3.0.0",
-    "typescript": "^3.5.3"
+    "isomorphic-fetch": "^2.2.1",
+    "@fortawesome/fontawesome-svg-core": "^1.2.19",
+    "@fortawesome/free-solid-svg-icons": "^5.9.0",
+    "@fortawesome/react-fontawesome": "^0.1.4"
   },
   "devDependencies": {
     "@types/isomorphic-fetch": "0.0.35",
     "@types/jest": "^24.0.19",
     "@types/mongoose": "^5.5.12",
     "@types/next": "^8.0.6",
+    "@types/next-redux-wrapper": "^2.0.2",
     "@types/react": "^16.8.23",
     "@types/react-dom": "^16.8.5",
+    "@types/react-redux": "^7.1.5",
+    "@types/redux": "^3.6.0",
     "@types/styled-components": "^4.1.18",
     "@zeit/next-typescript": "^1.1.1",
     "babel-core": "^6.26.3",
@@ -38,7 +42,11 @@
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.15.1",
     "jest": "^24.9.0",
+    "next-redux-wrapper": "^4.0.1",
+    "prettier": "^1.18.2",
+    "redux-devtools-extension": "^2.13.8",
     "ts-node": "^8.3.0",
-    "ts-node-dev": "^1.0.0-pre.42"
+    "ts-node-dev": "^1.0.0-pre.42",
+    "typescript": "^3.5.3"
   }
 }
