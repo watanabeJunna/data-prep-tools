@@ -53,29 +53,4 @@ export class VectorItemStorage {
         const processed: string = JSON.stringify(vector)
         window.localStorage.setItem((this.dataPrefix + key), processed)
     }
-
-    /**
-     * 
-     * @param vector 
-     */
-    public setVector(vector: Vector): void {
-        // if (vector.length < this.editableNumber) {
-        //     this.setItem(0, vector)
-
-        //     return
-        // }
-
-        // let itemLength: number = 0
-
-        // const columns: string[] = vector[0]
-
-        // for (let i = 0; i < vector.length; i += this.editableNumber, itemLength++) {
-        //     const processedVector = vector.slice(i, i + this.editableNumber)
-        //     processedVector.unshift(columns)
-
-        //     this.setItem(itemLength, processedVector)
-        // }
-
-        // this.setItemLength(itemLength)
-    }
 }
