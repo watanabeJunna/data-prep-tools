@@ -13,6 +13,7 @@ import styled, { css, StyledComponent, FlattenSimpleInterpolation } from 'styled
 import { ExportDataComponent, LoadDataComponent, AddDimensionComponent } from './index'
 import { InputStyle } from '../Input'
 import { ViewState, VectorItemState, VectorItemStorage } from './classes'
+import { FeaturesOperator } from './FeaturesOperator'
 
 export type Vector = string[][]
 
@@ -51,6 +52,10 @@ export const DataPrepContainer: FC = () => {
         if (vector.length === 0) {
             return
         }
+
+        const featureOperator = new FeaturesOperator(vector)
+        console.log(featureOperator)
+        console.log(featureOperator.getFeature('title'))
 
         const copyVector: Vector = [...vector]
 
