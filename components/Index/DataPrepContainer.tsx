@@ -133,6 +133,9 @@ export const DataPrepContainer: FC = () => {
         }
 
         const handleItemClick = (dataNumber: number): void => {
+            // この時点で追加の特徴は書き込まれているべき
+            // Storeは二つに分離されている
+            // StoreはRedisにするかなあ
             const item: Vector = vectorItemStorage.getItem(dataNumber)
 
             vectorItemState.setCurrentDataNumber(dataNumber)
