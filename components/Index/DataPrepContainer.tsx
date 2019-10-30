@@ -276,13 +276,12 @@ export const DataPrepContainer: FC = () => {
             setSelected(!selected)
 
             if (value !== "" && value !== vector[row][column]) {
-                setVector((vector: Vector) => {
-                    let newVector: Vector = [...vector]
+                let newVector: Vector = [...vector]
+                newVector[row][column] = value
 
-                    newVector[row][column] = value
-
-                    return newVector
-                })
+                const currentDataNumber: number = vectorItemState.getCurrentDataNumber()
+                vectorItemStorage.setItem(currentDataNumber, newVector)
+                setVector(newVector)
             }
         }
 
