@@ -64,7 +64,11 @@ export const LoadDataComponent: FC<ILoadDataComponent> = ({
 
         for (let i = 0; i < vector.length; i += threshold, itemLength++) {
             const processedVector = vector.slice(i, i + threshold)
-            processedVector.unshift(columns)
+
+            // To avoid duplication, do not add the first data column
+            if (itemLength !== 0) {
+                processedVector.unshift(columns)
+            }
 
             vectorItemStorage.setItem(itemLength, processedVector)
         }

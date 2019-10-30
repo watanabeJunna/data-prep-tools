@@ -48,12 +48,14 @@ export const AddDimensionComponent: FC<IAddDimensionComponent> = ({
         }
 
         // Set Vector
-        const vectorCopy: string[][] = [...vector]
-        const newVector: string[][] = []
+        const vectorCopy: Vector = [...vector]
+        const newVector: Vector = []
 
         newVector.push([...vectorCopy.shift() as string[], dim])
+        vectorCopy.map(v => newVector.push([...v, '']))
 
-        vectorCopy.map(v => newVector.push([...v, ""]))
+        setClose(true)
+        setVector(newVector)
 
         // Set Storage
         const itemLength = vectorItemStorage.getItemLength();
@@ -63,13 +65,10 @@ export const AddDimensionComponent: FC<IAddDimensionComponent> = ({
 
             const newItem: Vector = []
             newItem.push([...items.shift() as string[], dim])
-            items.forEach((item: string[]) => newItem.push([...item, ""]))
+            items.forEach((item: string[]) => newItem.push([...item, '']))
 
             vectorItemStorage.setItem(c, newItem)
         })
-
-        setClose(true)
-        setVector(newVector)
     }
 
     return (

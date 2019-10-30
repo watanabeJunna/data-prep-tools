@@ -59,23 +59,23 @@ export class VectorItemStorage {
      * @param vector 
      */
     public setVector(vector: Vector): void {
-        if (vector.length < this.editableNumber) {
-            this.setItem(0, vector)
+        // if (vector.length < this.editableNumber) {
+        //     this.setItem(0, vector)
 
-            return
-        }
+        //     return
+        // }
 
-        let itemLength: number = 0
+        // let itemLength: number = 0
 
-        const columns: string[] = vector[0]
+        // const columns: string[] = vector[0]
 
-        for (let i = 0; i < vector.length; i += this.editableNumber, itemLength++) {
-            const processedVector = vector.slice(i, i + this.editableNumber)
-            processedVector.unshift(columns)
+        // for (let i = 0; i < vector.length; i += this.editableNumber, itemLength++) {
+        //     const processedVector = vector.slice(i, i + this.editableNumber)
+        //     processedVector.unshift(columns)
 
-            this.setItem(itemLength, processedVector)
-        }
+        //     this.setItem(itemLength, processedVector)
+        // }
 
-        this.setItemLength(itemLength)
+        // this.setItemLength(itemLength)
     }
 }
