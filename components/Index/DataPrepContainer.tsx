@@ -126,11 +126,13 @@ export const DataPrepContainer: FC = () => {
         const handleItemClick = (dataNumber: number): void => {
             const item: Vector = vectorItemStorage.getItem(dataNumber)
 
+            viewState.setScrollTop(0)
+
             vectorItemState.setCurrentDataNumber(dataNumber)
             setVector(item)
         }
 
-        const items = [...Array(itemLength)].map((_: any, c: number): JSX.Element => {
+        const items = [...Array(itemLength)].map((_: [undefined], c: number): JSX.Element => {
             return (
                 <DataIndexButton
                     onClick={() => handleItemClick(c)}

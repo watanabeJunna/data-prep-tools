@@ -7,7 +7,8 @@ import {
     MutableRefObject
 } from 'react'
 import { DialogUtilComponent, DialogSubmitButton, DialogInput } from '../Dialog'
-import { VectorItemStorage } from "./VectorItemStorage";
+import { Vector } from './DataPrepContainer'
+import { VectorItemStorage } from "./VectorItemStorage"
 
 export interface IAddDimensionComponent {
     vector: string[][]
@@ -18,7 +19,7 @@ const vectorItemStorage = new VectorItemStorage()
 
 export const AddDimensionComponent: FC<IAddDimensionComponent> = ({
     vector,
-    setVector
+    setVector,
 }) => {
     const [close, setClose]: [
         boolean,
@@ -46,20 +47,26 @@ export const AddDimensionComponent: FC<IAddDimensionComponent> = ({
             return
         }
 
-        const flatten = (xs: any) => xs.reduce(
-            (acc: any, e: any) => Array.isArray(e) ? acc.concat(flatten(e))
-                : acc.concat(e)
-            , []
-        )
-
-        const item = vectorItemStorage.getItem(1)
-
+        // Set Vector
         const vectorCopy: string[][] = [...vector]
         const newVector: string[][] = []
 
         newVector.push([...vectorCopy.shift() as string[], dim])
 
         vectorCopy.map(v => newVector.push([...v, ""]))
+
+        // Set Storage
+        const itemLength = vectorItemStorage.getItemLength();
+
+        [...Array(itemLength)].forEach((_: [undefined], c: number) => {
+            const items: Vector = vectorItemStorage.getItem(c)
+
+            const newItem: Vector = []
+            newItem.push([...items.shift() as string[], dim])
+            items.forEach((item: string[]) => newItem.push([...item, ""]))
+
+            vectorItemStorage.setItem(c, newItem)
+        })
 
         setClose(true)
         setVector(newVector)

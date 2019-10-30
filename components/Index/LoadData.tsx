@@ -66,9 +66,7 @@ export const LoadDataComponent: FC<ILoadDataComponent> = ({
             const processedVector = vector.slice(i, i + threshold)
             processedVector.unshift(columns)
 
-            const vectorJsonStr: string = JSON.stringify(processedVector)
-
-            vectorItemStorage.setItem(itemLength, vectorJsonStr)
+            vectorItemStorage.setItem(itemLength, processedVector)
         }
 
         vectorItemStorage.setItemLength(itemLength)
@@ -112,8 +110,16 @@ export const LoadDataComponent: FC<ILoadDataComponent> = ({
             throw new Error('Invalid data')
         }
 
-        const editableNumber = 100
+        const editableNumber: number = 100
 
+        // Init Storage
+        if (VectorItemStorage.localStorage) {
+            VectorItemStorage.localStorage.clear()
+        }
+
+        setItemLength(0)
+
+        // Set Storage
         const splitVectorArray: Vector = splitAndSaveVector(vector, editableNumber)
 
         setCurrentDataNumber(0)
