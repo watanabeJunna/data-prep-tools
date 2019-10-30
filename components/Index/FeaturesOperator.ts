@@ -1,9 +1,9 @@
 import { Vector } from './DataPrepContainer'
 
 type Columns = string[]
-type Features = string[][]
+type Features = Vector
 
-type FeatureTable = {
+export type FeatureTable = {
     [key: string]: any[]
 }
 
@@ -64,6 +64,22 @@ export class FeaturesOperator {
 
     /**
      * 
+     * @param args 
+     */
+    public zip(args: any[][]): any[][] {
+        let ret: any[][] = [...Array(args[0].length)].map(() => [])
+
+        for (let l = 0; l < args[0].length; l++) {
+            for (let i = 0; i < args.length; i++) {
+                ret[l][i] = args[i][l]
+            }
+        }
+
+        return ret
+    }
+
+    /**
+     * 
      * @param dimension 
      * @param vector 
      */
@@ -77,12 +93,14 @@ export class FeaturesOperator {
         })
     }
 
-    public setColumn(columnName: string): void {
-        this.featureTable.columns[columnName] = {}
-    }
-
+    /**
+     * 
+     * @returns
+     */
     public getColumns(): string[] {
+        const keys =  Object.keys(this.featureTable)
 
+        return keys
     }
 
     /**
@@ -90,7 +108,17 @@ export class FeaturesOperator {
      * @param columnName 
      */
     public getFeature(columnName: string): string[] {
-        return (this as any)[columnName]
+        return this.featureTable[columnName]
+    }
+
+    /**
+     * 
+     * @param columnName 
+     */
+    public getFeatures(): any[][] {
+        const values = Object.values(this.featureTable)
+
+        return values
     }
 
     /**
@@ -98,9 +126,21 @@ export class FeaturesOperator {
      * @param columnName 
      * @param values 
      */
-    public setFeature(columnName: string, values: any[]): void {
-        Object.assign(this, {
-            [columnName]: values
-        })
+    public setFeature(columnName: string, features: any[]): void {
+        this.featureTable[columnName] = features
+    }
+
+    /**
+     * @returns
+     */
+    public toArray(): any[][] {
+        const ret = []
+        ret.push(this.getColumns())
+
+        for (const i of this.zip(this.getFeatures())) {
+            ret.push(i)
+        }
+
+        return ret
     }
 }

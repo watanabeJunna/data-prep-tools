@@ -54,13 +54,20 @@ export const DataPrepContainer: FC = () => {
         }
 
         const featureOperator = new FeaturesOperator(vector)
-        console.log(featureOperator)
-        console.log(featureOperator.getFeature('title'))
 
-        const copyVector: Vector = [...vector]
+        const zip = function (args: any[][]) {
+            let ret: any[][] = [...Array(args[0].length)].map(() => [])
 
-        const columns: string[] = [...copyVector.shift() as string[]]
-        const rows: Vector = copyVector.map((v: string[]) => [...v])
+            for (let l = 0; l < args[0].length; l++) {
+                for (let i = 0; i < args.length; i++) {
+                    ret[l][i] = args[i][l]
+                }
+            }
+
+            return ret
+        }
+
+        console.log(featureOperator.toArray())
 
         const columnElement: JSX.Element[] = [
             <IDCell>
@@ -68,7 +75,7 @@ export const DataPrepContainer: FC = () => {
             </IDCell>
         ]
 
-        columns.forEach((column: string, c: number): void => {
+        featureOperator.getColumns().forEach((column: string, c: number): void => {
             columnElement.push(
                 <ColumnCell key={c}>
                     {column}
@@ -76,7 +83,7 @@ export const DataPrepContainer: FC = () => {
             )
         })
 
-        const rowElement: JSX.Element[] = rows.map((row: string[], rowNum: number): JSX.Element => {
+        const rowElement: JSX.Element[] = zip(featureOperator.getFeatures()).map((row: string[], rowNum: number): JSX.Element => {
             return (
                 <Row key={rowNum}>
                     {
