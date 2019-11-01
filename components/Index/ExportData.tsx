@@ -6,8 +6,11 @@ import {
     SetStateAction,
     MutableRefObject
 } from 'react'
-import { DialogUtilComponent, DialogSubmitButton, DialogInput } from '../Dialog'
 import fetch from 'isomorphic-fetch'
+import { Vector } from './DataPrepContainer'
+import { VectorItemStorage } from './VectorItemStorage'
+import { DialogUtilComponent, DialogSubmitButton, DialogInput } from '../Dialog'
+
 
 export interface IExportDataComponent {
     vector: string[][]
@@ -32,6 +35,14 @@ export const ExportDataComponent: FC<IExportDataComponent> = ({
             return
         }
 
+        const vectorItemStorage = new VectorItemStorage()
+        const itemLength: number = vectorItemStorage.getItemLength()
+        const exportVector: Vector = [];
+
+        [...Array(itemLength)].map((_: [undefined], c: number) => {
+            exportVector.push(...vectorItemStorage.getItem(c))
+        })
+
         const fileName: string = fileNameInputRef.current.value
 
         const res: Response = await fetch('/api/v1/vector', {
@@ -42,7 +53,7 @@ export const ExportDataComponent: FC<IExportDataComponent> = ({
             },
             body: JSON.stringify({
                 fileName: fileName,
-                vector: vector
+                vector: exportVector
             })
         })
 
