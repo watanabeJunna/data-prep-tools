@@ -40,7 +40,14 @@ export const ExportDataComponent: FC<IExportDataComponent> = ({
         const exportVector: Vector = [];
 
         [...Array(itemLength)].map((_: [undefined], c: number) => {
-            exportVector.push(...vectorItemStorage.getItem(c))
+            const item = vectorItemStorage.getItem(c)
+
+            // Remove columns other than first data
+            if (itemLength !== 0) {
+                item.shift()
+            }
+
+            exportVector.push(...item)
         })
 
         const fileName: string = fileNameInputRef.current.value
