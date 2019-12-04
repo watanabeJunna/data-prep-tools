@@ -24,15 +24,14 @@ export const reducer = (state = initialState(), action: Actions): State => {
                     value: feature
                 }
             })
+
             return {...state, features: features}
-        case 'FEATURES_INIT_DIMENSIONS':
+        case 'FEATURES_ADD_DIMENSION':
             if (state.features === []) {
                 return state
             }
 
-            features = [...state.features as Feature[]]
-
-            features = features.map((feature: Feature) => {
+            features = [...state.features as Feature[]].map((feature: Feature) => {
                 return {
                     ...feature,
                     id: feature.id,

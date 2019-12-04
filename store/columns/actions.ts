@@ -15,5 +15,12 @@ export const initColumns = (columns: Column) => {
     }
 }
 
-// export const addColumn = () => {}
+export const addColumn = (column: string) => {
+    return {
+        type: types.addColumn,
+        payload: {
+            column
+        }
+    }
+}
 // export const deleteColumn = () => {}
