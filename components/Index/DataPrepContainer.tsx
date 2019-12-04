@@ -424,10 +424,7 @@ export const DataPrepContainer: FC = () => {
                         setCurrentDataNumber={(dataNumber: number) => vectorItemState.setCurrentDataNumber(dataNumber)}
                         setItemLength={(itemLength: number) => vectorItemState.setItemLength(itemLength)}
                     />
-                    <AddDimensionComponent
-                        vector={vector}
-                        setVector={setVector}
-                    />
+                    <AddDimensionComponent />
                     <ExportDataComponent
                         vector={vector}
                     />

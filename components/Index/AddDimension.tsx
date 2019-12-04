@@ -1,32 +1,21 @@
-import {
-    useState,
-    useRef,
-    FC,
-    Dispatch,
-    SetStateAction,
-    MutableRefObject
-} from 'react'
+import { useState, useRef } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import { DialogUtilComponent, DialogSubmitButton, DialogInput } from '../Dialog'
 import { Vector } from './DataPrepContainer'
-import { VectorItemStorage } from "./VectorItemStorage"
+import { State } from '../../store/features'
+import { initDimensions } from '../../store/features/actions'
+import { RootState } from '../../store/reducer'
 
-export interface IAddDimensionComponent {
-    vector: string[][]
-    setVector: (item: string[][]) => void
-}
+export const AddDimensionComponent: React.FC = () => {
+    const state = useSelector((state: RootState) => state)
+    console.log(state.features.features)
 
-const vectorItemStorage = new VectorItemStorage()
-
-export const AddDimensionComponent: FC<IAddDimensionComponent> = ({
-    vector,
-    setVector,
-}) => {
     const [close, setClose]: [
         boolean,
-        Dispatch<SetStateAction<boolean>>
+        React.Dispatch<React.SetStateAction<boolean>>
     ] = useState<boolean>(false)
 
-    const dimInputRef: MutableRefObject<HTMLInputElement | null> = useRef(null)
+    const dimInputRef: React.MutableRefObject<HTMLInputElement | null> = useRef(null)
 
     const onSubmit = (): void => {
         if (!dimInputRef.current) {
@@ -39,36 +28,15 @@ export const AddDimensionComponent: FC<IAddDimensionComponent> = ({
 
         const dim: string = dimInputRef.current.value
 
-        if (!vector) {
-            return
-        }
+        // if (!tensor) {
+        //     return
+        // }
 
         if (!dim) {
             return
         }
 
-        // Set Vector
-        const vectorCopy: Vector = [...vector]
-        const newVector: Vector = []
-
-        newVector.push([...vectorCopy.shift() as string[], dim])
-        vectorCopy.map(v => newVector.push([...v, '']))
-
         setClose(true)
-        setVector(newVector)
-
-        // Set Storage
-        const itemLength = vectorItemStorage.getItemLength();
-
-        [...Array(itemLength)].forEach((_: [undefined], c: number) => {
-            const items: Vector = vectorItemStorage.getItem(c)
-
-            const newItem: Vector = []
-            newItem.push([...items.shift() as string[], dim])
-            items.forEach((item: string[]) => newItem.push([...item, '']))
-
-            vectorItemStorage.setItem(c, newItem)
-        })
     }
 
     return (

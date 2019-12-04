@@ -1,11 +1,11 @@
-import { ConfiguredStore } from "../store"
+import { ConfiguredStore } from '../store'
 
-export type Vector = {
+export type FeatureData = string[][]
+
+export type Feature = {
     id: string
-    features: string[]
+    value: string[]
 }
-
-export type Tensor = Vector[]
 
 export type PageContextProps = {
     store: ConfiguredStore
