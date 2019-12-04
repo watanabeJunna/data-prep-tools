@@ -19,10 +19,12 @@ export const initFeatures = (features: RawFeatures) => {
 /**
  * 
  */
-export const addDimensions = () => {
+export const addDimensions = (initialValue: string) => {
     return {
         type: types.addDimensions,
-        payload: { }
+        payload: { 
+            initialValue
+        }
     }
 }
 

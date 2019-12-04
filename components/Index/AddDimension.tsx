@@ -34,7 +34,7 @@ export const AddDimensionComponent: React.FC = () => {
         }
             
         dispatch(addColumn(dimInputRef.current.value))
-        dispatch(addDimensions())
+        dispatch(addDimensions(''))
         setClose(true)
     }
 

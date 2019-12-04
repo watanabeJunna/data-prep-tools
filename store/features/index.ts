@@ -35,7 +35,7 @@ export const reducer = (state = initialState(), action: Actions): State => {
                 return {
                     ...feature,
                     id: feature.id,
-                    value: [...feature.value, ''] 
+                    value: [...feature.value, action.payload.initialValue] 
                 }
             })
 
