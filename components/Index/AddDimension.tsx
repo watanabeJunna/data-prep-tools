@@ -1,17 +1,13 @@
 import { useState, useRef, Dispatch } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { DialogUtilComponent, DialogSubmitButton, DialogInput } from '../Dialog'
-import { Vector } from './DataPrepContainer'
-import { State } from '../../store/features'
-import { initFeatures, initDimensions } from '../../store/features/actions'
-import { initColumns } from '../../store/columns/actions'
+import { addDimensions } from '../../store/features/actions'
+import { addColumn } from '../../store/columns/actions'
 import { RootState } from '../../store/reducer'
 
 export const AddDimensionComponent: React.FC = () => {
     const dispatch: Dispatch<any> = useDispatch()
     const [features, columns] = useSelector(({features, columns}: RootState) => [features.features, columns.columns])
-    console.log(features)
-    console.log(columns)
 
     const [close, setClose]: [
         boolean,
@@ -29,32 +25,16 @@ export const AddDimensionComponent: React.FC = () => {
             return
         }
 
-        const dimension: string = dimInputRef.current.value
-
-        // if (!tensor) {
-        //     return
-        // }
-
-        if (!dimension) {
+        if (features === [] && columns === []) {
             return
         }
 
-        const rawFeatures: string[][] = [
-            ['a', 'b', 'c'],
-            ['d', 'e', 'f'],
-            ['g', 'h', 'c']
-        ]
-
-        const columns: string[] = ['a', 'b', 'v']
-
-        dispatch(initFeatures(rawFeatures))
-        dispatch(initColumns(columns))
-
-        if (features !== []) {
-
-            dispatch(initDimensions())
+        if (!dimInputRef.current.value) {
+            return
         }
-
+            
+        dispatch(addColumn(dimInputRef.current.value))
+        dispatch(addDimensions())
         setClose(true)
     }
 
