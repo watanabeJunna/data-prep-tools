@@ -1,37 +1,46 @@
+import uuid from 'uuid/v4'
 import { Actions } from '../action'
 import { Feature } from '../../interfaces'
 
 export interface State {
-    features: Feature[] | {}
+    features: Feature[] | []
 }
 
 export const initialState = (inject?: State): State => {
     return {
-        features: {},
+        features: [],
         ...inject
     }
 }
 
 export const reducer = (state = initialState(), action: Actions): State => {
+    let features: Feature[]
+
     switch (action.type) {
         case 'FEATURES_INIT_FEATURES':
-            return {...state, features: action.payload.features}
+            features = action.payload.features.map((feature: string[]) => {
+                return {
+                    id: uuid(),
+                    value: feature
+                }
+            })
+            return {...state, features: features}
         case 'FEATURES_INIT_DIMENSIONS':
-            if (state.features === {}) {
+            if (state.features === []) {
                 return state
             }
 
-            let features_ = {...state.features as Feature[]}
+            features = [...state.features as Feature[]]
 
-            features_ = features_.map((features: Feature) => {
+            features = features.map((feature: Feature) => {
                 return {
-                    ...features,
-                    id: features.id,
-                    value: [...features.value, ''] 
+                    ...feature,
+                    id: feature.id,
+                    value: [...feature.value, ''] 
                 }
             })
 
-            return {...state, features: features_}
+            return {...state, features: features}
         default:
             return state
     }

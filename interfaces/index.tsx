@@ -1,6 +1,6 @@
 import { ConfiguredStore } from '../store'
 
-export type FeatureData = string[][]
+export type RawFeatures = string[][]
 
 export type Feature = {
     id: string
