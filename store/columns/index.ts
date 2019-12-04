@@ -1,19 +1,21 @@
 import { Actions } from '../action'
-import { Tensor } from '../../interfaces'
+import { Column } from './actions'
 
-export type State = Tensor | {}
+export interface State {
+    columns: Column | []
+}
 
 export const initialState = (inject?: State): State => {
     return {
-        tensor: {},
+        columns: [],
         ...inject
     }
 }
 
 export const reducer = (state = initialState(), action: Actions): State => {
     switch (action.type) {
-        case 'TENSOR_ADD_VECTOR':
-            return {...state, tensor: action.payload}
+        case 'COLUMNS_INIT_COLUMNS':
+            return {...state, columns: action.payload.columns}
         default:
             return state
     }

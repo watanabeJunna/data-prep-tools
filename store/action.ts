@@ -10,4 +10,5 @@ type ReturnTypes<T> = {
 
 export type CreatorsToActions<T> = Unbox<ReturnTypes<T>>
 
-export type Actions = | CreatorsToActions<typeof import('./tensor/actions')>
+export type Actions = | CreatorsToActions<typeof import('./features/actions')>
+                      | CreatorsToActions<typeof import('./columns/actions')>

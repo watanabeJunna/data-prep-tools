@@ -1,17 +1,25 @@
 import { combineReducers } from 'redux'
-import * as Tensor from './tensor'
-import { State } from './tensor'
+import * as Features from './features'
+import { State } from './features'
 
-const inject: State = {
-    tensor: []
+export interface RootState {
+    features: State | {
+        features: object
+    }
 }
 
-export const initialState = (): State => {
+const inject: RootState = {
+    features: {
+        features: {}
+    }
+}
+
+export const initialState = (): RootState => {
     return {
-        tensor: Tensor.initialState(inject),
+        features: Features.initialState(inject.features),
     }
 }
 
 export const reducer = combineReducers({
-    tensor: Tensor.reducer,
+    features: Features.reducer,
 })
