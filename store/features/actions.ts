@@ -9,7 +9,7 @@ import { type } from 'os'
  */
 export const setFeatures = (features: RawFeatures) => {
     return {
-        type: types.initFeatures,
+        type: types.setFeatures,
         payload: {
             features
         }
