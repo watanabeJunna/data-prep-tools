@@ -46,6 +46,17 @@ export const reducer = (state = initialState(), action: Actions): State => {
             })
 
             return {...state, features: featureMap}
+        case 'FEATURES_UPDATE_SCALAR':
+            if (!state.features.size) {
+                return state
+            }
+
+            const features_: FeatureValue = (state.features.get(action.payload.dataNumber) as FeatureValue)
+            features_[action.payload.index][action.payload.axis] = action.payload.value
+            const updatedFeaturesMap = new Map([...state.features])
+            updatedFeaturesMap.set(action.payload.dataNumber, features_)
+
+            return {...state, features: updatedFeaturesMap}
         default:
             return state
     }

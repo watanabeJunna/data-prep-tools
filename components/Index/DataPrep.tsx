@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import styled, { css, StyledComponent, FlattenSimpleInterpolation } from 'styled-components'
 import { ExportDataComponent, LoadDataComponent, AddDimensionComponent } from './index'
 import { InputStyle } from '../Input'
 import { RootState } from '../../store/reducer'
 import { FeatureValue } from '../../interfaces'
+import { updateScalar } from '../../store/features/actions'
 
 export const DataPrep: React.FC = () => {
     const [features, columns, currentDataNumber, loadFilename] =
@@ -18,11 +19,9 @@ export const DataPrep: React.FC = () => {
         })
 
     const dataContentRef: React.MutableRefObject<HTMLDivElement | null> = useRef(null)
+    const dispatch: React.Dispatch<any> = useDispatch()
 
     /**
-     * The vector to be rendered must consist of header row + body row.
-     * 
-     * @param vector 
      * @returns
      */
     const convertFearureIntoComponent = (): JSX.Element | undefined => {
@@ -30,8 +29,8 @@ export const DataPrep: React.FC = () => {
             return
         }
 
-        const columnElements: JSX.Element[] = [
-            <IDCell>
+        const columnElements = [
+            <IDCell key={columns.length}>
                 ID
             </IDCell>,
             ...columns.map((column: string, index: number) => {
@@ -56,8 +55,9 @@ export const DataPrep: React.FC = () => {
                                 <RowCell
                                     key={columnNumber}
                                     text={scalar}
-                                    column={columnNumber}
-                                    row={rowNumber + 1} // Consider header
+                                    dataNumber={currentDataNumber}
+                                    columnNumber={columnNumber}
+                                    rowNumber={rowNumber}
                                 />
                             )
                         })
@@ -242,38 +242,27 @@ export const DataPrep: React.FC = () => {
 
     interface IRowCell {
         text: string
-        column: number
-        row: number
+        dataNumber: number
+        rowNumber: number
+        columnNumber: number
     }
 
-    const RowCell: React.FC<IRowCell> = ({ column, row, text }) => {
+    const RowCell: React.FC<IRowCell> = ({ dataNumber, columnNumber, rowNumber, text }) => {
         const [selected, setSelected]: [
             boolean,
             React.Dispatch<React.SetStateAction<boolean>>
         ] = useState<boolean>(false)
 
-        const [value, setValue]: [
-            string,
-            React.Dispatch<React.SetStateAction<string>>
-        ] = useState<string>('')
+        const value: React.MutableRefObject<string> = useRef('')
 
         const ref: React.MutableRefObject<HTMLInputElement | null> = useRef(null)
 
         const toggleElement = (): void => {
             setSelected(!selected)
 
-            // if (value !== "" && value !== vector[row][column]) {
-            //     let newVector: Vector = [...vector]
-            //     newVector[row][column] = value
-
-            //     const currentDataNumber: number = vectorItemState.getCurrentDataNumber()
-            //     vectorItemStorage.setItem(currentDataNumber, newVector)
-            //     setVector(newVector)
-            // }
-        }
-
-        const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-            setValue(e.target.value)
+            if (value.current && value.current !== text) {
+                dispatch(updateScalar(dataNumber, columnNumber, rowNumber, value.current))
+            }
         }
 
         const handleInputKeyPress = (e: React.KeyboardEvent<HTMLInputElement>): void => {
@@ -322,25 +311,25 @@ export const DataPrep: React.FC = () => {
             }
         `
 
-        const element = selected ?
+        return selected ? (
             <InputCell>
                 <DataInput
                     ref={ref}
                     autoFocus={true}
-                    defaultValue={value ? value : text}
+                    defaultValue={value.current ? value.current : text}
                     onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => handleInputKeyPress(e)}
                     onClick={() => toggleElement()}
                     onBlur={() => toggleElement()}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange(e)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => value.current = e.target.value}
                 />
-            </InputCell> :
-            <CellStyle
-                onClick={() => toggleElement()}
-            >
-                {value ? value : text}
-            </CellStyle>
-
-        return element
+            </InputCell>
+        ) : (
+                <CellStyle
+                    onClick={() => toggleElement()}
+                >
+                    {value.current ? value.current : text}
+                </CellStyle>
+            )
     }
 
     const ItemSelector: StyledComponent<'div', {}> = styled.div`
@@ -395,12 +384,7 @@ export const DataPrep: React.FC = () => {
                     } */}
                 </HeaderTextContent>
                 <OperationTable>
-                    <LoadDataComponent
-                    // setVector={setVector}
-                    // setLoadFileName={setLoadFileName}
-                    // setCurrentDataNumber={(dataNumber: number) => vectorItemState.setCurrentDataNumber(dataNumber)}
-                    // setItemLength={(itemLength: number) => vectorItemState.setItemLength(itemLength)}
-                    />
+                    <LoadDataComponent />
                     <AddDimensionComponent />
                     {/* <ExportDataComponent
                         vector={vector}

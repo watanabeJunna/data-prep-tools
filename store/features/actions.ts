@@ -1,7 +1,5 @@
-import uuid from 'uuid/v4'
 import types from './types'
-import { Features, FeatureValue } from '../../interfaces'
-import { type } from 'os'
+import { FeatureValue } from '../../interfaces'
 
 /**
  * 
@@ -19,12 +17,32 @@ export const setFeatures = (features: FeatureValue, threshold: number) => {
 
 /**
  * 
+ * @param initialValue 
  */
 export const addDimensions = (initialValue: string) => {
     return {
         type: types.addDimensions,
         payload: { 
             initialValue
+        }
+    }
+}
+
+/**
+ * 
+ * @param dataNumber 
+ * @param axis 
+ * @param index 
+ * @param value 
+ */
+export const updateScalar = (dataNumber: number, axis: number, index: number, value: string) => {
+    return {
+        type: types.updateScalar,
+        payload: {
+            value,
+            dataNumber,
+            axis,
+            index,
         }
     }
 }

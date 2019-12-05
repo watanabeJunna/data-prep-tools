@@ -20,7 +20,7 @@ export const initStore = (state = initialState()) => {
     if (process.browser) {
         const persistConfig = {
             key: 'root',
-            // whitelist: ['features', 'columns'], 
+            whitelist: ['columns', 'currentDataNumber', 'features', 'featureLength', 'loadFilename'], 
             storage
         }
 
