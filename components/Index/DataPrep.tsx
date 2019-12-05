@@ -4,11 +4,18 @@ import styled, { css, StyledComponent, FlattenSimpleInterpolation } from 'styled
 import { ExportDataComponent, LoadDataComponent, AddDimensionComponent } from './index'
 import { InputStyle } from '../Input'
 import { RootState } from '../../store/reducer'
+import { FeatureValue } from '../../interfaces'
 
 export const DataPrep: React.FC = () => {
-    const [features, columns] = useSelector(({ features, columns }: RootState) => {
-        return [features.features, columns.columns,]
-    })
+    const [features, columns, currentDataNumber, loadFilename] =
+        useSelector((state: RootState) => {
+            return [
+                state.features.features,
+                state.columns.columns,
+                state.currentDataNumber.currentDataNumber,
+                state.loadFilename.loadFilename
+            ]
+        })
 
     const dataContentRef: React.MutableRefObject<HTMLDivElement | null> = useRef(null)
 
@@ -19,45 +26,38 @@ export const DataPrep: React.FC = () => {
      * @returns
      */
     const convertFearureIntoComponent = (): JSX.Element | undefined => {
-        if (vector.length === 0) {
+        if (!features.size) {
             return
         }
 
-        const copyVector: Vector = [...vector]
-
-        const columns: string[] = [...copyVector.shift() as string[]]
-        const rows: Vector = copyVector.map((v: string[]) => [...v])
-
-        const columnElement: JSX.Element[] = [
+        const columnElements: JSX.Element[] = [
             <IDCell>
                 ID
-            </IDCell>
+            </IDCell>,
+            ...columns.map((column: string, index: number) => {
+                return (
+                    <ColumnCell key={index}>
+                        {column}
+                    </ColumnCell>
+                )
+            })
         ]
 
-        columns.forEach((column: string, c: number): void => {
-            columnElement.push(
-                <ColumnCell key={c}>
-                    {column}
-                </ColumnCell>
-            )
-        })
-
-        const rowElement: JSX.Element[] = rows.map((row: string[], rowNum: number): JSX.Element => {
+        const features_ = features.get(currentDataNumber) as FeatureValue
+        const featureElements = features_.map((feature: string[], rowNumber: number) => {
             return (
-                <Row key={rowNum}>
+                <Row key={rowNumber}>
+                    <IDCell key={rowNumber}>
+                        {rowNumber + 1}
+                    </IDCell>
                     {
-                        <IDCell key={rowNum}>
-                            {rowNum + 1}
-                        </IDCell>
-                    }
-                    {
-                        row.map((feature: string, columnNum: number): JSX.Element => {
+                        feature.map((scalar: string, columnNumber: number) => {
                             return (
                                 <RowCell
-                                    key={columnNum}
-                                    text={feature}
-                                    column={columnNum}
-                                    row={rowNum + 1} // Consider header
+                                    key={columnNumber}
+                                    text={scalar}
+                                    column={columnNumber}
+                                    row={rowNumber + 1} // Consider header
                                 />
                             )
                         })
@@ -69,12 +69,47 @@ export const DataPrep: React.FC = () => {
         return (
             <>
                 <Column>
-                    {columnElement}
+                    {columnElements}
                 </Column>
                 <DataContent>
-                    {rowElement}
+                    {featureElements}
                 </DataContent>
             </>
+        )
+    }
+
+    const DataContent: React.FC = ({ children }) => {
+        const Style: StyledComponent<'div', {}> = styled.div`
+            max-height: 620px;
+            color: #777777;
+            font-family: "Yu Gothic";
+            overflow: auto;
+            border-bottom: 1px solid rgba(176, 176, 176, 0.5);
+        `
+
+        useEffect(() => {
+            if (!dataContentRef.current) {
+                return
+            }
+
+            // const scrollTop: number = viewState.getScrollTop()
+            // dataContentRef.current.scrollTop = scrollTop
+        }, [dataContentRef])
+
+
+        return (
+            <Style
+                ref={dataContentRef}
+                onScroll={() => {
+                    if (!dataContentRef.current) {
+                        throw new Error('No reference to Data content')
+                    }
+
+                    // viewState.setScrollTop(dataContentRef.current.scrollTop)
+                }}
+            >
+                {children}
+            </Style>
         )
     }
 
@@ -174,41 +209,6 @@ export const DataPrep: React.FC = () => {
         display: flex;
     `
 
-    const DataContent: React.FC = ({ children }) => {
-        const Style: StyledComponent<'div', {}> = styled.div`
-            max-height: 620px;
-            color: #777777;
-            font-family: "Yu Gothic";
-            overflow: auto;
-            border-bottom: 1px solid rgba(176, 176, 176, 0.5);
-        `
-
-        useEffect(() => {
-            if (!dataContentRef.current) {
-                return
-            }
-
-            // const scrollTop: number = viewState.getScrollTop()
-            // dataContentRef.current.scrollTop = scrollTop
-        }, [dataContentRef])
-
-
-        return (
-            <Style
-                ref={dataContentRef}
-                onScroll={() => {
-                    if (!dataContentRef.current) {
-                        throw new Error('No reference to Data content')
-                    }
-
-                    // viewState.setScrollTop(dataContentRef.current.scrollTop)
-                }}
-            >
-                {children}
-            </Style>
-        )
-    }
-
     const Column: StyledComponent<'div', {}> = styled.div`
         display: flex;
         font-weight: 900;
@@ -262,14 +262,14 @@ export const DataPrep: React.FC = () => {
         const toggleElement = (): void => {
             setSelected(!selected)
 
-            if (value !== "" && value !== vector[row][column]) {
-                let newVector: Vector = [...vector]
-                newVector[row][column] = value
+            // if (value !== "" && value !== vector[row][column]) {
+            //     let newVector: Vector = [...vector]
+            //     newVector[row][column] = value
 
-                const currentDataNumber: number = vectorItemState.getCurrentDataNumber()
-                vectorItemStorage.setItem(currentDataNumber, newVector)
-                setVector(newVector)
-            }
+            //     const currentDataNumber: number = vectorItemState.getCurrentDataNumber()
+            //     vectorItemStorage.setItem(currentDataNumber, newVector)
+            //     setVector(newVector)
+            // }
         }
 
         const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -407,7 +407,7 @@ export const DataPrep: React.FC = () => {
                     /> */}
                 </OperationTable>
             </Header>
-            {convertFearureIntoComponent(vector)}
+            {convertFearureIntoComponent()}
             {/* {convertDataNumberToComponent(vectorItemState.getItemLength())} */}
         </Wrapper>
     )
