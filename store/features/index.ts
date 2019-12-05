@@ -3,7 +3,7 @@ import { Actions } from '../action'
 import { Feature } from '../../interfaces'
 
 export interface State {
-    features: Feature[] | []
+    features: Feature[] | string[]
 }
 
 export const initialState = (inject?: State): State => {

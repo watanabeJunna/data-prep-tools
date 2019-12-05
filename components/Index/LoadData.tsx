@@ -9,23 +9,8 @@ import {
 import { DialogUtilComponent, DialogSubmitButton, DialogInput } from '../Dialog'
 import fetch from 'isomorphic-fetch'
 import { Vector } from './DataPrepContainer'
-import { VectorItemStorage } from './VectorItemStorage'
 
-export interface ILoadDataComponent {
-    setVector: (item: Vector) => void
-    setLoadFileName: (fileName: string) => void
-    setCurrentDataNumber: (currentDataNumber: number) => void
-    setItemLength: (currentDataNumber: number) => void
-}
-
-export const LoadDataComponent: FC<ILoadDataComponent> = ({
-    setVector,
-    setLoadFileName,
-    setCurrentDataNumber,
-    setItemLength,
-}) => {
-    const vectorItemStorage = new VectorItemStorage()
-
+export const LoadDataComponent: React.FC = () => {
     const [close, setClose]: [
         boolean,
         Dispatch<SetStateAction<boolean>>
@@ -36,10 +21,10 @@ export const LoadDataComponent: FC<ILoadDataComponent> = ({
     const checkVector = (vectors: Vector): boolean => {
         let isValid: boolean = true
 
-        const dim: number = vectors[0].length
+        const dimension: number = vectors[0].length
 
         vectors.forEach(vector => {
-            if (vector.length !== dim) {
+            if (vector.length !== dimension) {
                 isValid = false
             }
         })
@@ -59,23 +44,23 @@ export const LoadDataComponent: FC<ILoadDataComponent> = ({
             return vector
         }
 
-        let itemLength = 0
-        const columns = vector[0]
+        // let itemLength = 0
+        // const columns = vector[0]
 
-        for (let i = 0; i < vector.length; i += threshold, itemLength++) {
-            const processedVector = vector.slice(i, i + threshold)
+        // for (let i = 0; i < vector.length; i += threshold, itemLength++) {
+        //     const processedVector = vector.slice(i, i + threshold)
 
-            // To avoid duplication, do not add the first data column
-            if (itemLength !== 0) {
-                processedVector.unshift(columns)
-            }
+        //     // To avoid duplication, do not add the first data column
+        //     if (itemLength !== 0) {
+        //         processedVector.unshift(columns)
+        //     }
 
-            vectorItemStorage.setItem(itemLength, processedVector)
-        }
+        //     vectorItemStorage.setItem(itemLength, processedVector)
+        // }
 
-        vectorItemStorage.setItemLength(itemLength)
+        // vectorItemStorage.setItemLength(itemLength)
 
-        setItemLength(itemLength)
+        // setItemLength(itemLength)
 
         return vector.slice(0, threshold)
     }
@@ -117,18 +102,18 @@ export const LoadDataComponent: FC<ILoadDataComponent> = ({
         const editableNumber: number = 100
 
         // Init Storage
-        if (VectorItemStorage.localStorage) {
-            VectorItemStorage.localStorage.clear()
+        if (window.localStorage) {
+            window.localStorage.clear()
         }
 
-        setItemLength(0)
+        // setItemLength(0)
 
         // Set Storage
         const splitVectorArray: Vector = splitAndSaveVector(vector, editableNumber)
 
-        setCurrentDataNumber(0)
-        setVector(splitVectorArray)
-        setLoadFileName(fileName)
+        // setCurrentDataNumber(0)
+        // setVector(splitVectorArray)
+        // setLoadFileName(fileName)
     }
 
     return (

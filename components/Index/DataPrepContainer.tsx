@@ -419,10 +419,10 @@ export const DataPrepContainer: FC = () => {
                 </HeaderTextContent>
                 <OperationTable>
                     <LoadDataComponent
-                        setVector={setVector}
-                        setLoadFileName={setLoadFileName}
-                        setCurrentDataNumber={(dataNumber: number) => vectorItemState.setCurrentDataNumber(dataNumber)}
-                        setItemLength={(itemLength: number) => vectorItemState.setItemLength(itemLength)}
+                        // setVector={setVector}
+                        // setLoadFileName={setLoadFileName}
+                        // setCurrentDataNumber={(dataNumber: number) => vectorItemState.setCurrentDataNumber(dataNumber)}
+                        // setItemLength={(itemLength: number) => vectorItemState.setItemLength(itemLength)}
                     />
                     <AddDimensionComponent />
                     <ExportDataComponent

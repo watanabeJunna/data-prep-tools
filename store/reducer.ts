@@ -4,12 +4,13 @@ import * as Columns from './columns'
 import { State as FeatureState } from './features'
 import { State as ColumnState } from './columns'
 
+// typescriptで配列ってどうやって表現するんだっけ
 export interface RootState {
     features: FeatureState | {
-        features: []
+        features: string[]
     },
     columns: ColumnState | {
-        columns: []
+        columns: string[]
     }
 }
 

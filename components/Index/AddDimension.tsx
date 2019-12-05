@@ -2,7 +2,7 @@ import { useState, useRef, Dispatch } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { DialogUtilComponent, DialogSubmitButton, DialogInput } from '../Dialog'
 import { addDimensions } from '../../store/features/actions'
-import { addColumn } from '../../store/columns/actions'
+import { initColumns, addColumn } from '../../store/columns/actions'
 import { RootState } from '../../store/reducer'
 
 export const AddDimensionComponent: React.FC = () => {
@@ -32,9 +32,11 @@ export const AddDimensionComponent: React.FC = () => {
         if (!dimInputRef.current.value) {
             return
         }
+
+        dispatch(initColumns(['a', 'b']))
             
-        dispatch(addColumn(dimInputRef.current.value))
-        dispatch(addDimensions(''))
+        // dispatch(addColumn(dimInputRef.current.value))
+        // dispatch(addDimensions(''))
         setClose(true)
     }
 
