@@ -7,7 +7,7 @@ import { RootState } from '../../store/reducer'
 
 export const AddDimensionComponent: React.FC = () => {
     const dispatch: React.Dispatch<any> = useDispatch()
-    const [features, columns] = useSelector(({features, columns}: RootState) => [features.features, columns.columns])
+    const [features, columns] = useSelector(({ features, columns }: RootState) => [features.features, columns.columns])
 
     const [close, setClose]: [
         boolean,
@@ -21,18 +21,14 @@ export const AddDimensionComponent: React.FC = () => {
             throw new Error('No reference to file name input')
         }
 
-        if (!dimInputRef.current.value) {
-            return
-        }
-
-        if (features === [] && columns === []) {
+        if (features.size && columns === []) {
             return
         }
 
         if (!dimInputRef.current.value) {
             return
         }
-            
+
         dispatch(addColumn(dimInputRef.current.value))
         dispatch(addDimensions(''))
         setClose(true)

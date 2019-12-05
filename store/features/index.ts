@@ -1,64 +1,51 @@
 import uuid from 'uuid/v4'
 import { Actions } from '../action'
-import { Feature } from '../../interfaces'
+import { Features, FeatureValue } from '../../interfaces'
 
 export interface State {
-    features: Feature[] | string[]
+    features: Features
 }
 
 export const initialState = (inject?: State): State => {
     return {
-        features: [],
+        features: new Map<number, FeatureValue>(),
         ...inject
     }
 }
 
 export const reducer = (state = initialState(), action: Actions): State => {
-    let features: Feature[]
+    let features: FeatureValue
+    const featureMap: Features = new Map<number, FeatureValue>()
 
     switch (action.type) {
         case 'FEATURES_SET_FEATURES':
-            features = action.payload.features.map((feature: string[]) => {
-                return {
-                    id: uuid(),
-                    value: feature
-                }
-            })
+            features = action.payload.features
 
-            const threshold = 100
-
-            // featuresの型をMapにすること！！！！
             if (features.length < 100) {
-                return {...state, features: features}
+                featureMap.set(0, features)
+                return {...state, features: featureMap}
             }
 
-            let itemLength = 0
-            const featuresMap = new Map()
-
-            for (let i = 0; i < features.length; i += threshold, itemLength++) {
-                const processedVector = features.slice(i, i + threshold)
-
-                
-
-                // 動的分割されたオブジェクトをどうReduxで管理するか
-                // vectorItemStorage.setItem(itemLength, processedVector)
+            for (let i: number = 0, dataNumber = 0; i < features.length; i += action.payload.threshold, dataNumber++) {
+                const splitedFeatures: FeatureValue = features.slice(i, i + action.payload.threshold)
+                featureMap.set(dataNumber, splitedFeatures)
             }
 
-            return {...state, features: features}
+            return {...state, features: featureMap}
         case 'FEATURES_ADD_DIMENSION':
-            if (state.features === []) {
+            if (!state.features.size) {
                 return state
             }
 
-            features = [...state.features as Feature[]].map((feature: Feature) => {
-                return {
-                    ...feature,
-                    id: feature.id,
-                    value: [...feature.value, action.payload.initialValue] 
-                }
+            state.features.forEach((value: FeatureValue, key: number) => {
+                const updatedValue = value.map((feature: string[]) => {
+                    return [...feature, action.payload.initialValue]
+                })
+
+                featureMap.set(key, updatedValue)
             })
 
-            return {...state, features: features}
+            return {...state, features: featureMap}
         default:
             return state
     }

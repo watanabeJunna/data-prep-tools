@@ -1,17 +1,18 @@
 import uuid from 'uuid/v4'
 import types from './types'
-import { Feature, RawFeatures } from '../../interfaces'
+import { Features, FeatureValue } from '../../interfaces'
 import { type } from 'os'
 
 /**
  * 
  * @param vector 
  */
-export const setFeatures = (features: RawFeatures) => {
+export const setFeatures = (features: FeatureValue, threshold: number) => {
     return {
         type: types.setFeatures,
         payload: {
-            features
+            threshold,
+            features,
         }
     }
 }

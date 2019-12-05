@@ -1,33 +1,33 @@
 import { useState, useRef } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { DialogUtilComponent, DialogSubmitButton, DialogInput } from '../Dialog'
+import { useDispatch } from 'react-redux'
 import fetch from 'isomorphic-fetch'
-import { Vector } from './DataPrepContainer'
-import { RootState } from '../../store/reducer'
+import { DialogUtilComponent, DialogSubmitButton, DialogInput } from '../Dialog'
 import { setFeatures } from '../../store/features/actions'
-import { setColumns, Column } from '../../store/columns/actions'
+import { setColumns, Columns } from '../../store/columns/actions'
 import { setFeatureLength } from '../../store/featureLength/actions'
-import { Feature, RawFeatures } from '../../interfaces'
+import { FeatureValue } from '../../interfaces'
+import { setLoadFilename } from '../../store/loadFilename/actions'
 
 export const LoadDataComponent: React.FC = () => {
-    const dispatch: React.Dispatch<any> = useDispatch()
-    const [features, columns] = useSelector(({features, columns}: RootState) => [features.features, columns.columns])
-
-    console.log(features, columns)
-
     const [close, setClose]: [
         boolean,
         React.Dispatch<React.SetStateAction<boolean>>
     ] = useState<boolean>(false)
 
+    const dispatch: React.Dispatch<any> = useDispatch()
+
     const fileNameInputRef: React.MutableRefObject<HTMLInputElement | null> = useRef(null)
 
-    const checkVector = (features: RawFeatures): boolean => {
+    /**
+     * 
+     * @param features 
+     */
+    const checkFeatures = (features: FeatureValue): boolean => {
         let isValid: boolean = true
 
         const dimension: number = features[0].length
 
-        features.forEach(feature => {
+        features.forEach((feature: string[]) => {
             if (feature.length !== dimension) {
                 isValid = false
             }
@@ -35,39 +35,6 @@ export const LoadDataComponent: React.FC = () => {
 
         return isValid
     }
-
-    /**
-     * If the number of vectors is enormous,
-     * divide the vectors and save them in storage.
-     * 
-     * @param features Set of features.
-     * @param threshold Number of divisions.
-     */
-    const splitFeatures = (features: Feature[], threshold: number): Feature[] => {
-        if (features.length < threshold) {
-            return features
-        }
-
-        let itemLength = 0
-        const columns = features[0]
-
-        for (let i = 0; i < features.length; i += threshold, itemLength++) {
-            const processedVector = features.slice(i, i + threshold)
-
-            // To avoid duplication, do not add the first data column
-            if (itemLength !== 0) {
-                processedVector.unshift(columns)
-            }
-
-            // 動的分割されたオブジェクトをどうReduxで管理するか
-            // vectorItemStorage.setItem(itemLength, processedVector)
-        }
-
-        dispatch(setFeatureLength(itemLength))
-
-        return features.slice(0, threshold)
-    }
-
 
     const onSubmit = async (): Promise<void> => {
         if (!fileNameInputRef.current) {
@@ -78,51 +45,41 @@ export const LoadDataComponent: React.FC = () => {
             return
         }
 
-        const fileName: string = fileNameInputRef.current.value;
+        const filename: string = fileNameInputRef.current.value
 
-        const res: Response = await fetch('/api/v1/vector', {
+        const response: Response = await fetch('/api/v1/vector', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ fileName: fileName })
+            body: JSON.stringify({ fileName: filename })
         })
 
-        if (res.status !== 200) {
+        if (response.status !== 200) {
             return
         }
 
-        const datas: string[] = await res.json()
-        const temp = [...datas] // tempいるかなぁ
-
-        const columns = (temp.shift() as string).replace(/[\r\n]/g, '').split(',')
-        const features: RawFeatures = temp.map(data => data.replace(/[\r\n]/g, '').split(','))
+        const datas: string[] = await response.json()
+        const datasCopy = [...datas]
+        const columns: Columns = (datasCopy.shift() as string).replace(/[\r\n]/g, '').split(',')
+        const features: FeatureValue = datasCopy.map(data => data.replace(/[\r\n]/g, '').split(','))
 
         setClose(true)
 
-        dispatch(setColumns(columns))
-        dispatch(setFeatures(features))
-
-        if (!checkVector(features)) {
+        if (!checkFeatures(features)) {
             throw new Error('Invalid data')
         }
 
-        const editableNumber: number = 100
+        const threshold: number = 100
+        let dataNumber: number = 0
 
-        // Init Storage
-        if (window.localStorage) {
-            window.localStorage.clear()
-        }
+        for (let i: number = 0; i < features.length; i += threshold, dataNumber++);
 
-        // setItemLength(0)
-
-        // Set Storage
-        // const splitVectorArray: Vector = splitAndSaveVector(vector, editableNumber)
-
-        // setCurrentDataNumber(0)
-        // setVector(splitVectorArray)
-        // setLoadFileName(fileName)
+        dispatch(setColumns(columns))
+        dispatch(setFeatures(features, threshold))
+        dispatch(setFeatureLength(dataNumber))
+        dispatch(setLoadFilename(filename))
     }
 
     return (

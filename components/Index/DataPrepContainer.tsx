@@ -1,39 +1,16 @@
-import {
-    useEffect,
-    useRef,
-    useState,
-    Dispatch,
-    SetStateAction,
-    FC,
-    MutableRefObject,
-    ChangeEvent,
-    KeyboardEvent
-} from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { useSelector } from 'react-redux'
 import styled, { css, StyledComponent, FlattenSimpleInterpolation } from 'styled-components'
 import { ExportDataComponent, LoadDataComponent, AddDimensionComponent } from './index'
 import { InputStyle } from '../Input'
-import { ViewState } from './ViewState'
-import { VectorItemState } from './VectorItemState'
-import { VectorItemStorage } from './VectorItemStorage'
+import { RootState } from '../../store/reducer'
 
-export type Vector = string[][]
+export const DataPrep: React.FC = () => {
+    const [features, columns] = useSelector(({ features, columns }: RootState) => {
+        return [features.features, columns.columns,]
+    })
 
-const viewState = new ViewState()
-const vectorItemState = new VectorItemState()
-const vectorItemStorage = new VectorItemStorage()
-
-export const DataPrepContainer: FC = () => {
-    const [vector, setVector]: [
-        Vector,
-        Dispatch<SetStateAction<Vector>>
-    ] = useState<Vector>([])
-
-    const [loadFileName, setLoadFileName]: [
-        string,
-        Dispatch<SetStateAction<string>>
-    ] = useState<string>('')
-
-    const dataContentRef: MutableRefObject<HTMLDivElement | null> = useRef(null)
+    const dataContentRef: React.MutableRefObject<HTMLDivElement | null> = useRef(null)
 
     /**
      * The vector to be rendered must consist of header row + body row.
@@ -41,7 +18,7 @@ export const DataPrepContainer: FC = () => {
      * @param vector 
      * @returns
      */
-    const convertVectorIntoComponent = (vector: Vector): JSX.Element | undefined => {
+    const convertFearureIntoComponent = (): JSX.Element | undefined => {
         if (vector.length === 0) {
             return
         }
@@ -101,42 +78,42 @@ export const DataPrepContainer: FC = () => {
         )
     }
 
-    const convertDataNumberToComponent = (itemLength: number): JSX.Element | undefined => {
-        if (!itemLength) {
-            return
-        }
+    // const convertDataNumberToComponent = (itemLength: number): JSX.Element | undefined => {
+    //     if (!itemLength) {
+    //         return
+    //     }
 
-        const handleItemClick = (dataNumber: number): void => {
-            const item: Vector = vectorItemStorage.getItem(dataNumber)
+    //     const handleItemClick = (dataNumber: number): void => {
+    //         const item: Vector = vectorItemStorage.getItem(dataNumber)
 
-            viewState.setScrollTop(0)
+    //         viewState.setScrollTop(0)
 
-            vectorItemState.setCurrentDataNumber(dataNumber)
-            setVector(item)
-        }
+    //         vectorItemState.setCurrentDataNumber(dataNumber)
+    //         setVector(item)
+    //     }
 
-        const items = [...Array(itemLength)].map((_: [undefined], c: number): JSX.Element => {
-            return (
-                <DataIndexButton
-                    onClick={() => handleItemClick(c)}
-                >
-                    <p>{c}</p>
-                </DataIndexButton>
-            )
-        })
+    //     const items = [...Array(itemLength)].map((_: [undefined], c: number): JSX.Element => {
+    //         return (
+    //             <DataIndexButton
+    //                 onClick={() => handleItemClick(c)}
+    //             >
+    //                 <p>{c}</p>
+    //             </DataIndexButton>
+    //         )
+    //     })
 
-        return (
-            <ItemSelector>
-                <AdjacentControllButton>
-                    <p>{'prev'}</p>
-                </AdjacentControllButton>
-                {items}
-                <AdjacentControllButton>
-                    <p>{'next'}</p>
-                </AdjacentControllButton>
-            </ItemSelector>
-        )
-    }
+    //     return (
+    //         <ItemSelector>
+    //             <AdjacentControllButton>
+    //                 <p>{'prev'}</p>
+    //             </AdjacentControllButton>
+    //             {items}
+    //             <AdjacentControllButton>
+    //                 <p>{'next'}</p>
+    //             </AdjacentControllButton>
+    //         </ItemSelector>
+    //     )
+    // }
 
     const Wrapper: StyledComponent<'div', {}> = styled.div`
         font-family: 'Raleway', sans-serif;
@@ -197,7 +174,7 @@ export const DataPrepContainer: FC = () => {
         display: flex;
     `
 
-    const DataContent: FC = ({ children }) => {
+    const DataContent: React.FC = ({ children }) => {
         const Style: StyledComponent<'div', {}> = styled.div`
             max-height: 620px;
             color: #777777;
@@ -211,8 +188,8 @@ export const DataPrepContainer: FC = () => {
                 return
             }
 
-            const scrollTop: number = viewState.getScrollTop()
-            dataContentRef.current.scrollTop = scrollTop
+            // const scrollTop: number = viewState.getScrollTop()
+            // dataContentRef.current.scrollTop = scrollTop
         }, [dataContentRef])
 
 
@@ -224,7 +201,7 @@ export const DataPrepContainer: FC = () => {
                         throw new Error('No reference to Data content')
                     }
 
-                    viewState.setScrollTop(dataContentRef.current.scrollTop)
+                    // viewState.setScrollTop(dataContentRef.current.scrollTop)
                 }}
             >
                 {children}
@@ -269,18 +246,18 @@ export const DataPrepContainer: FC = () => {
         row: number
     }
 
-    const RowCell: FC<IRowCell> = ({ column, row, text }) => {
+    const RowCell: React.FC<IRowCell> = ({ column, row, text }) => {
         const [selected, setSelected]: [
             boolean,
-            Dispatch<SetStateAction<boolean>>
+            React.Dispatch<React.SetStateAction<boolean>>
         ] = useState<boolean>(false)
 
         const [value, setValue]: [
             string,
-            Dispatch<SetStateAction<string>>
+            React.Dispatch<React.SetStateAction<string>>
         ] = useState<string>('')
 
-        const ref: MutableRefObject<HTMLInputElement | null> = useRef(null)
+        const ref: React.MutableRefObject<HTMLInputElement | null> = useRef(null)
 
         const toggleElement = (): void => {
             setSelected(!selected)
@@ -295,11 +272,11 @@ export const DataPrepContainer: FC = () => {
             }
         }
 
-        const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
+        const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
             setValue(e.target.value)
         }
 
-        const handleInputKeyPress = (e: KeyboardEvent<HTMLInputElement>): void => {
+        const handleInputKeyPress = (e: React.KeyboardEvent<HTMLInputElement>): void => {
             if (!ref.current) {
                 throw new Error('No reference to data input')
             }
@@ -351,10 +328,10 @@ export const DataPrepContainer: FC = () => {
                     ref={ref}
                     autoFocus={true}
                     defaultValue={value ? value : text}
-                    onKeyPress={(e: KeyboardEvent<HTMLInputElement>) => handleInputKeyPress(e)}
+                    onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => handleInputKeyPress(e)}
                     onClick={() => toggleElement()}
                     onBlur={() => toggleElement()}
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => handleInputChange(e)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange(e)}
                 />
             </InputCell> :
             <CellStyle
@@ -401,9 +378,9 @@ export const DataPrepContainer: FC = () => {
         <Wrapper>
             <Header>
                 <HeaderTextContent>
-                    <HeaderTitle>
+                    {/* <HeaderTitle>
                         Add features
-                </HeaderTitle>
+                    </HeaderTitle>
                     {loadFileName && (
                         <LoadFileName>
                             {loadFileName}
@@ -415,23 +392,23 @@ export const DataPrepContainer: FC = () => {
                                 {vectorItemState.getCurrentDataNumber()}
                             </CurrentDataNumber>
                         )
-                    }
+                    } */}
                 </HeaderTextContent>
                 <OperationTable>
                     <LoadDataComponent
-                        // setVector={setVector}
-                        // setLoadFileName={setLoadFileName}
-                        // setCurrentDataNumber={(dataNumber: number) => vectorItemState.setCurrentDataNumber(dataNumber)}
-                        // setItemLength={(itemLength: number) => vectorItemState.setItemLength(itemLength)}
+                    // setVector={setVector}
+                    // setLoadFileName={setLoadFileName}
+                    // setCurrentDataNumber={(dataNumber: number) => vectorItemState.setCurrentDataNumber(dataNumber)}
+                    // setItemLength={(itemLength: number) => vectorItemState.setItemLength(itemLength)}
                     />
                     <AddDimensionComponent />
-                    <ExportDataComponent
+                    {/* <ExportDataComponent
                         vector={vector}
-                    />
+                    /> */}
                 </OperationTable>
             </Header>
-            {convertVectorIntoComponent(vector)}
-            {convertDataNumberToComponent(vectorItemState.getItemLength())}
+            {convertFearureIntoComponent(vector)}
+            {/* {convertDataNumberToComponent(vectorItemState.getItemLength())} */}
         </Wrapper>
     )
 }

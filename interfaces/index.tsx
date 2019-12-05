@@ -1,11 +1,8 @@
 import { ConfiguredStore } from '../store'
 
-export type RawFeatures = string[][]
+export type FeatureValue = string[][]
 
-export type Feature = {
-    id: string
-    value: string[]
-}
+export type Features = Map<number, FeatureValue>
 
 export type PageContextProps = {
     store: ConfiguredStore

@@ -1,8 +1,8 @@
 import { Actions } from '../action'
-import { Column } from './actions'
+import { Columns } from './actions'
 
 export interface State {
-    columns: Column
+    columns: Columns
 }
 
 export const initialState = (inject?: State): State => {

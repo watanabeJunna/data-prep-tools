@@ -1,12 +1,12 @@
 import types from './types'
 
-export type Column = string[]
+export type Columns = string[]
 
 /**
  * 
  * @param columns 
  */
-export const setColumns = (columns: Column) => {
+export const setColumns = (columns: Columns) => {
     return {
         type: types.setColumns,
         payload: {
