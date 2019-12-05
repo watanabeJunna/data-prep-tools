@@ -10,6 +10,8 @@ import { updateScalar } from '../../store/features/actions'
 export const DataPrep: React.FC = () => {
     const [features, columns, currentDataNumber, loadFilename] =
         useSelector((state: RootState) => {
+            console.log(Object.prototype.toString.call(state.features.features).slice(8, -1).toLowerCase())
+
             return [
                 state.features.features,
                 state.columns.columns,
