@@ -17,13 +17,32 @@ export const reducer = (state = initialState(), action: Actions): State => {
     let features: Feature[]
 
     switch (action.type) {
-        case 'FEATURES_INIT_FEATURES':
+        case 'FEATURES_SET_FEATURES':
             features = action.payload.features.map((feature: string[]) => {
                 return {
                     id: uuid(),
                     value: feature
                 }
             })
+
+            const threshold = 100
+
+            // featuresの型をMapにすること！！！！
+            if (features.length < 100) {
+                return {...state, features: features}
+            }
+
+            let itemLength = 0
+            const featuresMap = new Map()
+
+            for (let i = 0; i < features.length; i += threshold, itemLength++) {
+                const processedVector = features.slice(i, i + threshold)
+
+                
+
+                // 動的分割されたオブジェクトをどうReduxで管理するか
+                // vectorItemStorage.setItem(itemLength, processedVector)
+            }
 
             return {...state, features: features}
         case 'FEATURES_ADD_DIMENSION':

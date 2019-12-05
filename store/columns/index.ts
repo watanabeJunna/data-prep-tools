@@ -14,8 +14,8 @@ export const initialState = (inject?: State): State => {
 
 export const reducer = (state = initialState(), action: Actions): State => {
     switch (action.type) {
-        case 'COLUMNS_INIT_COLUMNS':
-            console.log(action.payload.columns)
+        case 'COLUMNS_SET_COLUMNS':
+            // ちょいちょいバグる
             return {...state, columns: action.payload.columns}
         case 'COLUMNS_ADD_COLUMN':
             return {...state, columns: [...state.columns, action.payload.column]}

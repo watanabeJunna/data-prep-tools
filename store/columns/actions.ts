@@ -6,9 +6,9 @@ export type Column = string[]
  * 
  * @param columns 
  */
-export const initColumns = (columns: Column) => {
+export const setColumns = (columns: Column) => {
     return {
-        type: types.initColumns,
+        type: types.setColumns,
         payload: {
             columns
         }

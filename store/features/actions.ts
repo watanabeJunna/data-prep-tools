@@ -7,7 +7,7 @@ import { type } from 'os'
  * 
  * @param vector 
  */
-export const initFeatures = (features: RawFeatures) => {
+export const setFeatures = (features: RawFeatures) => {
     return {
         type: types.initFeatures,
         payload: {
