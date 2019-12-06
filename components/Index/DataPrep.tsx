@@ -6,6 +6,7 @@ import { InputStyle } from '../Input'
 import { RootState } from '../../store/reducer'
 import { FeatureValue, Features } from '../../interfaces'
 import { updateScalar } from '../../store/features/actions'
+import { setCurrentDataNumber } from '../../store/currentDataNumber/actions'
 
 export const DataPrep: React.FC = () => {
     const [columns, currentDataNumber, features, featureLength, loadFilename] =
@@ -114,42 +115,41 @@ export const DataPrep: React.FC = () => {
         )
     }
 
-    // const convertDataNumberToComponent = (itemLength: number): JSX.Element | undefined => {
-    //     if (!itemLength) {
-    //         return
-    //     }
+    /**
+     * @returns
+     */
+    const convertDataNumberToComponent = (): JSX.Element | undefined => {
+        if (!featureLength) {
+            return
+        }
 
-    //     const handleItemClick = (dataNumber: number): void => {
-    //         const item: Vector = vectorItemStorage.getItem(dataNumber)
+        const handleItemClick = (dataNumber: number): void => {
+            scrollTopRef.current = 0
+            dispatch(setCurrentDataNumber(dataNumber))
+        }
 
-    //         viewState.setScrollTop(0)
+        const items = [...Array(featureLength)].map((_: [undefined], c: number) => {
+            return (
+                <DataIndexButton
+                    onClick={() => handleItemClick(c)}
+                >
+                    <p>{c}</p>
+                </DataIndexButton>
+            )
+        })
 
-    //         vectorItemState.setCurrentDataNumber(dataNumber)
-    //         setVector(item)
-    //     }
-
-    //     const items = [...Array(itemLength)].map((_: [undefined], c: number): JSX.Element => {
-    //         return (
-    //             <DataIndexButton
-    //                 onClick={() => handleItemClick(c)}
-    //             >
-    //                 <p>{c}</p>
-    //             </DataIndexButton>
-    //         )
-    //     })
-
-    //     return (
-    //         <ItemSelector>
-    //             <AdjacentControllButton>
-    //                 <p>{'prev'}</p>
-    //             </AdjacentControllButton>
-    //             {items}
-    //             <AdjacentControllButton>
-    //                 <p>{'next'}</p>
-    //             </AdjacentControllButton>
-    //         </ItemSelector>
-    //     )
-    // }
+        return (
+            <ItemSelector>
+                <AdjacentControllButton>
+                    <p>prev</p>
+                </AdjacentControllButton>
+                {items}
+                <AdjacentControllButton>
+                    <p>next</p>
+                </AdjacentControllButton>
+            </ItemSelector>
+        )
+    }
 
     const Wrapper: StyledComponent<'div', {}> = styled.div`
         font-family: 'Raleway', sans-serif;
@@ -390,7 +390,7 @@ export const DataPrep: React.FC = () => {
                 </OperationTable>
             </Header>
             {convertFearureIntoComponent()}
-            {/* {convertDataNumberToComponent(vectorItemState.getItemLength())} */}
+            {convertDataNumberToComponent()}
         </Wrapper>
     )
 }
