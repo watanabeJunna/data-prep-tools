@@ -386,9 +386,7 @@ export const DataPrep: React.FC = () => {
                 <OperationTable>
                     <LoadDataComponent />
                     <AddDimensionComponent />
-                    {/* <ExportDataComponent
-                        vector={vector}
-                    /> */}
+                    <ExportDataComponent />
                 </OperationTable>
             </Header>
             {convertFearureIntoComponent()}
