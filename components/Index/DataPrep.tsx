@@ -8,12 +8,13 @@ import { FeatureValue, Features } from '../../interfaces'
 import { updateScalar } from '../../store/features/actions'
 
 export const DataPrep: React.FC = () => {
-    const [features, columns, currentDataNumber, loadFilename] =
+    const [columns, currentDataNumber, features, featureLength, loadFilename] =
         useSelector((state: RootState) => {
             return [
-                state.features.features,
                 state.columns.columns,
                 state.currentDataNumber.currentDataNumber,
+                state.features.features,
+                state.featureLength.featureLength,
                 state.loadFilename.loadFilename
             ]
         })
@@ -366,21 +367,21 @@ export const DataPrep: React.FC = () => {
         <Wrapper>
             <Header>
                 <HeaderTextContent>
-                    {/* <HeaderTitle>
+                    <HeaderTitle>
                         Add features
                     </HeaderTitle>
-                    {loadFileName && (
+                    {loadFilename && (
                         <LoadFileName>
-                            {loadFileName}
+                            {loadFilename}
                         </LoadFileName>
                     )}
                     {
-                        (vectorItemState.getItemLength() !== 0) && (
+                        (featureLength !== 0) && (
                             <CurrentDataNumber>
-                                {vectorItemState.getCurrentDataNumber()}
+                                {currentDataNumber}
                             </CurrentDataNumber>
                         )
-                    } */}
+                    }
                 </HeaderTextContent>
                 <OperationTable>
                     <LoadDataComponent />
