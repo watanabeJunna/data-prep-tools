@@ -18,6 +18,7 @@ export const DataPrep: React.FC = () => {
             ]
         })
 
+    const scrollTopRef: React.MutableRefObject<number> = useRef(0)
     const dataContentRef: React.MutableRefObject<HTMLDivElement | null> = useRef(null)
     const dispatch: React.Dispatch<any> = useDispatch()
 
@@ -92,8 +93,7 @@ export const DataPrep: React.FC = () => {
                 return
             }
 
-            // const scrollTop: number = viewState.getScrollTop()
-            // dataContentRef.current.scrollTop = scrollTop
+            dataContentRef.current.scrollTop = scrollTopRef.current
         }, [dataContentRef])
 
 
@@ -105,7 +105,7 @@ export const DataPrep: React.FC = () => {
                         throw new Error('No reference to Data content')
                     }
 
-                    // viewState.setScrollTop(dataContentRef.current.scrollTop)
+                    scrollTopRef.current = dataContentRef.current.scrollTop
                 }}
             >
                 {children}
