@@ -253,20 +253,19 @@ export const DataPrep: React.FC = () => {
             React.Dispatch<React.SetStateAction<boolean>>
         ] = useState<boolean>(false)
 
-        const value: React.MutableRefObject<string> = useRef('')
-
-        const ref: React.MutableRefObject<HTMLInputElement | null> = useRef(null)
+        const inputRef: React.MutableRefObject<HTMLInputElement | null> = useRef(null)
+        const inputValueRef: React.MutableRefObject<string> = useRef('')
 
         const toggleElement = (): void => {
             setSelected(!selected)
 
-            if (value.current && value.current !== text) {
-                dispatch(updateScalar(dataNumber, columnNumber, rowNumber, value.current))
+            if (inputValueRef.current && inputValueRef.current !== text) {
+                dispatch(updateScalar(dataNumber, columnNumber, rowNumber, inputValueRef.current))
             }
         }
 
         const handleInputKeyPress = (e: React.KeyboardEvent<HTMLInputElement>): void => {
-            if (!ref.current) {
+            if (!inputRef.current) {
                 throw new Error('No reference to data input')
             }
 
@@ -314,20 +313,20 @@ export const DataPrep: React.FC = () => {
         return selected ? (
             <InputCell>
                 <DataInput
-                    ref={ref}
+                    ref={inputRef}
                     autoFocus={true}
-                    defaultValue={value.current ? value.current : text}
+                    defaultValue={inputValueRef.current ? inputValueRef.current : text}
                     onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => handleInputKeyPress(e)}
                     onClick={() => toggleElement()}
                     onBlur={() => toggleElement()}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => value.current = e.target.value}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => inputValueRef.current = e.target.value}
                 />
             </InputCell>
         ) : (
                 <CellStyle
                     onClick={() => toggleElement()}
                 >
-                    {value.current ? value.current : text}
+                    {inputValueRef.current ? inputValueRef.current : text}
                 </CellStyle>
             )
     }
