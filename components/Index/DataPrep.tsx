@@ -4,14 +4,12 @@ import styled, { css, StyledComponent, FlattenSimpleInterpolation } from 'styled
 import { ExportDataComponent, LoadDataComponent, AddDimensionComponent } from './index'
 import { InputStyle } from '../Input'
 import { RootState } from '../../store/reducer'
-import { FeatureValue } from '../../interfaces'
+import { FeatureValue, Features } from '../../interfaces'
 import { updateScalar } from '../../store/features/actions'
 
 export const DataPrep: React.FC = () => {
     const [features, columns, currentDataNumber, loadFilename] =
         useSelector((state: RootState) => {
-            console.log(Object.prototype.toString.call(state.features.features).slice(8, -1).toLowerCase())
-
             return [
                 state.features.features,
                 state.columns.columns,

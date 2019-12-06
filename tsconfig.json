@@ -22,7 +22,7 @@
         "esModuleInterop": true,
         "resolveJsonModule": true,
         "noEmit": true,
-        "noImplicitAny": true,
+        "noImplicitAny": false,
         "isolatedModules": true
     },
     "typeRoots": [
