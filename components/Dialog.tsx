@@ -1,13 +1,4 @@
-import React, {
-    useEffect,
-    useState,
-    useRef,
-    FC,
-    Dispatch,
-    SetStateAction,
-    MutableRefObject,
-    ReactNode
-} from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import styled, { StyledComponent } from 'styled-components'
 import { Button, CloseButton } from './Button'
 import { InputStyle } from './Input'
@@ -25,26 +16,26 @@ export interface IDialogUtilComponent {
     // Indicates state setter of dialog
     setClose?: (close: boolean) => void
 
-    children?: ReactNode
+    children?: React.ReactNode
 }
 
-export const DialogUtilComponent: FC<IDialogUtilComponent> = ({
+export const DialogUtilComponent: React.FC<IDialogUtilComponent> = ({
     showButtonColor,
     showButtonText,
     children,
     close,
     setClose,
 }) => {
-    const showButtonRef: MutableRefObject<HTMLButtonElement | null> = useRef(null)
+    const showButtonRef: React.MutableRefObject<HTMLButtonElement | null> = useRef(null)
 
     const [visible, setVisible]: [
         boolean,
-        Dispatch<SetStateAction<boolean>>
+        React.Dispatch<React.SetStateAction<boolean>>
     ] = useState<boolean>(false)
 
     const [position, setPosition]: [
         Position,
-        Dispatch<SetStateAction<Position>>
+        React.Dispatch<React.SetStateAction<Position>>
     ] = useState<Position>({
         x: 0,
         y: 0
@@ -139,22 +130,22 @@ export interface IDialog {
     setPosition: (position: Position) => void
 
     // Children
-    children?: ReactNode
+    children?: React.ReactNode
 }
 
-export const Dialog: FC<IDialog> = ({
+export const Dialog: React.FC<IDialog> = ({
     visible,
     setVisible,
     position,
     setPosition,
     children
 }) => {
-    const ref: MutableRefObject<HTMLDivElement | null> = useRef(null)
+    const ref: React.MutableRefObject<HTMLDivElement | null> = useRef(null)
 
     const coordinateMachining = (
         position: Position,
         axis: 'x' | 'y',
-        ref: MutableRefObject<HTMLDivElement | null>
+        ref: React.MutableRefObject<HTMLDivElement | null>
     ): string => {
         if (!ref.current) {
             return '0'
