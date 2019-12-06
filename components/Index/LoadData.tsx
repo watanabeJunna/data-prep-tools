@@ -15,7 +15,6 @@ export const LoadDataComponent: React.FC = () => {
     ] = useState<boolean>(false)
 
     const dispatch: React.Dispatch<any> = useDispatch()
-
     const fileNameInputRef: React.MutableRefObject<HTMLInputElement | null> = useRef(null)
 
     /**
@@ -47,13 +46,13 @@ export const LoadDataComponent: React.FC = () => {
 
         const filename: string = fileNameInputRef.current.value
 
-        const response: Response = await fetch('/api/v1/vector', {
+        const response: Response = await fetch('/api/v1/features', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ fileName: filename })
+            body: JSON.stringify({ filename: filename })
         })
 
         if (response.status !== 200) {

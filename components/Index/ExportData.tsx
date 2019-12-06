@@ -33,17 +33,17 @@ export const ExportDataComponent: React.FC = () => {
             ...[...features.values()].flat()
         ]
 
-        const fileName: string = filenameInputRef.current.value
+        const filename: string = filenameInputRef.current.value
 
-        const res: Response = await fetch('/api/v1/vector', {
+        const res: Response = await fetch('/api/v1/features', {
             method: 'PUT',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                fileName: fileName,
-                vector: features_
+                filename: filename,
+                features: features_
             })
         })
 
