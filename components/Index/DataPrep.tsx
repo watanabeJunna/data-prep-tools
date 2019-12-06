@@ -131,6 +131,7 @@ export const DataPrep: React.FC = () => {
         const items = [...Array(chunkLength)].map((_: [undefined], c: number) => {
             return (
                 <DataIndexButton
+                    key={c}
                     onClick={() => handleItemClick(c)}
                 >
                     <p>{c}</p>
