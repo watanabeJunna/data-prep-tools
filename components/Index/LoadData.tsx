@@ -4,7 +4,7 @@ import fetch from 'isomorphic-fetch'
 import { DialogUtilComponent, DialogSubmitButton, DialogInput } from '../Dialog'
 import { setFeatures } from '../../store/features/actions'
 import { setColumns, Columns } from '../../store/columns/actions'
-import { setFeatureLength } from '../../store/featureLength/actions'
+import { setChunkLength } from '../../store/chunkLength/actions'
 import { FeatureValue } from '../../interfaces'
 import { setLoadFilename } from '../../store/loadFilename/actions'
 
@@ -77,7 +77,7 @@ export const LoadDataComponent: React.FC = () => {
 
         dispatch(setColumns(columns))
         dispatch(setFeatures(features, threshold))
-        dispatch(setFeatureLength(dataNumber))
+        dispatch(setChunkLength(dataNumber))
         dispatch(setLoadFilename(filename))
     }
 

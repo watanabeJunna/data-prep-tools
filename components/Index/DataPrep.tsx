@@ -9,13 +9,13 @@ import { updateScalar } from '../../store/features/actions'
 import { setCurrentDataNumber } from '../../store/currentDataNumber/actions'
 
 export const DataPrep: React.FC = () => {
-    const [columns, currentDataNumber, features, featureLength, loadFilename] =
+    const [columns, currentDataNumber, features, chunkLength, loadFilename] =
         useSelector((state: RootState) => {
             return [
                 state.columns.columns,
                 state.currentDataNumber.currentDataNumber,
                 state.features.features,
-                state.featureLength.featureLength,
+                state.chunkLength.chunkLength,
                 state.loadFilename.loadFilename
             ]
         })
@@ -119,7 +119,7 @@ export const DataPrep: React.FC = () => {
      * @returns
      */
     const convertDataNumberToComponent = (): JSX.Element | undefined => {
-        if (!featureLength) {
+        if (!chunkLength) {
             return
         }
 
@@ -128,7 +128,7 @@ export const DataPrep: React.FC = () => {
             dispatch(setCurrentDataNumber(dataNumber))
         }
 
-        const items = [...Array(featureLength)].map((_: [undefined], c: number) => {
+        const items = [...Array(chunkLength)].map((_: [undefined], c: number) => {
             return (
                 <DataIndexButton
                     onClick={() => handleItemClick(c)}
@@ -376,7 +376,7 @@ export const DataPrep: React.FC = () => {
                         </LoadFileName>
                     )}
                     {
-                        (featureLength !== 0) && (
+                        (chunkLength !== 0) && (
                             <CurrentDataNumber>
                                 {currentDataNumber}
                             </CurrentDataNumber>

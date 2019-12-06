@@ -2,7 +2,7 @@ import { combineReducers } from 'redux'
 import * as Columns from './columns'
 import * as Features from './features'
 import * as LoadFilename from './loadFilename'
-import * as FeatureLength from './featureLength'
+import * as ChunkLength from './chunkLength'
 import * as CurrentDataNumber from './currentDataNumber'
 import { FeatureValue } from '../interfaces'
 
@@ -10,7 +10,7 @@ export interface RootState {
     features: Features.State,
     columns: Columns.State,
     loadFilename: LoadFilename.State,
-    featureLength: FeatureLength.State,
+    chunkLength: ChunkLength.State,
     currentDataNumber: CurrentDataNumber.State,
 }
 
@@ -24,8 +24,8 @@ const inject: RootState = {
     loadFilename: {
         loadFilename: ''
     },
-    featureLength: {
-        featureLength: 0
+    chunkLength: {
+        chunkLength: 0
     },
     currentDataNumber: {
         currentDataNumber: 0
@@ -37,7 +37,7 @@ export const initialState = (): RootState => {
         features: Features.initialState(inject.features),
         columns: Columns.initialState(inject.columns),
         loadFilename: LoadFilename.initialState(inject.loadFilename),
-        featureLength: FeatureLength.initialState(inject.featureLength),
+        chunkLength: ChunkLength.initialState(inject.chunkLength),
         currentDataNumber: CurrentDataNumber.initialState(inject.currentDataNumber),
     }
 }
@@ -46,6 +46,6 @@ export const reducer = combineReducers({
     features: Features.reducer,
     columns: Columns.reducer,
     loadFilename: LoadFilename.reducer,
-    featureLength: FeatureLength.reducer,
+    chunkLength: ChunkLength.reducer,
     currentDataNumber: CurrentDataNumber.reducer,
 })
