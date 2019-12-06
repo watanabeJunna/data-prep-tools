@@ -1,5 +1,4 @@
 import { Actions } from '../action'
-import types from './types'
 
 export interface State {
     featureLength: number
