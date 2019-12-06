@@ -1,4 +1,3 @@
-import uuid from 'uuid/v4'
 import { Actions } from '../action'
 import { Features, FeatureValue } from '../../interfaces'
 
