@@ -4,7 +4,7 @@ import styled, { css, StyledComponent, FlattenSimpleInterpolation } from 'styled
 import { ExportDataComponent, LoadDataComponent, AddDimensionComponent } from './index'
 import { InputStyle } from '../Input'
 import { RootState } from '../../store/reducer'
-import { FeatureValue, Features } from '../../interfaces'
+import { FeatureValue } from '../../interfaces'
 import { updateScalar } from '../../store/features/actions'
 import { setCurrentDataNumber } from '../../store/currentDataNumber/actions'
 
