@@ -2,7 +2,7 @@ import { createGlobalStyle } from 'styled-components'
 import reset from 'styled-reset'
 import { Header } from '../components/Header'
 import { Container } from '../components/Container'
-import { DataPrepContainer } from '../components/Index'
+import { DataPrep } from '../components/Index'
 
 export default () => {
     const GlobalStyle = createGlobalStyle`
@@ -33,7 +33,7 @@ export default () => {
                 <Header />
             </Container>
             <Container>
-                <DataPrepContainer />
+                <DataPrep />
             </Container>
         </>
     )

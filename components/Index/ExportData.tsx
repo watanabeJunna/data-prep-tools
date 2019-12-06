@@ -1,56 +1,39 @@
-import {
-    useState,
-    useRef,
-    FC,
-    Dispatch,
-    SetStateAction,
-    MutableRefObject
-} from 'react'
+import { useState, useRef } from 'react'
+import { useSelector } from 'react-redux'
 import fetch from 'isomorphic-fetch'
-import { Vector } from './DataPrepContainer'
-import { VectorItemStorage } from './VectorItemStorage'
 import { DialogUtilComponent, DialogSubmitButton, DialogInput } from '../Dialog'
+import { RootState } from '../../store/reducer'
 
+export const ExportDataComponent: React.FC = () => {
+    const [columns, features] = useSelector((state: RootState) => {
+        return [
+            state.columns.columns,
+            state.features.features,
+        ]
+    })
 
-export interface IExportDataComponent {
-    vector: string[][]
-}
-
-export const ExportDataComponent: FC<IExportDataComponent> = ({
-    vector
-}) => {
     const [close, setClose]: [
         boolean,
-        Dispatch<SetStateAction<boolean>>
+        React.Dispatch<React.SetStateAction<boolean>>
     ] = useState<boolean>(false)
 
-    const fileNameInputRef: MutableRefObject<HTMLInputElement | null> = useRef(null)
+    const filenameInputRef: React.MutableRefObject<HTMLInputElement | null> = useRef(null)
 
     const exportData = async (): Promise<void> => {
-        if (!fileNameInputRef.current) {
+        if (!filenameInputRef.current) {
             throw new Error('No reference to file name input')
         }
 
-        if (!fileNameInputRef.current.value) {
+        if (!filenameInputRef.current.value) {
             return
         }
 
-        const vectorItemStorage = new VectorItemStorage()
-        const itemLength: number = vectorItemStorage.getItemLength()
-        const exportVector: Vector = [];
+        const features_ = [
+            columns,
+            ...[...features.values()].flat()
+        ]
 
-        [...Array(itemLength)].map((_: [undefined], c: number) => {
-            const item = vectorItemStorage.getItem(c)
-
-            // Remove columns other than first data
-            if (itemLength !== 0) {
-                item.shift()
-            }
-
-            exportVector.push(...item)
-        })
-
-        const fileName: string = fileNameInputRef.current.value
+        const fileName: string = filenameInputRef.current.value
 
         const res: Response = await fetch('/api/v1/vector', {
             method: 'PUT',
@@ -60,7 +43,7 @@ export const ExportDataComponent: FC<IExportDataComponent> = ({
             },
             body: JSON.stringify({
                 fileName: fileName,
-                vector: exportVector
+                vector: features_
             })
         })
 
@@ -80,7 +63,7 @@ export const ExportDataComponent: FC<IExportDataComponent> = ({
         >
             <DialogInput
                 placeholder='File name'
-                ref={fileNameInputRef}
+                ref={filenameInputRef}
             />
             <DialogSubmitButton
                 onClick={exportData}

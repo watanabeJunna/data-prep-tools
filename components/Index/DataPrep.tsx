@@ -1,86 +1,66 @@
-import {
-    useEffect,
-    useRef,
-    useState,
-    Dispatch,
-    SetStateAction,
-    FC,
-    MutableRefObject,
-    ChangeEvent,
-    KeyboardEvent
-} from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import styled, { css, StyledComponent, FlattenSimpleInterpolation } from 'styled-components'
 import { ExportDataComponent, LoadDataComponent, AddDimensionComponent } from './index'
 import { InputStyle } from '../Input'
-import { ViewState } from './ViewState'
-import { VectorItemState } from './VectorItemState'
-import { VectorItemStorage } from './VectorItemStorage'
+import { RootState } from '../../store/reducer'
+import { FeatureValue } from '../../interfaces'
+import { updateScalar } from '../../store/features/actions'
+import { setCurrentDataNumber } from '../../store/currentDataNumber/actions'
 
-export type Vector = string[][]
+export const DataPrep: React.FC = () => {
+    const [columns, currentDataNumber, features, featureLength, loadFilename] =
+        useSelector((state: RootState) => {
+            return [
+                state.columns.columns,
+                state.currentDataNumber.currentDataNumber,
+                state.features.features,
+                state.featureLength.featureLength,
+                state.loadFilename.loadFilename
+            ]
+        })
 
-const viewState = new ViewState()
-const vectorItemState = new VectorItemState()
-const vectorItemStorage = new VectorItemStorage()
-
-export const DataPrepContainer: FC = () => {
-    const [vector, setVector]: [
-        Vector,
-        Dispatch<SetStateAction<Vector>>
-    ] = useState<Vector>([])
-
-    const [loadFileName, setLoadFileName]: [
-        string,
-        Dispatch<SetStateAction<string>>
-    ] = useState<string>('')
-
-    const dataContentRef: MutableRefObject<HTMLDivElement | null> = useRef(null)
+    const scrollTopRef: React.MutableRefObject<number> = useRef(0)
+    const dataContentRef: React.MutableRefObject<HTMLDivElement | null> = useRef(null)
+    const dispatch: React.Dispatch<any> = useDispatch()
 
     /**
-     * The vector to be rendered must consist of header row + body row.
-     * 
-     * @param vector 
      * @returns
      */
-    const convertVectorIntoComponent = (vector: Vector): JSX.Element | undefined => {
-        if (vector.length === 0) {
+    const convertFearureIntoComponent = (): JSX.Element | undefined => {
+        if (!features.size) {
             return
         }
 
-        const copyVector: Vector = [...vector]
-
-        const columns: string[] = [...copyVector.shift() as string[]]
-        const rows: Vector = copyVector.map((v: string[]) => [...v])
-
-        const columnElement: JSX.Element[] = [
-            <IDCell>
+        const columnElements = [
+            <IDCell key={columns.length}>
                 ID
-            </IDCell>
+            </IDCell>,
+            ...columns.map((column: string, index: number) => {
+                return (
+                    <ColumnCell key={index}>
+                        {column}
+                    </ColumnCell>
+                )
+            })
         ]
 
-        columns.forEach((column: string, c: number): void => {
-            columnElement.push(
-                <ColumnCell key={c}>
-                    {column}
-                </ColumnCell>
-            )
-        })
-
-        const rowElement: JSX.Element[] = rows.map((row: string[], rowNum: number): JSX.Element => {
+        const features_ = features.get(currentDataNumber) as FeatureValue
+        const featureElements = features_.map((feature: string[], rowNumber: number) => {
             return (
-                <Row key={rowNum}>
+                <Row key={rowNumber}>
+                    <IDCell key={rowNumber}>
+                        {rowNumber + 1}
+                    </IDCell>
                     {
-                        <IDCell key={rowNum}>
-                            {rowNum + 1}
-                        </IDCell>
-                    }
-                    {
-                        row.map((feature: string, columnNum: number): JSX.Element => {
+                        feature.map((scalar: string, columnNumber: number) => {
                             return (
                                 <RowCell
-                                    key={columnNum}
-                                    text={feature}
-                                    column={columnNum}
-                                    row={rowNum + 1} // Consider header
+                                    key={columnNumber}
+                                    text={scalar}
+                                    dataNumber={currentDataNumber}
+                                    columnNumber={columnNumber}
+                                    rowNumber={rowNumber}
                                 />
                             )
                         })
@@ -92,30 +72,63 @@ export const DataPrepContainer: FC = () => {
         return (
             <>
                 <Column>
-                    {columnElement}
+                    {columnElements}
                 </Column>
                 <DataContent>
-                    {rowElement}
+                    {featureElements}
                 </DataContent>
             </>
         )
     }
 
-    const convertDataNumberToComponent = (itemLength: number): JSX.Element | undefined => {
-        if (!itemLength) {
+    const DataContent: React.FC = ({ children }) => {
+        const Style: StyledComponent<'div', {}> = styled.div`
+            max-height: 620px;
+            color: #777777;
+            font-family: "Yu Gothic";
+            overflow: auto;
+            border-bottom: 1px solid rgba(176, 176, 176, 0.5);
+        `
+
+        useEffect(() => {
+            if (!dataContentRef.current) {
+                return
+            }
+
+            dataContentRef.current.scrollTop = scrollTopRef.current
+        }, [dataContentRef])
+
+
+        return (
+            <Style
+                ref={dataContentRef}
+                onScroll={() => {
+                    if (!dataContentRef.current) {
+                        throw new Error('No reference to Data content')
+                    }
+
+                    scrollTopRef.current = dataContentRef.current.scrollTop
+                }}
+            >
+                {children}
+            </Style>
+        )
+    }
+
+    /**
+     * @returns
+     */
+    const convertDataNumberToComponent = (): JSX.Element | undefined => {
+        if (!featureLength) {
             return
         }
 
         const handleItemClick = (dataNumber: number): void => {
-            const item: Vector = vectorItemStorage.getItem(dataNumber)
-
-            viewState.setScrollTop(0)
-
-            vectorItemState.setCurrentDataNumber(dataNumber)
-            setVector(item)
+            scrollTopRef.current = 0
+            dispatch(setCurrentDataNumber(dataNumber))
         }
 
-        const items = [...Array(itemLength)].map((_: [undefined], c: number): JSX.Element => {
+        const items = [...Array(featureLength)].map((_: [undefined], c: number) => {
             return (
                 <DataIndexButton
                     onClick={() => handleItemClick(c)}
@@ -128,11 +141,11 @@ export const DataPrepContainer: FC = () => {
         return (
             <ItemSelector>
                 <AdjacentControllButton>
-                    <p>{'prev'}</p>
+                    <p>prev</p>
                 </AdjacentControllButton>
                 {items}
                 <AdjacentControllButton>
-                    <p>{'next'}</p>
+                    <p>next</p>
                 </AdjacentControllButton>
             </ItemSelector>
         )
@@ -197,41 +210,6 @@ export const DataPrepContainer: FC = () => {
         display: flex;
     `
 
-    const DataContent: FC = ({ children }) => {
-        const Style: StyledComponent<'div', {}> = styled.div`
-            max-height: 620px;
-            color: #777777;
-            font-family: "Yu Gothic";
-            overflow: auto;
-            border-bottom: 1px solid rgba(176, 176, 176, 0.5);
-        `
-
-        useEffect(() => {
-            if (!dataContentRef.current) {
-                return
-            }
-
-            const scrollTop: number = viewState.getScrollTop()
-            dataContentRef.current.scrollTop = scrollTop
-        }, [dataContentRef])
-
-
-        return (
-            <Style
-                ref={dataContentRef}
-                onScroll={() => {
-                    if (!dataContentRef.current) {
-                        throw new Error('No reference to Data content')
-                    }
-
-                    viewState.setScrollTop(dataContentRef.current.scrollTop)
-                }}
-            >
-                {children}
-            </Style>
-        )
-    }
-
     const Column: StyledComponent<'div', {}> = styled.div`
         display: flex;
         font-weight: 900;
@@ -265,42 +243,30 @@ export const DataPrepContainer: FC = () => {
 
     interface IRowCell {
         text: string
-        column: number
-        row: number
+        dataNumber: number
+        rowNumber: number
+        columnNumber: number
     }
 
-    const RowCell: FC<IRowCell> = ({ column, row, text }) => {
+    const RowCell: React.FC<IRowCell> = ({ dataNumber, columnNumber, rowNumber, text }) => {
         const [selected, setSelected]: [
             boolean,
-            Dispatch<SetStateAction<boolean>>
+            React.Dispatch<React.SetStateAction<boolean>>
         ] = useState<boolean>(false)
 
-        const [value, setValue]: [
-            string,
-            Dispatch<SetStateAction<string>>
-        ] = useState<string>('')
-
-        const ref: MutableRefObject<HTMLInputElement | null> = useRef(null)
+        const inputRef: React.MutableRefObject<HTMLInputElement | null> = useRef(null)
+        const inputValueRef: React.MutableRefObject<string> = useRef('')
 
         const toggleElement = (): void => {
             setSelected(!selected)
 
-            if (value !== "" && value !== vector[row][column]) {
-                let newVector: Vector = [...vector]
-                newVector[row][column] = value
-
-                const currentDataNumber: number = vectorItemState.getCurrentDataNumber()
-                vectorItemStorage.setItem(currentDataNumber, newVector)
-                setVector(newVector)
+            if (inputValueRef.current && inputValueRef.current !== text) {
+                dispatch(updateScalar(dataNumber, columnNumber, rowNumber, inputValueRef.current))
             }
         }
 
-        const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
-            setValue(e.target.value)
-        }
-
-        const handleInputKeyPress = (e: KeyboardEvent<HTMLInputElement>): void => {
-            if (!ref.current) {
+        const handleInputKeyPress = (e: React.KeyboardEvent<HTMLInputElement>): void => {
+            if (!inputRef.current) {
                 throw new Error('No reference to data input')
             }
 
@@ -345,25 +311,25 @@ export const DataPrepContainer: FC = () => {
             }
         `
 
-        const element = selected ?
+        return selected ? (
             <InputCell>
                 <DataInput
-                    ref={ref}
+                    ref={inputRef}
                     autoFocus={true}
-                    defaultValue={value ? value : text}
-                    onKeyPress={(e: KeyboardEvent<HTMLInputElement>) => handleInputKeyPress(e)}
+                    defaultValue={inputValueRef.current ? inputValueRef.current : text}
+                    onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => handleInputKeyPress(e)}
                     onClick={() => toggleElement()}
                     onBlur={() => toggleElement()}
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => handleInputChange(e)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => inputValueRef.current = e.target.value}
                 />
-            </InputCell> :
-            <CellStyle
-                onClick={() => toggleElement()}
-            >
-                {value ? value : text}
-            </CellStyle>
-
-        return element
+            </InputCell>
+        ) : (
+                <CellStyle
+                    onClick={() => toggleElement()}
+                >
+                    {inputValueRef.current ? inputValueRef.current : text}
+                </CellStyle>
+            )
     }
 
     const ItemSelector: StyledComponent<'div', {}> = styled.div`
@@ -403,38 +369,28 @@ export const DataPrepContainer: FC = () => {
                 <HeaderTextContent>
                     <HeaderTitle>
                         Add features
-                </HeaderTitle>
-                    {loadFileName && (
+                    </HeaderTitle>
+                    {loadFilename && (
                         <LoadFileName>
-                            {loadFileName}
+                            {loadFilename}
                         </LoadFileName>
                     )}
                     {
-                        (vectorItemState.getItemLength() !== 0) && (
+                        (featureLength !== 0) && (
                             <CurrentDataNumber>
-                                {vectorItemState.getCurrentDataNumber()}
+                                {currentDataNumber}
                             </CurrentDataNumber>
                         )
                     }
                 </HeaderTextContent>
                 <OperationTable>
-                    <LoadDataComponent
-                        setVector={setVector}
-                        setLoadFileName={setLoadFileName}
-                        setCurrentDataNumber={(dataNumber: number) => vectorItemState.setCurrentDataNumber(dataNumber)}
-                        setItemLength={(itemLength: number) => vectorItemState.setItemLength(itemLength)}
-                    />
-                    <AddDimensionComponent
-                        vector={vector}
-                        setVector={setVector}
-                    />
-                    <ExportDataComponent
-                        vector={vector}
-                    />
+                    <LoadDataComponent />
+                    <AddDimensionComponent />
+                    <ExportDataComponent />
                 </OperationTable>
             </Header>
-            {convertVectorIntoComponent(vector)}
-            {convertDataNumberToComponent(vectorItemState.getItemLength())}
+            {convertFearureIntoComponent()}
+            {convertDataNumberToComponent()}
         </Wrapper>
     )
 }
