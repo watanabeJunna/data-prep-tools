@@ -17,7 +17,7 @@ export const LoadDataComponent: React.FC = () => {
      * Check if the feature is normal.
      * 
      * @param features The features to Check.
-     * @returns Is the feature normal
+     * @returns Is the feature normal.
      */
     const checkFeatures = (features: FeatureValue): boolean => {
         let isValid = true

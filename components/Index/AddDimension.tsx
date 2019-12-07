@@ -6,16 +6,14 @@ import { addColumn } from '../../store/columns/actions'
 import { RootState } from '../../store/reducer'
 
 export const AddDimensionComponent: React.FC = () => {
-    const dispatch: React.Dispatch<any> = useDispatch()
+    const dispatch = useDispatch()
     const [features, columns] = useSelector(({ features, columns }: RootState) => [features.features, columns.columns])
+    const [close, setClose] = useState<boolean>(false)
+    const dimInputRef = useRef<HTMLInputElement | null>(null)
 
-    const [close, setClose]: [
-        boolean,
-        React.Dispatch<React.SetStateAction<boolean>>
-    ] = useState<boolean>(false)
-
-    const dimInputRef: React.MutableRefObject<HTMLInputElement | null> = useRef(null)
-
+    /**
+     * Add a state dimension.
+     */
     const onSubmit = (): void => {
         if (!dimInputRef.current) {
             throw new Error('No reference to file name input')
