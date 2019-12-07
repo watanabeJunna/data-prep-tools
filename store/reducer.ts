@@ -11,7 +11,7 @@ export interface RootState {
     columns: Columns.State,
     loadFilename: LoadFilename.State,
     chunkLength: ChunkLength.State,
-    currentDataNumber: CurrentChunkNumber.State,
+    currentChunkNumber: CurrentChunkNumber.State,
 }
 
 const inject: RootState = {
@@ -27,7 +27,7 @@ const inject: RootState = {
     chunkLength: {
         chunkLength: 0
     },
-    currentDataNumber: {
+    currentChunkNumber: {
         currentChunkNumber: 0
     }
 }
@@ -38,7 +38,7 @@ export const initialState = (): RootState => {
         columns: Columns.initialState(inject.columns),
         loadFilename: LoadFilename.initialState(inject.loadFilename),
         chunkLength: ChunkLength.initialState(inject.chunkLength),
-        currentDataNumber: CurrentChunkNumber.initialState(inject.currentDataNumber),
+        currentChunkNumber: CurrentChunkNumber.initialState(inject.currentChunkNumber),
     }
 }
 
@@ -47,5 +47,5 @@ export const reducer = combineReducers({
     columns: Columns.reducer,
     loadFilename: LoadFilename.reducer,
     chunkLength: ChunkLength.reducer,
-    currentDataNumber: CurrentChunkNumber.reducer,
+    currentChunkNumber: CurrentChunkNumber.reducer,
 })
