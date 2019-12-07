@@ -17,7 +17,7 @@ export const LoadDataComponent: React.FC = () => {
      * Check if the feature is normal.
      * 
      * @param features The features to Check.
-     * @returns Is the feature normal
+     * @returns Is the feature normal.
      */
     const checkFeatures = (features: FeatureValue): boolean => {
         let isValid = true
@@ -33,6 +33,9 @@ export const LoadDataComponent: React.FC = () => {
         return isValid
     }
 
+    /**
+     * Load data and save to state.
+     */
     const onSubmit = async (): Promise<void> => {
         if (!fileNameInputRef.current) {
             throw new Error('No reference to file name input')
