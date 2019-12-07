@@ -78,8 +78,8 @@ export const DialogUtilComponent: React.FC<IDialogUtilComponent> = ({
             const clientLeft: number = document.documentElement.clientLeft
 
             const newPosition: Position = {
-                x: right + scrollLeft - clientLeft - width,
-                y: clientPosition.top
+                x: right + scrollLeft + clientLeft + (width * 2.3),
+                y: (clientPosition.top + 5)
             }
 
             setPosition(newPosition)
