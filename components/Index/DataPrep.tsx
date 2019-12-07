@@ -160,7 +160,6 @@ export const DataPrep: React.FC = () => {
     `
 
     const Header: StyledComponent<'div', {}> = styled.div`
-        display: flex;
         justify-content: space-between;
         position: relative;
         padding: 24px 48px;
@@ -170,41 +169,41 @@ export const DataPrep: React.FC = () => {
     const HeaderTextContent: StyledComponent<'div', {}> = styled.div`
         display: flex;
         justify-content: flex-start;
-        margin: auto 0;
+        margin-left: 12px;
+        margin-bottom: 24px;        
     `
 
-    const HeaderTitle: StyledComponent<'div', {}> = styled.div`
+    const breadcrumbsIcon = css`
+        :after {
+            content: '>';
+            font-size: 0.85em;
+            font-family: 'Raleway', Arial, sans-serif;
+            font-weight: 100;
+            margin: 0 12px;
+        }
+    `
+
+    interface IsExistHeaderTitle { 
+        isExist: boolean
+    }
+
+    const HeaderTitle: StyledComponent<'div', {}, IsExistHeaderTitle> = styled.div<IsExistHeaderTitle>`
         font-size: 1.5em;
         color: #5f6f81;
         margin: auto 0;
+        ${({ isExist }) => isExist && breadcrumbsIcon}
     `
 
     const LoadFileName: StyledComponent<'div', {}> = styled.div`
-        font-size: 1.3em;
+        font-size: 1.5em;
         color: #5f6f81;
         margin: auto 7px;
-        margin-right: 0px;
-        margin-bottom: 2.5px;
-        :before {
-            content: '>';
-            font-weight: 100;
-            font-size: 1.3em;
-            margin: 0 12px;
-        }
+        ${breadcrumbsIcon}
     `
 
     const CurrentDataNumber: StyledComponent<'div', {}> = styled.div`
-        font-size: 1.3em;
+        font-size: 1.5em;
         color: #5f6f81;
-        margin: auto 7px;
-        margin-left: 0;
-        margin-bottom: 2.5px;
-        :before {
-            content: '>';
-            font-weight: 100;
-            font-size: 1.3em;
-            margin: 0 12px;
-        }
     `
 
     const OperationTable: StyledComponent<'div', {}> = styled.div`
@@ -350,7 +349,7 @@ export const DataPrep: React.FC = () => {
         font-family: "Yu Gothic";
         font-weight: 400;
         opacity: 0.7;
-        trasition: .3s;
+        transition: .3s;
         &:hover {
             opacity: 1;
         }
@@ -368,13 +367,17 @@ export const DataPrep: React.FC = () => {
         <Wrapper>
             <Header>
                 <HeaderTextContent>
-                    <HeaderTitle>
+                    <HeaderTitle
+                        isExist={loadFilename !== ''}
+                    >
                         Add features
                     </HeaderTitle>
                     {loadFilename && (
-                        <LoadFileName>
-                            {loadFilename}
-                        </LoadFileName>
+                        <>
+                            <LoadFileName>
+                                {loadFilename}
+                            </LoadFileName>
+                        </>
                     )}
                     {
                         (chunkLength !== 0) && (
