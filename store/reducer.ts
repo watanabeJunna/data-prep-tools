@@ -3,7 +3,7 @@ import * as Columns from './columns'
 import * as Features from './features'
 import * as LoadFilename from './loadFilename'
 import * as ChunkLength from './chunkLength'
-import * as CurrentDataNumber from './currentDataNumber'
+import * as CurrentDataNumber from './currentChunkNumber'
 import { FeatureValue } from '../interfaces'
 
 export interface RootState {
@@ -28,7 +28,7 @@ const inject: RootState = {
         chunkLength: 0
     },
     currentDataNumber: {
-        currentDataNumber: 0
+        currentChunkNumber: 0
     }
 }
 

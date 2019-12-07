@@ -13,5 +13,5 @@ export type CreatorsToActions<T> = Unbox<ReturnTypes<T>>
 export type Actions = | CreatorsToActions<typeof import('./features/actions')>
                       | CreatorsToActions<typeof import('./columns/actions')>
                       | CreatorsToActions<typeof import('./loadFilename/actions')>
-                      | CreatorsToActions<typeof import('./currentDataNumber/actions')>
+                      | CreatorsToActions<typeof import('./currentChunkNumber/actions')>
                       | CreatorsToActions<typeof import('./chunkLength/actions')>
