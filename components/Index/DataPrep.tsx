@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import styled, { css, StyledComponent, FlattenSimpleInterpolation } from 'styled-components'
+import styled, { css, StyledComponent } from 'styled-components'
 import { ExportDataComponent, LoadDataComponent, AddDimensionComponent } from './index'
 import { InputStyle } from '../Input'
 import { RootState } from '../../store/reducer'
@@ -19,15 +19,16 @@ export const DataPrep: React.FC = () => {
                 state.loadFilename.loadFilename
             ]
         })
-
-    const scrollTopRef: React.MutableRefObject<number> = useRef(0)
-    const dataContentRef: React.MutableRefObject<HTMLDivElement | null> = useRef(null)
-    const dispatch: React.Dispatch<any> = useDispatch()
+    const scrollTopRef = useRef<number>(0)
+    const dataContentRef = useRef<HTMLDivElement | null>(null)
+    const dispatch = useDispatch()
 
     /**
-     * @returns
+     * Converts a scalar held in a state to a component.
+     * 
+     * @returns The converted scalar component or undefined.
      */
-    const convertFearureIntoComponent = (): JSX.Element | undefined => {
+    const convertScalarIntoComponent = (): JSX.Element | undefined => {
         if (!features.size) {
             return
         }
@@ -46,14 +47,14 @@ export const DataPrep: React.FC = () => {
         ]
 
         const features_ = features.get(currentDataNumber) as FeatureValue
-        const featureElements = features_.map((feature: string[], rowNumber: number) => {
+        const featureElements = features_.map((feature, rowNumber) => {
             return (
                 <Row key={rowNumber}>
                     <IDCell key={rowNumber}>
                         {rowNumber + 1}
                     </IDCell>
                     {
-                        feature.map((scalar: string, columnNumber: number) => {
+                        feature.map((scalar, columnNumber) => {
                             return (
                                 <RowCell
                                     key={columnNumber}
@@ -82,7 +83,7 @@ export const DataPrep: React.FC = () => {
     }
 
     const DataContent: React.FC = ({ children }) => {
-        const Style: StyledComponent<'div', {}> = styled.div`
+        const Style = styled.div`
             max-height: 620px;
             color: #777777;
             font-family: "Yu Gothic";
@@ -90,14 +91,12 @@ export const DataPrep: React.FC = () => {
             border-bottom: 1px solid rgba(176, 176, 176, 0.5);
         `
 
-        useEffect(() => {
+        useEffect((): void => {
             if (!dataContentRef.current) {
                 return
             }
-
             dataContentRef.current.scrollTop = scrollTopRef.current
         }, [dataContentRef])
-
 
         return (
             <Style
@@ -116,23 +115,25 @@ export const DataPrep: React.FC = () => {
     }
 
     /**
-     * @returns
+     * Converts a chunk number held in a state to a component.
+     * 
+     * @returns The converted chunk number component or undefined.
      */
-    const convertDataNumberToComponent = (): JSX.Element | undefined => {
+    const convertChunkNumberIntoComponent = (): JSX.Element | undefined => {
         if (!chunkLength) {
             return
         }
 
-        const handleItemClick = (dataNumber: number): void => {
+        const handleClick = (dataNumber: number): void => {
             scrollTopRef.current = 0
             dispatch(setCurrentChunkNumber(dataNumber))
         }
 
-        const items = [...Array(chunkLength)].map((_: [undefined], c: number) => {
+        const items = [...Array(chunkLength)].map((_, c) => {
             return (
                 <DataIndexButton
                     key={c}
-                    onClick={() => handleItemClick(c)}
+                    onClick={() => handleClick(c)}
                 >
                     <p>{c}</p>
                 </DataIndexButton>
@@ -152,25 +153,27 @@ export const DataPrep: React.FC = () => {
         )
     }
 
-    const Wrapper: StyledComponent<'div', {}> = styled.div`
+    const Wrapper = styled.div`
         font-family: 'Raleway', sans-serif;
         font-weight: 400;
         box-shadow: 0px 1px 4px rgb(176, 176, 176);
         padding: 25px 0;
     `
 
-    const Header: StyledComponent<'div', {}> = styled.div`
+    const Header = styled.div`
         justify-content: space-between;
         position: relative;
         padding: 24px 48px;
         border-bottom: 1px solid rgba(176, 176, 176, 0.5);
     `
 
-    const HeaderTextContent: StyledComponent<'div', {}> = styled.div`
+    const HeaderTextContent = styled.div`
         display: flex;
         justify-content: flex-start;
         margin-left: 12px;
-        margin-bottom: 24px;        
+        margin-bottom: 24px;
+        font-size: 1.5em;
+        color: #5f6f81;
     `
 
     const breadcrumbsIcon = css`
@@ -188,29 +191,21 @@ export const DataPrep: React.FC = () => {
     }
 
     const HeaderTitle: StyledComponent<'div', {}, IsExistHeaderTitle> = styled.div<IsExistHeaderTitle>`
-        font-size: 1.5em;
-        color: #5f6f81;
-        margin: auto 0;
-        ${({ isExist }) => isExist && breadcrumbsIcon}
+        ${({ isExist }) => (isExist && breadcrumbsIcon)}
     `
 
-    const LoadFileName: StyledComponent<'div', {}> = styled.div`
-        font-size: 1.5em;
-        color: #5f6f81;
+    const LoadFileName = styled.div`
         margin: auto 7px;
         ${breadcrumbsIcon}
     `
 
-    const CurrentDataNumber: StyledComponent<'div', {}> = styled.div`
-        font-size: 1.5em;
-        color: #5f6f81;
-    `
+    const CurrentDataNumber = styled.div``
 
-    const OperationTable: StyledComponent<'div', {}> = styled.div`
+    const OperationTable = styled.div`
         display: flex;
     `
 
-    const Column: StyledComponent<'div', {}> = styled.div`
+    const Column = styled.div`
         display: flex;
         font-weight: 900;
         color: #777777;
@@ -219,14 +214,14 @@ export const DataPrep: React.FC = () => {
         border-bottom: 1px solid rgba(176, 176, 176, 0.5);
     `
 
-    const ColumnCell: StyledComponent<'div', {}> = styled.div`
+    const ColumnCell = styled.div`
         width: 22%;
         overflow: hidden;
         padding: 22px;
         margin: auto 0;
     `
 
-    const Row: StyledComponent<'div', {}> = styled.div`
+    const Row = styled.div`
         display: flex;
         padding: 0 24px;
         border-bottom: 1px solid rgba(176, 176, 176, 0.5);
@@ -235,7 +230,7 @@ export const DataPrep: React.FC = () => {
         }
     `
 
-    const IDCell: StyledComponent<'div', {}> = styled.div`
+    const IDCell = styled.div`
         width: 10%;
         padding: 22px;
         margin: auto 0;
@@ -249,15 +244,14 @@ export const DataPrep: React.FC = () => {
     }
 
     const RowCell: React.FC<IRowCell> = ({ dataNumber, columnNumber, rowNumber, text }) => {
-        const [selected, setSelected]: [
-            boolean,
-            React.Dispatch<React.SetStateAction<boolean>>
-        ] = useState<boolean>(false)
+        const [selected, setSelected] = useState<boolean>(false)
+        const inputRef = useRef<HTMLInputElement | null>(null)
+        const inputValueRef = useRef<string>('')
 
-        const inputRef: React.MutableRefObject<HTMLInputElement | null> = useRef(null)
-        const inputValueRef: React.MutableRefObject<string> = useRef('')
-
-        const toggleElement = (): void => {
+        /**
+         * Perform element toggle and scalar update.
+         */
+        const handleSelectEvent = (): void => {
             setSelected(!selected)
 
             if (inputValueRef.current && inputValueRef.current !== text) {
@@ -265,17 +259,22 @@ export const DataPrep: React.FC = () => {
             }
         }
 
+        /**
+         * If a specific key is pressed, call handleSelectEvent
+         * 
+         * @param e The KeyboardEvent.
+         */
         const handleInputKeyPress = (e: React.KeyboardEvent<HTMLInputElement>): void => {
             if (!inputRef.current) {
                 throw new Error('No reference to data input')
             }
 
             if (e.key === 'Enter') {
-                toggleElement()
+                handleSelectEvent()
             }
         }
 
-        const CellStyle: StyledComponent<'div', {}> = styled.div`
+        const CellStyle = styled.div`
             width: 22%;
             height: 20px;
             white-space: nowrap;
@@ -290,13 +289,13 @@ export const DataPrep: React.FC = () => {
             }
         `
 
-        const InputCell: StyledComponent<'div', {}> = styled.div`
+        const InputCell = styled.div`
             width: 22%;
             padding: 11px 22px;
             margin: auto 0;
         `
 
-        const DataInput: StyledComponent<'input', {}> = styled.input`
+        const DataInput = styled.input`
             ${InputStyle}
             width: 100%;
             color: #777777;
@@ -318,21 +317,21 @@ export const DataPrep: React.FC = () => {
                     autoFocus={true}
                     defaultValue={inputValueRef.current ? inputValueRef.current : text}
                     onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => handleInputKeyPress(e)}
-                    onClick={() => toggleElement()}
-                    onBlur={() => toggleElement()}
+                    onClick={() => handleSelectEvent()}
+                    onBlur={() => handleSelectEvent()}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => inputValueRef.current = e.target.value}
                 />
             </InputCell>
         ) : (
                 <CellStyle
-                    onClick={() => toggleElement()}
+                    onClick={() => handleSelectEvent()}
                 >
                     {inputValueRef.current ? inputValueRef.current : text}
                 </CellStyle>
             )
     }
 
-    const ItemSelector: StyledComponent<'div', {}> = styled.div`
+    const ItemSelector = styled.div`
         display: flex;
         align-items: center;
         justify-content: center;
@@ -342,7 +341,7 @@ export const DataPrep: React.FC = () => {
         border-bottom: 1px solid rgba(176, 176, 176, 0.5);
     `
 
-    const ItemBase: FlattenSimpleInterpolation = css`
+    const ItemBase = css`
         color: #00aafc;
         padding: 0px 12px;
         font-size: 1.4em;
@@ -355,11 +354,11 @@ export const DataPrep: React.FC = () => {
         }
     `
 
-    const DataIndexButton: StyledComponent<'div', {}> = styled.div`
+    const DataIndexButton = styled.div`
         ${ItemBase}
     `
 
-    const AdjacentControllButton: StyledComponent<'div', {}> = styled.div`
+    const AdjacentControllButton = styled.div`
         ${ItemBase}
     `
 
@@ -379,13 +378,10 @@ export const DataPrep: React.FC = () => {
                             </LoadFileName>
                         </>
                     )}
-                    {
-                        (chunkLength !== 0) && (
+                    {chunkLength !== 0 && 
                             <CurrentDataNumber>
                                 {currentDataNumber}
-                            </CurrentDataNumber>
-                        )
-                    }
+                            </CurrentDataNumber>}
                 </HeaderTextContent>
                 <OperationTable>
                     <LoadDataComponent />
@@ -393,8 +389,8 @@ export const DataPrep: React.FC = () => {
                     <ExportDataComponent />
                 </OperationTable>
             </Header>
-            {convertFearureIntoComponent()}
-            {convertDataNumberToComponent()}
+            {convertScalarIntoComponent()}
+            {convertChunkNumberIntoComponent()}
         </Wrapper>
     )
 }

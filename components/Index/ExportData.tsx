@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import fetch from 'isomorphic-fetch'
 import { DialogUtilComponent, DialogSubmitButton, DialogInput } from '../Dialog'
 import { RootState } from '../../store/reducer'
+import { FeatureValue } from '../../interfaces'
 
 export const ExportDataComponent: React.FC = () => {
     const [columns, features] = useSelector((state: RootState) => {
@@ -11,14 +12,12 @@ export const ExportDataComponent: React.FC = () => {
             state.features.features,
         ]
     })
+    const [close, setClose] = useState<boolean>(false)
+    const filenameInputRef = useRef<HTMLInputElement | null>(null)
 
-    const [close, setClose]: [
-        boolean,
-        React.Dispatch<React.SetStateAction<boolean>>
-    ] = useState<boolean>(false)
-
-    const filenameInputRef: React.MutableRefObject<HTMLInputElement | null> = useRef(null)
-
+    /**
+     * Output header and features.
+     */
     const exportData = async (): Promise<void> => {
         if (!filenameInputRef.current) {
             throw new Error('No reference to file name input')
@@ -28,14 +27,12 @@ export const ExportDataComponent: React.FC = () => {
             return
         }
 
-        const features_ = [
+        const features_: FeatureValue = [
             columns,
             ...[...features.values()].flat()
         ]
-
-        const filename: string = filenameInputRef.current.value
-
-        const res: Response = await fetch('/api/v1/features', {
+        const filename = filenameInputRef.current.value
+        const response: Response = await fetch('/api/v1/features', {
             method: 'PUT',
             headers: {
                 'Accept': 'application/json',
@@ -47,7 +44,7 @@ export const ExportDataComponent: React.FC = () => {
             })
         })
 
-        if (res.status !== 200) {
+        if (response.status !== 200) {
             return
         }
 
