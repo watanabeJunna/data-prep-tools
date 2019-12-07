@@ -6,14 +6,14 @@ import { InputStyle } from '../Input'
 import { RootState } from '../../store/reducer'
 import { FeatureValue } from '../../interfaces'
 import { updateScalar } from '../../store/features/actions'
-import { setCurrentDataNumber } from '../../store/currentDataNumber/actions'
+import { setCurrentChunkNumber } from '../../store/currentChunkNumber/actions'
 
 export const DataPrep: React.FC = () => {
     const [columns, currentDataNumber, features, chunkLength, loadFilename] =
         useSelector((state: RootState) => {
             return [
                 state.columns.columns,
-                state.currentDataNumber.currentDataNumber,
+                state.currentDataNumber.currentChunkNumber,
                 state.features.features,
                 state.chunkLength.chunkLength,
                 state.loadFilename.loadFilename
@@ -125,7 +125,7 @@ export const DataPrep: React.FC = () => {
 
         const handleItemClick = (dataNumber: number): void => {
             scrollTopRef.current = 0
-            dispatch(setCurrentDataNumber(dataNumber))
+            dispatch(setCurrentChunkNumber(dataNumber))
         }
 
         const items = [...Array(chunkLength)].map((_: [undefined], c: number) => {
