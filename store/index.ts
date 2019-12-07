@@ -48,7 +48,7 @@ export const initStore = (state = initialState()) => {
         const persistConfig = {
             transforms: [persistFeatures],
             key: 'root',
-            whitelist: ['columns', 'currentDataNumber', 'features', 'chunkLength', 'loadFilename'], 
+            whitelist: ['columns', 'currentChunkNumber', 'features', 'chunkLength', 'loadFilename'], 
             storage
         }
 
