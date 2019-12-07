@@ -41,7 +41,7 @@ export const CloseButton: StyledComponent<'button', {}> = styled.button`
     top: 0;
     right: 0;
     color: #5f6f81;
-    margin 12px 12px 0 0;
+    margin: 12px 12px 0 0;
     font-size: 1.9em;
     &:after {
         content: '×'
