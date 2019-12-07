@@ -33,6 +33,9 @@ export const LoadDataComponent: React.FC = () => {
         return isValid
     }
 
+    /**
+     * Load data and save to state.
+     */
     const onSubmit = async (): Promise<void> => {
         if (!fileNameInputRef.current) {
             throw new Error('No reference to file name input')
