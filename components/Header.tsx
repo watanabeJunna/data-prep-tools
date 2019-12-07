@@ -1,6 +1,6 @@
 import styled, { StyledComponentBase } from 'styled-components'
 
-export const Header = () => {
+export const Header: React.FC = () => {
     return (
         <HeaderWrapper>
             Data prep tools
@@ -8,7 +8,7 @@ export const Header = () => {
     )
 }
 
-const HeaderWrapper: StyledComponentBase<any, any> = styled.nav`
+const HeaderWrapper: StyledComponentBase<'nav', {}> = styled.nav`
     color: #5f6f81;
     font-size: 1.9em;
     font-family: 'Raleway', sans-serif;
