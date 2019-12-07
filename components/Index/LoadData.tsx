@@ -9,24 +9,22 @@ import { FeatureValue } from '../../interfaces'
 import { setLoadFilename } from '../../store/loadFilename/actions'
 
 export const LoadDataComponent: React.FC = () => {
-    const [close, setClose]: [
-        boolean,
-        React.Dispatch<React.SetStateAction<boolean>>
-    ] = useState<boolean>(false)
-
-    const dispatch: React.Dispatch<any> = useDispatch()
-    const fileNameInputRef: React.MutableRefObject<HTMLInputElement | null> = useRef(null)
+    const [close, setClose]　= useState<boolean>(false)
+    const dispatch = useDispatch()
+    const fileNameInputRef　= useRef<HTMLInputElement | null>(null)
 
     /**
+     * Check if the feature is normal.
      * 
-     * @param features 
+     * @param features The features to Check.
+     * @returns Is the feature normal
      */
     const checkFeatures = (features: FeatureValue): boolean => {
-        let isValid: boolean = true
+        let isValid = true
 
-        const dimension: number = features[0].length
+        const dimension = features[0].length
 
-        features.forEach((feature: string[]) => {
+        features.forEach(feature => {
             if (feature.length !== dimension) {
                 isValid = false
             }
@@ -44,8 +42,7 @@ export const LoadDataComponent: React.FC = () => {
             return
         }
 
-        const filename: string = fileNameInputRef.current.value
-
+        const filename = fileNameInputRef.current.value
         const response: Response = await fetch('/api/v1/features', {
             method: 'POST',
             headers: {
@@ -60,9 +57,8 @@ export const LoadDataComponent: React.FC = () => {
         }
 
         const datas: string[] = await response.json()
-        const datasCopy = [...datas]
-        const columns: Columns = (datasCopy.shift() as string).replace(/[\r\n]/g, '').split(',')
-        const features: FeatureValue = datasCopy.map(data => data.replace(/[\r\n]/g, '').split(','))
+        const columns: Columns = (datas.shift() as string).replace(/[\r\n]/g, '').split(',')
+        const features: FeatureValue = datas.map(data => data.replace(/[\r\n]/g, '').split(','))
 
         setClose(true)
 
@@ -70,14 +66,14 @@ export const LoadDataComponent: React.FC = () => {
             throw new Error('Invalid data')
         }
 
-        const threshold: number = 100
-        let dataNumber: number = 0
+        const threshold = 100
+        let chunkNumber = 0
 
-        for (let i: number = 0; i < features.length; i += threshold, dataNumber++);
+        for (let i = 0; i < features.length; i += threshold, chunkNumber++);
 
         dispatch(setColumns(columns))
         dispatch(setFeatures(features, threshold))
-        dispatch(setChunkLength(dataNumber))
+        dispatch(setChunkLength(chunkNumber))
         dispatch(setLoadFilename(filename))
     }
 

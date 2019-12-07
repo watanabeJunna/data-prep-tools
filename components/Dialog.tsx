@@ -41,7 +41,7 @@ export const DialogUtilComponent: React.FC<IDialogUtilComponent> = ({
         y: 0
     })
 
-    useEffect(() => {
+    useEffect((): void => {
         if (visible && close) {
             if (setClose) {
                 setClose(false)
@@ -153,7 +153,7 @@ export const Dialog: React.FC<IDialog> = ({
 
         let newPosition: number = position[axis]
 
-        const [xMergin, yMargin] = [30, 70]
+        const xMergin: number = 30 , yMargin: number = 70
 
         switch (axis) {
             case 'x':
