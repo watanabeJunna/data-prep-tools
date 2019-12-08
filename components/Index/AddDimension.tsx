@@ -7,7 +7,12 @@ import { RootState } from '../../store/reducer'
 
 export const AddDimensionComponent: React.FC = () => {
     const dispatch = useDispatch()
-    const [features, columns] = useSelector(({ features, columns }: RootState) => [features.features, columns.columns])
+    const [features, columns] = useSelector(({ features, columns }: RootState) => {
+        return [
+            features.features, 
+            columns.columns
+        ]
+    })
     const [close, setClose] = useState<boolean>(false)
     const dimInputRef = useRef<HTMLInputElement | null>(null)
 

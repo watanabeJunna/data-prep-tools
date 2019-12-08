@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import Header from './Header'
-import makePagination from './Pagination'
-import makeFeatureContent from './FeatureContent'
+import Pagination from './Pagination'
+import FeatureContent from './FeatureContent'
 
 export const DataPrep: React.FC = () => {
     const Wrapper = styled.div`
@@ -14,8 +14,8 @@ export const DataPrep: React.FC = () => {
     return (
         <Wrapper>
             <Header />
-            {makeFeatureContent()}
-            {makePagination()}
+            <FeatureContent />
+            <Pagination />
         </Wrapper>
     )
 }

@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux'
-import styled, { css, StyledComponent } from 'styled-components'
+import styled, { css } from 'styled-components'
 import OperationContent from './OperationContent'
 import { RootState } from '../../../store/reducer'
 
@@ -28,9 +28,8 @@ export default () => {
         color: #5f6f81;
     `
 
-    // must be ::before
     const breadcrumbsIcon = css`
-        :after {
+        &::before {
             content: '>';
             font-size: 0.85em;
             font-family: 'Raleway', Arial, sans-serif;
@@ -39,27 +38,21 @@ export default () => {
         }
     `
 
-    interface IsExistHeaderTitle { 
-        isExist: boolean
-    }
-
-    const HeaderTitle: StyledComponent<'div', {}, IsExistHeaderTitle> = styled.div<IsExistHeaderTitle>`
-        ${({ isExist }) => (isExist && breadcrumbsIcon)}
-    `
+    const HeaderTitle = styled.div``
 
     const LoadFileName = styled.div`
         margin: auto 7px;
         ${breadcrumbsIcon}
     `
 
-    const CurrentChunkNumber = styled.div``
+    const CurrentChunkNumber = styled.div`
+        ${breadcrumbsIcon}
+    `
 
     return (
         <Header>
             <HeaderTextContent>
-                <HeaderTitle
-                    isExist={loadFilename !== ''}
-                >
+                <HeaderTitle>
                     Add features
                 </HeaderTitle>
                 {loadFilename && (
