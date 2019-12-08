@@ -30,7 +30,7 @@ export default () => {
         }
     `
 
-    const DataIndexButton = styled.div`
+    const PaginationItemNumber = styled.div`
         ${ItemBase}
     `
 
@@ -38,26 +38,35 @@ export default () => {
         ${ItemBase}
     `
 
-    return (
-        chunkLength !== 0 && (
-            <Pagination>
-                <AdjacentControllButton>
-                    <p>prev</p>
-                </AdjacentControllButton>
-                {[...Array(chunkLength)].map((_, c) =>
-                    <DataIndexButton
+    const makePaginationItems = (chunkLength: number): JSX.Element[] => {
+        const items = [...Array(chunkLength)].map((_, c) => {
+            return (
+                <PaginationItemNumber
                         key={c}
                         onClick={() => {
                             dispatch(setCurrentChunkNumber(c))
                         }}
                     >
                         <p>{c}</p>
-                    </DataIndexButton>
-                )}
-                <AdjacentControllButton>
-                    <p>next</p>
-                </AdjacentControllButton>
-            </Pagination>
-        )
+                </PaginationItemNumber>
+            )
+        })
+        return items
+    }
+
+    return (
+        <>
+            {chunkLength !== 0 && (
+                <Pagination>
+                    <AdjacentControllButton>
+                        <p>prev</p>
+                    </AdjacentControllButton>
+                    {makePaginationItems(chunkLength)}
+                    <AdjacentControllButton>
+                        <p>next</p>
+                    </AdjacentControllButton>
+                </Pagination>
+            )}
+        </>
     )
 }

@@ -5,6 +5,7 @@ import { InputStyle } from '../../Input'
 import { RootState } from '../../../store/reducer'
 import { FeatureValue } from '../../../interfaces'
 import { updateScalar } from '../../../store/features/actions'
+import { Columns } from '../../../store/columns/actions'
 
 export default () => {
     const [columns, currentChunkNumber, features] =
@@ -177,38 +178,58 @@ export default () => {
             )
     }
 
-    return (
-        features.size !== 0 && (
-            <>
-                <Column>
-                    <IDCell key={columns.length}>
-                        ID
+    const makeColumns = (columns: Columns): JSX.Element[] => {
+        const columnElements = columns.map((column, c) => {
+            return (
+                <ColumnCell key={c}>
+                    {column}
+                </ColumnCell>
+            )
+        })
+        return columnElements
+    }
+
+    const makeRows = (features: FeatureValue | undefined): JSX.Element[] => {
+        if (!features) {
+            throw new Error('Features does not exist')
+        }
+
+        const rowElements = features.map((feature, rownumber) => {
+            return (
+                <Row key={rownumber}>
+                    <IDCell key={rownumber}>
+                        {rownumber + 1}
                     </IDCell>
-                    {columns.map((column, c) => 
-                        <ColumnCell key={c}>
-                            {column}
-                        </ColumnCell>
+                    {feature.map((scalar, columnnumber) => 
+                        <RowCell
+                            key={columnnumber}
+                            text={scalar}
+                            dataNumber={currentChunkNumber}
+                            columnNumber={columnnumber}
+                            rowNumber={rownumber}
+                        />
                     )}
-                </Column>
-                <DataContent>
-                    {(features.get(currentChunkNumber) as FeatureValue).map((feature, rowNumber) => 
-                        <Row key={rowNumber}>
-                            <IDCell key={rowNumber}>
-                                {rowNumber + 1}
-                            </IDCell>
-                            {feature.map((scalar, columnNumber) => 
-                                <RowCell
-                                    key={columnNumber}
-                                    text={scalar}
-                                    dataNumber={currentChunkNumber}
-                                    columnNumber={columnNumber}
-                                    rowNumber={rowNumber}
-                                />
-                            )}
-                        </Row>
-                    )}
-                </DataContent>
-            </>
-        )
+                </Row>
+            )
+        })
+        return rowElements
+    } 
+
+    return (
+        <>
+            {features.size !== 0 && (
+                <>
+                    <Column>
+                        <IDCell key={columns.length}>
+                            ID
+                        </IDCell>
+                        {makeColumns(columns)}
+                    </Column>
+                    <DataContent>
+                        {makeRows(features.get(currentChunkNumber))}
+                    </DataContent>
+                </>
+            )}
+        </>
     )
 }
