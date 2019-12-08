@@ -53,7 +53,6 @@ export const ExportDataComponent: React.FC = () => {
 
     return (
         <DialogUtilComponent
-            showButtonColor='#ab55aa'
             showButtonText='Export data'
             close={close}
             setClose={setClose}

@@ -82,7 +82,6 @@ export const LoadDataComponent: React.FC = () => {
 
     return (
         <DialogUtilComponent
-            showButtonColor='#00aeea'
             showButtonText='Load features'
             close={close}
             setClose={setClose}
