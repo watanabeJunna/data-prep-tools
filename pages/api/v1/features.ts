@@ -8,21 +8,21 @@ interface IRequest extends NextApiRequest {
     }
 }
 
-export default ({ body: { filename, features }, method }: IRequest, res: NextApiResponse) => {
+export default ({body, method}: IRequest, res: NextApiResponse) => {
     if (method !== 'POST' && method !== 'PUT') {
         res.statusCode = 405
         res.end()
         return
     }
 
-    if (!filename) {
+    if (!body.filename) {
         res.statusCode = 400
         res.end()
         return
     }
 
     if (method === 'POST') {
-        if (!fs.existsSync(filename)) {
+        if (!fs.existsSync(body.filename)) {
             res.statusCode = 404
             res.end()
             return
@@ -31,7 +31,7 @@ export default ({ body: { filename, features }, method }: IRequest, res: NextApi
         res.setHeader('Content-Type', 'application/json')
         res.statusCode = 200
 
-        const text =  fs.readFileSync(filename, 'utf-8')
+        const text =  fs.readFileSync(body.filename, 'utf-8')
         const array = text.split('\n')
 
         res.end(JSON.stringify(array))
@@ -39,11 +39,11 @@ export default ({ body: { filename, features }, method }: IRequest, res: NextApi
     }
 
     if (method === 'PUT') {
-        const strArray: string = features.map((features: string[]) => { 
+        const featurestr: string = body.features.map((features: string[]) => { 
             return features.join(',')
         }).join('\n')
 
-        fs.writeFileSync(filename as string , strArray, {encoding: 'utf-8'})
+        fs.writeFileSync(body.filename , featurestr, {encoding: 'utf-8'})
 
         res.statusCode = 200
         res.end()
