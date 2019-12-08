@@ -1,14 +1,14 @@
 import fs from 'fs'
 import { NextApiRequest, NextApiResponse } from 'next'
 
-interface IRequest {
+interface IRequest extends NextApiRequest {
     body: {
         filename: string
-        features?: string[][]
+        features: string[][]
     }
 }
 
-export default ({ body: { filename, features }, method }: NextApiRequest & IRequest, res: NextApiResponse) => {
+export default ({ body: { filename, features }, method }: IRequest, res: NextApiResponse) => {
     if (method !== 'POST' && method !== 'PUT') {
         res.statusCode = 405
         res.end()
@@ -31,7 +31,7 @@ export default ({ body: { filename, features }, method }: NextApiRequest & IRequ
         res.setHeader('Content-Type', 'application/json')
         res.statusCode = 200
 
-        const text =  fs.readFileSync(filename as string, 'utf-8')
+        const text =  fs.readFileSync(filename, 'utf-8')
         const array = text.split('\n')
 
         res.end(JSON.stringify(array))
