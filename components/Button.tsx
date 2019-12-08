@@ -23,9 +23,10 @@ const LowConcentration = '56'
 const defaultColor = '#666666'
 
 export const Button: StyledComponent<'button', {}> = styled.button<ButtonColor>`
-    ${Default}    
+    ${Default}
+    width: 180px;
     color: ${({ color = defaultColor }) => color + HighConcentration};
-    padding: 12px 24px;
+    padding: 12px;
     margin: 0 12px;
     border-radius: 5px;
     border: 2px solid ${({ color = defaultColor }) => color + LowConcentration};
