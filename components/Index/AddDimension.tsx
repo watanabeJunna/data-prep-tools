@@ -39,7 +39,6 @@ export const AddDimensionComponent: React.FC = () => {
 
     return (
         <DialogUtilComponent
-            showButtonColor='#00abaa'
             showButtonText='Add dimension'
             close={close}
             setClose={setClose}
