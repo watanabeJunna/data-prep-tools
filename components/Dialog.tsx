@@ -71,15 +71,14 @@ export const DialogUtilComponent: React.FC<IDialogUtilComponent> = ({
             })
         } else {
             const clientPosition: ClientRect | DOMRect = showButtonRef.current.getBoundingClientRect()
+            const dialogpadding = 32
+            const buttonborader = 2
+            const approx = 2.05
 
-            const right: number = clientPosition.right
-            const width: number = clientPosition.width
-            const scrollLeft: number = document.body.scrollLeft
-            const clientLeft: number = document.documentElement.clientLeft
-
+            // 
             const newPosition: Position = {
-                x: right + scrollLeft + clientLeft + (width * 2.3),
-                y: (clientPosition.top + 5)
+                x: clientPosition.right + ((clientPosition.width + dialogpadding + buttonborader) * approx),
+                y: clientPosition.top
             }
 
             setPosition(newPosition)
@@ -178,7 +177,7 @@ export const Dialog: React.FC<IDialog> = ({
         position: fixed;
         top: ${({ position }) => coordinateMachining(position, 'y', ref)}px;
         left: ${({ position }) => coordinateMachining(position, 'x', ref)}px;
-        padding: 24px 32px;
+        padding: 24px 38px;
         opacity: ${({ visible }) => visible && '1' || '0'};
         z-index: 1;
         font-weight: 400;
